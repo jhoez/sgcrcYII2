@@ -23,7 +23,8 @@
         "kartik-v/yii2-social": "@dev",
         "buttflattery/yii2-videowall": "@dev",
         "kartik-v/yii2-widget-datepicker": "dev-master",
-        "kartik-v/yii2-export": "@dev"
+        "kartik-v/yii2-export": "@dev",
+        "kartik-v/yii2-widget-depdrop": "dev-master"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
