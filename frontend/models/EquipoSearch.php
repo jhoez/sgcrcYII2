@@ -12,14 +12,17 @@ use frontend\models\Equipo;
 class EquipoSearch extends Equipo
 {
     public $cedula;
+    public $nombre;
+
     /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
-            [['ideq', 'idrep'], 'integer'],
-            [['eqserial', 'frecepcion', 'fentrega', 'eqversion', 'eqstatus', 'diagnostico', 'observacion', 'status','cedula'], 'safe'],
+            [['ideq', 'cedula', 'idrep'], 'integer'],
+            ['nombre','string', 'max' => 50],
+            [['eqserial', 'frecepcion', 'fentrega', 'eqversion', 'eqstatus', 'diagnostico', 'observacion', 'status'], 'safe'],
         ];
     }
 
@@ -69,6 +72,7 @@ class EquipoSearch extends Equipo
             'frecepcion' => $this->frecepcion,
             'fentrega' => $this->fentrega,
             'idrep' => $this->idrep,
+            'cedula'=> $this->cedula
         ]);
 
         $query->andFilterWhere(['ilike', 'eqserial', $this->eqserial])
@@ -77,7 +81,7 @@ class EquipoSearch extends Equipo
             ->andFilterWhere(['ilike', 'diagnostico', $this->diagnostico])
             ->andFilterWhere(['ilike', 'observacion', $this->observacion])
             ->andFilterWhere(['ilike', 'status', $this->status])
-            ->andFilterWhere(['ilike', 'cedula', $this->cedula]);
+            ->andFilterWhere(['ilike', 'nombre', $this->nombre]);
 
         return $dataProvider;
     }

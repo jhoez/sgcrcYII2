@@ -17,7 +17,7 @@ class FormatoSearch extends Formato
     public function rules()
     {
         return [
-            [['idf', 'update_at', 'fkuser'], 'integer'],
+            [['idf', 'statusacta', 'fkuser'], 'integer'],
             [['opcion', 'nombf', 'extens', 'ruta', 'tamanio', 'status', 'create_at'], 'safe'],
         ];
     }
@@ -40,12 +40,18 @@ class FormatoSearch extends Formato
      */
     public function search($params)
     {
-        $query = Formato::find();
+        $query = Formato::find()->where(['statusacta'=>'0']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder'=>['idf'=>SORT_DESC]
+            ],
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
 
         $this->load($params);
@@ -60,7 +66,7 @@ class FormatoSearch extends Formato
         $query->andFilterWhere([
             'idf' => $this->idf,
             'create_at' => $this->create_at,
-            'update_at' => $this->update_at,
+            'statusacta' => $this->statusacta,
             'fkuser' => $this->fkuser,
         ]);
 

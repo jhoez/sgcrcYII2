@@ -6,6 +6,7 @@ use yii\helpers\Html;
 /* @var $model frontend\models\Asistencia */
 
 $this->title = 'Create Asistencia';
+$this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

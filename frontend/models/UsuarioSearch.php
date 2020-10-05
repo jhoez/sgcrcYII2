@@ -17,7 +17,7 @@ class UsuarioSearch extends Usuario
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at'], 'integer'],
+            [['iduser', 'status', 'created_at', 'updated_at'], 'integer'],
             [['username', 'auth_key', 'password', 'password_reset_token', 'email', 'verification_token'], 'safe'],
         ];
     }
@@ -58,7 +58,7 @@ class UsuarioSearch extends Usuario
 
         // grid filtering conditions
         $query->andFilterWhere([
-            'id' => $this->id,
+            'iduser' => $this->iduser,
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

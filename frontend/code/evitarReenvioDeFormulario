@@ -1,0 +1,16 @@
+$js = <<<JS
+
+    $(document).on("beforeValidate", "form", function(event, messages, deferreds) {
+        $(this).find(':submit').attr('disabled', true);
+         console.log('BEFORE VALIDATE TEST');
+    }).on("afterValidate", "form", function(event, messages, errorAttributes) {
+        console.log('AFTER VALIDATE TEST');
+        if (errorAttributes.length > 0) {
+            $(this).find(':submit').attr('disabled', false);
+        }
+    });
+
+
+JS;
+
+$this->registerJs($js);

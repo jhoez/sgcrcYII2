@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 use Yii;
+use frontend\models\Estudiante;
 
 /**
  * This is the model class for table "sc.representante".
@@ -59,5 +60,23 @@ class Representante extends \yii\db\ActiveRecord
 			'docente' => 'Docente',
 			'idinst' => 'inst',
         ];
+    }
+
+    public function getRepInstituto()
+    {
+        $instituto = Insteduc::find()->where(['idinst'=>$this->idinst])->one();
+        return $instituto;
+    }
+
+    public function getRepSedeciat()
+    {
+        $sedeciat = Sedeciat::find()->where(['idciat'=>$this->idciat])->one();
+        return $sedeciat;
+    }
+
+    public function getRepEstudiante()
+    {
+        $estudiante = Estudiante::find()->where(['idrep'=>$this->idrep])->one();
+        return $estudiante;
     }
 }

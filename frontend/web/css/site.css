@@ -2,7 +2,13 @@ html,
 body {
     height: 100%;
 }
-
+/*
+.imgcuerpo {
+    background:url(../img/fondo1.jpg)no-repeat center center;
+    background-size: cover;
+    background-attachment: fixed;
+}
+*/
 .wrap {
     min-height: 100%;
     height: auto;

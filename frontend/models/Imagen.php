@@ -43,7 +43,7 @@ class Imagen extends \yii\db\ActiveRecord
             [['extension'], 'string', 'max' => 5],
             [['ruta'], 'string', 'max' => 255],
             [['tipoimg'], 'string', 'max' => 7],
-            [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => CrugeUser::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
+            [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
         ];
     }
 

@@ -579,4 +579,71 @@ class Controller extends Component implements ViewContextInterface
             throw new Exception('Could not load required service: ' . $name);
         }
     }
+
+    /**
+	*	https://wiki.ubuntu.com/UnitsPolicy
+	*	convertidor formato byte
+	*/
+	public function convert_format_bytes($bytes, $precision = 2) {
+		$units = array('B', 'KB', 'MB', 'GB');
+		$bytes = max($bytes, 0);
+		$pow = floor(($bytes ? log($bytes) : 0) / log(1000));
+		$pow = min($pow, count($units) - 1);
+		$bytes /= pow(1000, $pow);
+		return round($bytes, $precision) . ' ' . $units[$pow];
+	}
+
+	/**
+	*	@method eliminarArchivo
+	*	se utilizara para eliminar los archivos de los siguientes modulos
+	*	evitando mostrar algun error con @unlink()
+	*	CONTENIDO EDUCATIVO
+	*	PROYECTOS DIGITALES
+	*	REALIDAD AUMENTADA
+	*	TUTORES
+	*/
+	public function eliminarArchivo($ruta = NULL, $archivo = null){
+		if(is_dir($ruta))
+		{
+			if(file_exists($ruta.$archivo))
+			{
+				$result = @unlink($ruta.$archivo);
+			}else {
+				throw new HttpException('No existe el archivo.');
+			}
+		}else {
+			throw new HttpException('El directorio no existe.');
+		}
+		return $result;
+	}
+
+    /**
+	*	@method private descargaF
+	*	permite descargar los formatos descargables
+	*/
+	public function descargar($dir,$file,$extensions=[]){
+        if (is_dir($dir)) {//si el directorio existe
+            $path = $dir.$file;//ruta absoluta del archivo
+            if (is_file($path)) {//si el archivo existe
+                $file_info = pathinfo($path);//obtiene informacion del archivo
+                $exten = $file_info['extension'];
+                if (is_array($extensions)) {// si el argumento $estensions es un array comprobar la extensiones permitidas
+                    foreach ($extensions as $e) {
+                        if ($e === $exten) {// si la extension coincide se descargara el archivo
+                            $size = filesize($path);
+                            //header("Content-Type: application/force-download");
+                            //header("Content-Disposition: attachment; filename=$file");
+                            //header("Content-Transfer-Encoding: binary");
+                            //header("Content-Lenght:". $size);
+                            //readfile($path);//descargar archivo
+                            //return true;//correcto
+                            $pathDescarga = $dir.$file;
+                            return Yii::$app->response->sendFile( $pathDescarga );
+                        }
+                    }
+                }
+            }
+        }
+        return false;// si ocurre un error
+	}
 }

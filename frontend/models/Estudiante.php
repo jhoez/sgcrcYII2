@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 use Yii;
+use frontend\models\Niveleduc;
 
 /**
  * This is the model class for table "sc.estudiante".
@@ -46,5 +47,11 @@ class Estudiante extends \yii\db\ActiveRecord
             'idrep' => 'Rep',
             'idinst' => 'Inst',
         ];
+    }
+
+    public function getEstNiveleduc()
+    {
+        $niveleduc = Niveleduc::find()->where(['idestu'=>$this->idestu])->one();
+        return $niveleduc;
     }
 }

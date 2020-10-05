@@ -43,7 +43,7 @@ class Usuario extends ActiveRecord implements IdentityInterface
         return [
             [['username','password', 'email'], 'required'],
             [['created_at', 'updated_at'], 'default', 'value' => null],
-            [['status', 'created_at', 'updated_at'], 'integer'],
+            [['iduser','status', 'created_at', 'updated_at'], 'integer'],
             //['status', 'default', 'value' => self::STATUS_INACTIVE],
             //['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             //[['username', 'password', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
@@ -57,10 +57,10 @@ class Usuario extends ActiveRecord implements IdentityInterface
     public function attributeLabels()
     {
         return [
-            'id' => 'ID',
-            'username' => 'Username',
+            'iduser' => 'ID',
+            'username' => 'Usuario',
             'auth_key' => 'Auth Key',
-            'password' => 'Password',
+            'password' => 'Contraseña',
             'password_reset_token' => 'Password Reset Token',
             'email' => 'Email',
             'status' => 'Status',
@@ -75,7 +75,7 @@ class Usuario extends ActiveRecord implements IdentityInterface
      */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE]);
     }
 
     /**

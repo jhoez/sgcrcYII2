@@ -85,6 +85,7 @@ class SiteController extends Controller
      */
     public function actionLogin()
     {
+        $this->layout = 'login';
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
@@ -92,7 +93,7 @@ class SiteController extends Controller
         $model=new LoginForm();
         if ( $model->load(yii::$app->request->post()) ){
             if ( $model->validate() ){
-                $login=Usuario::find()->where(['username'=>$model->username,'password'=>$model->password])->one();
+                $login = Usuario::find()->where(['username'=>$model->username,'password'=>$model->password])->one();
                 if (!empty($login)){
                     yii::$app->user->login($login);
                     return $this->redirect(['site/index']);

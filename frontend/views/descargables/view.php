@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model frontend\models\Formato */
 
 $this->title = $model->idf;
+$this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Formatos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
@@ -35,10 +36,9 @@ $this->params['breadcrumbs'][] = $this->title;
             'extens',
             'ruta',
             'tamanio',
-            'status',
+            'statusacta',
             'create_at',
-            'update_at',
-            'fkuser',
+            //'fkuser',
         ],
     ]) ?>
 

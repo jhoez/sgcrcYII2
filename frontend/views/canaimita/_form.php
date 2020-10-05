@@ -8,23 +8,32 @@ use yii\widgets\ActiveForm;
 
 <div class="equipo-form">
 
-    <?php
-    $form = ActiveForm::begin();
+    <?php $form = ActiveForm::begin([
+        'id'=>'formulario',
+        //'validationUrl'=>['canaimita/validarFormularioAjax'],
+        'enableClientValidation'=>true,
+        'enableAjaxValidation' => true,
+    ]);?>
 
-    $fecha = date( "Y-m-d",time() );// OBTIENE HORA ACTUAL DE MI MAQUINA
-    //$fecha = date( "Y-m-d h:i:s",time() );// OBTIENE HORA ACTUAL DE MI MAQUINA
-    echo $form->field($equipo,'frecepcion')->hiddenInput(['value' => $fecha]);
-    //echo $form->field($equipo,'frecepcion',array('value' => $fecha))->hiddenInput();
-    ?>
-
-    <h5>Dirección</h5>
+    <h3 class="text-center">Dirección</h3>
+    <hr>
     <div class="form-group">
         <?= Html::label('Estados', 'idesta', ['class' => ''])?>
         <div class="">
             <?= Html::activeDropDownList(
                 $estado,'idesta',
                 ArrayHelper::map($estadoArray, 'idesta', 'nombest'),
-                ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
+                [
+                    'prompt' => '---- Seleccione ----',
+                    'class' => 'form-control imput-md',
+                    'onchange'=>
+                        '$.post(
+                            "'.Yii::$app->urlManager->createUrl('canaimita/muncall?id=').'"+$(this).val(),
+                            function( data ) {
+                                $( "select#municipio-idmunc" ).html( data );
+                            }
+                        );'
+                ]
             )?>
         </div>
     </div>
@@ -34,7 +43,17 @@ use yii\widgets\ActiveForm;
             <?= Html::activeDropDownList(
                 $municipio,'idmunc',
                 ArrayHelper::map($municipioArray, 'idmunc', 'municipio'),
-                ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
+                [
+                    'prompt' => '---- Seleccione ----',
+                    'class' => 'form-control imput-md',
+                    'onchange'=>
+                        '$.post(
+                            "'.Yii::$app->urlManager->createUrl('canaimita/parrall?id=').'"+$(this).val(),
+                            function( data ) {
+                                $( "select#parroquia-idpar" ).html( data );
+                            }
+                        );'
+                ]
             )?>
         </div>
     </div>
@@ -48,7 +67,9 @@ use yii\widgets\ActiveForm;
             )?>
         </div>
     </div>
-    <h5>Institutos</h5>
+
+    <h3 class="text-center">Institutos</h3>
+    <hr>
     <div class="form-group">
         <div class="">
             <?= $form->field($sedeciat, 'sede')->textInput() ?>
@@ -63,7 +84,8 @@ use yii\widgets\ActiveForm;
     </div>
     <!------------------------------------------------------------------------->
     <!-- DATOS DEL REPRESENTATE -->
-    <h5>Representante o Docente</h5>
+    <h3 class="text-center">Representante o Docente</h3>
+    <hr>
     <div class="form-group">
         <div class="">
             <?= $form->field($representante, 'nombre')->textInput() ?>
@@ -82,11 +104,12 @@ use yii\widgets\ActiveForm;
     <div class="form-group">
         <?= Html::label('¿Es Docente?', 'docente', ['class'=>'']) ?>
         <div class="">
-            <?= Html::activeCheckboxList($representante, 'docente', ['Si','No']) ?>
+            <?= Html::activeCheckbox($representante, 'docente', ['label'=>'¡Si! o ¡No!']) ?>
         </div>
     </div>
     <!-- DATOS DEL ESTUDIANTE -->
-    <h5 class="">Estudiante</h5>
+    <h3 class="text-center">Estudiante</h3>
+    <hr>
     <div class="form-group">
         <div class="">
             <?= $form->field($estudiante, 'nombestu')->textInput() ?>
@@ -120,12 +143,12 @@ use yii\widgets\ActiveForm;
     <div class="form-group">
         <?= Html::label('¿Esta Graduado?', 'graduado', ['class'=>'']) ?>
         <div class="">
-            <?= Html::activeCheckboxList($niveleduc, 'graduado', ['Si','No']) ?>
+            <?= Html::activeCheckbox($niveleduc, 'graduado', ['label'=>'¡Si! o ¡No!']) ?>
         </div>
     </div>
     <!------------------------------------------------------------------------->
     <!-- DATOS DEL EQUIPO -->
-    <h5 class="center-align">Datos del Equipo</h5>
+    <h3 class="text-center">Datos del Equipo</h3>
     <div class="form-group">
         <?= Html::label('Version de Equipo', 'eqversion', ['class' => ''])?>
         <div class="">
@@ -173,6 +196,8 @@ use yii\widgets\ActiveForm;
         </div>
     </div>
     <!------------------------------------------------------------------------->
+    <h3 class="text-center">Fallas</h3>
+    <hr>
     <!-- FALLA DE SOFTWARE -->
     <div class="form-group">
         <?= Html::label('Falla de Software', 'fsoft', ['class' => ''])?>
@@ -279,7 +304,7 @@ use yii\widgets\ActiveForm;
 
     <div class="form-group">
         <?= Html::submitButton($equipo->isNewRecord ? 'Registrar Canaimita' : 'Actualizar Canaimita', ['class' => 'btn btn-success']) ?>
-        <?= Html::button('Cancelar',['class' => 'btn btn-danger','onclick' => 'js:document.location.href="index.php?r=canaimita/index"']);?>
+        <?= Html::button('Cancelar',['class' => 'btn btn-danger','onclick' => 'js:document.location.href="canaimita/index"']);?>
     </div>
 
     <?php ActiveForm::end(); ?>

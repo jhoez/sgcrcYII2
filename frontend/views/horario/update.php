@@ -5,7 +5,8 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Asistencia */
 
-$this->title = 'Update Asistencia: ' . $model->idasis;
+$this->title = 'Actualizar Asistencia: ' . $model->idasis;
+$this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->idasis, 'url' => ['view', 'id' => $model->idasis]];
 $this->params['breadcrumbs'][] = 'Update';

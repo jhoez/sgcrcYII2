@@ -2,6 +2,7 @@
 
 namespace frontend\models;
 use Yii;
+use yii\web\UploadedFile;
 
 /**
  * This is the model class for table "sc.formato".
@@ -14,7 +15,7 @@ use Yii;
  * @property string|null $tamanio
  * @property string|null $status
  * @property string|null $create_at
- * @property int|null $update_at
+ * @property int|null $statusacta
  * @property int|null $fkuser
  */
 class Formato extends \yii\db\ActiveRecord
@@ -36,21 +37,44 @@ class Formato extends \yii\db\ActiveRecord
     {
         return [
             [
-                ['ftutor'],'file',
+                'ftutor',
+                'file',
                 'skipOnEmpty'=>false,
+                'uploadRequired'=>'No has seleccionado ningun ARCHIVO',// error
+                'maxSize'=>1024*1024*10,//10MB
+                'tooBig'=>'El tamaño permitido es de 10MB',// error
+                'minSize'=>4,
+                'tooSmall'=>'El tamaño permitido son 4Byte',// error
                 'extensions'=>'ods,xls,odt,docx',
-                'maxFiles'=>4
+                'wrongExtension'=>'El archivo no contiene una extension permitida',
+                //'maxFiles'=>4,
+                //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['ftutor','opcion'], 'required'],
+            [['opcion'], 'required'],
             [['create_at'], 'safe'],
-            [['update_at', 'fkuser'], 'default', 'value' => null],
-            [['update_at', 'fkuser'], 'integer'],
+            [['statusacta', 'fkuser'], 'default', 'value' => null],
+            [['statusacta', 'fkuser'], 'integer'],
             [['opcion', 'nombf', 'ruta'], 'string', 'max' => 255],
             [['extens'], 'string', 'max' => 5],
             [['tamanio'], 'string', 'max' => 50],
             [['status'], 'string', 'max' => 1],
             [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
         ];
+    }
+
+    /**
+    *   @method upload valida y guarda el file en un directorio
+    *   @return boolean
+    */
+    public function uploadArchivo()
+    {
+        if ($this->statusacta == '1') {
+            $this->ftutor->saveAs('formatos/fd/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
+        }
+
+        if($this->statusacta == '0'){
+            $this->ftutor->saveAs('formatos/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
+        }
     }
 
     /**
@@ -67,7 +91,7 @@ class Formato extends \yii\db\ActiveRecord
 			'tamanio'	=> 'Tamaño',
 			'status'	=> 'Status',
 			'create_at' => 'Fecha de enviado',
-			'update_at' => 'Formato descargable',
+			'statusacta' => 'Formato descargable',
 			'fkuser'	=> 'Usuario',
 			'ftutor'	=> 'Formato a subir',
         ];

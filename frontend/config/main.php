@@ -9,6 +9,7 @@ $params = array_merge(
 use kartik\mpdf\Pdf;
 
 return [
+    'name'=>'SGCRC',
     'id' => 'app-frontend',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
@@ -54,4 +55,5 @@ return [
         ]
     ],
     'params' => $params,
+    'language'=>'es'
 ];

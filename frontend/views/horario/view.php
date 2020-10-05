@@ -7,6 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model frontend\models\Asistencia */
 
 $this->title = $model->idasis;
+$this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
