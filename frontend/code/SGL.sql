@@ -189,7 +189,7 @@ CREATE TABLE sc.representante
   fkuser integer,
   CONSTRAINT idrep PRIMARY KEY (idrep),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
+      REFERENCES sc.usuario (iduser) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT idciat FOREIGN KEY (idciat)
       REFERENCES sc.sedeciat (idciat) MATCH SIMPLE
@@ -351,7 +351,7 @@ CREATE TABLE sc.imagen
   fkuser integer,
   CONSTRAINT idimag PRIMARY KEY (idimag),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
+      REFERENCES sc.usuario (iduser) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
@@ -381,11 +381,11 @@ CREATE TABLE sc.formato
   tamanio character varying(50),
   status character varying(1),
   create_at date,
-  update_at integer,
+  statusacta integer,
   fkuser integer,
   CONSTRAINT idf PRIMARY KEY (idf),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
+      REFERENCES sc.usuario (iduser) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
@@ -401,7 +401,7 @@ CREATE TABLE sc.proyecto
   fkuser integer,
   CONSTRAINT idpro PRIMARY KEY (idpro),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
+      REFERENCES sc.usuario (iduser) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
 
@@ -447,6 +447,6 @@ CREATE TABLE sc.asistencia
   observacion text,
   CONSTRAINT idasis PRIMARY KEY (idasis),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
+      REFERENCES sc.usuario (iduser) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );

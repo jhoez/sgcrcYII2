@@ -24,10 +24,10 @@ class HorarioController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','update','delete','reporteasistencia','reportemes','marcarsalida'],
+                'only' => ['index','create','update','delete','reporteasistencia'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','update','delete','reporteasistencia','reportemes','marcarsalida'],
+                        'actions' => ['index','create','update','delete','reporteasistencia'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -96,16 +96,16 @@ class HorarioController extends Controller
                     }
                 }else {
                     $fecha	= date("Y-m-d",time());
-                    $asistencia = Asistencia::find()
+                    $horario = Asistencia::find()
                                 ->where(['fecha'=>$fecha])
                                 ->andWhere(['fkuser'=>Yii::$app->user->getId()])
                                 ->one();
-                    if ( $asistencia !== null ) {
-                        $asistencia->horaout = $horario->horaout;
-                        $asistencia->observacion = $horario->observacion;
-                        if ( $asistencia->save() ) {
-                            //$horario = $asistencia;
-                            return $this->redirect(['view', 'id' => $asistencia->idasis]);
+                    if ( $horario !== null ) {
+                        $horario->horaout = $horario->horaout;
+                        $horario->observacion = $horario->observacion;
+                        if ( $horario->save() ) {
+                            //$horario = $horario;
+                            return $this->redirect(['view', 'id' => $horario->idasis]);
                         }
                     }else {
                         $horario->fkuser = Yii::$app->user->getId();
@@ -174,5 +174,101 @@ class HorarioController extends Controller
         }
 
         throw new NotFoundHttpException('The requested page does not exist.');
+    }
+
+    public function actionReporteasistencia()
+    {
+        $horario = new Asistencia;
+        $conteo = null;
+
+        // MEDIDAS DE HOJA A4 WIDTH='992PX' HEIGHT='1403PX'
+		if ( $horario->load(Yii::$app->request->post()) ) {
+            //echo "<pre>";var_dump($horario->mes,$horario->fechain,$horario->fechaout);die;
+			if ( !empty($horario->mes) ) {
+				$mes			= (integer)$horario->mes;
+				$anio			= date('Y');
+				$fechainicio	= "$anio-$mes-01";
+
+				if ($mes == 12) {
+					$anionuevo	= $anio + 1;
+					$fechafinal = "$anioNuevo-01-01";
+				}else {
+					$mesnuevo	= $mes + 1;
+					$fechafinal = "$anio-$mesnuevo-01";
+				}
+
+				$horario = Asistencia::find()->where(['>=','fecha',$fechainicio])->andWhere(['<','fecha',$fechafinal])->one();
+                $conteo = Asistencia::find()->where(['>=','fecha',$fechainicio])->andWhere(['<','fecha',$fechafinal])->count();
+			}
+            if( !empty($horario->fechain) && !empty($horario->fechaout) ){
+				$finicio = $horario->fechain;
+				$ffin = $horario->fechaout;
+                $horario = Asistencia::find()->where(['>=','fecha',$finicio])->andWhere(['<=','fecha',$ffin])->one();
+                $conteo = Asistencia::find()->where(['>=','fecha',$finicio])->andWhere(['<=','fecha',$ffin])->count();
+			}
+			if ( $conteo !== null ) {
+				$registros	= 6; // maximo de registros a mostrar en el PDF
+				$incre		= 0;
+				$control 	= 0;
+				$contador	= (integer)$conteo; // variable de incremento
+
+                //API MPDF
+                $pdf = Yii::$app->pdf;
+                $mpdf = $pdf->api;
+
+				try {
+					foreach ($horario as $key => $value):
+					    if ($incre == $registros) {
+							if ( !empty($mes) ) {
+                                $vista = $this->renderPartial('_reporteAsistencia',[
+                                    'asistencia'=>$asist,
+                                    'mes'=>$mes
+                                ]);
+								$html2pdf->WriteHTML($vista); //hacemos un render partial a una vista preparada, en este caso es la vista ReportesPDF
+							}else {
+                                $vista = $this->renderPartial('_reporteAsistencia',[
+                                    'horario'=>$asist,
+                                    'finicio'=>$finicio,
+                                    'ffin'=>$ffin
+                                ]);
+								$html2pdf->WriteHTML($vista);
+							}
+							unset($asist); // VACIA $eq PARA VOLVER A INICIALIZARLA
+							$incre = 0; // SE INICIALIZA A SU VALOR POR DEFECTO PARA LUEGO IMPRIMIR OTROS 6 REGISTROS EN EL PDF
+						}
+						$asist[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
+						$incre++;
+						$control++; // INCREMENTA HASTA QUE SEA IGUAL AL NUMERO DE REGISTROS EN LA BASE DE DATOS
+						// IMPRIME EL RESTO DE LOS REGISTROS
+						if ($control == $contador) {
+                            if ( !empty($mes) ) {
+                                $vista = $this->renderPartial('_reporteAsistencia',[
+                                    'asistencia'=>$asist,
+                                    'mes'=>$mes
+                                ]);
+								$html2pdf->WriteHTML($vista); //hacemos un render partial a una vista preparada, en este caso es la vista ReportesPDF
+							}else {
+                                $vista = $this->renderPartial('_reporteAsistencia',[
+                                    'horario'=>$asist,
+                                    'finicio'=>$finicio,
+                                    'ffin'=>$ffin
+                                ]);
+								$html2pdf->WriteHTML($vista);
+							}
+							unset($asist);
+						}
+					endforeach;
+					$pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
+					echo $mpdf->Output( $pdfFilename, 'D' );
+                    $this->refresh();die;
+				} catch ( HTML2PDF_Exception $e ) {
+					$e->getMessage();
+				}
+			}
+		}
+
+        return $this->render('reportepdf',[
+            'horario'=>$horario
+        ]);
     }
 }

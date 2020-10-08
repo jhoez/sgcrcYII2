@@ -16,6 +16,9 @@ use Yii;
  */
 class Asistencia extends \yii\db\ActiveRecord
 {
+	public $fechain;
+	public $fechaout;
+	public $mes;
     /**
      * {@inheritdoc}
      */
@@ -32,7 +35,7 @@ class Asistencia extends \yii\db\ActiveRecord
         return [
             [['fkuser'], 'default', 'value' => null],
             [['fkuser'], 'integer'],
-            [['fecha', 'horain', 'horaout'], 'safe'],
+            [['fecha', 'mes', 'fechain', 'fechaout', 'horain', 'horaout'], 'safe'],
             [['observacion'], 'string'],
             [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
         ];

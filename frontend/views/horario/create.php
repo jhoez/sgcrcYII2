@@ -14,6 +14,11 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <h1><?= Html::encode($this->title) ?></h1>
 
+    <p>
+        <?= Html::a('Asistencias registradas', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Canaimitas regitradas', ['canaimita/index'], ['class' => 'btn btn-primary']) ?>
+    </p>
+
     <?= $this->render('_form', [
         'horario' => $horario,
         'horaE'     => $horaE,
