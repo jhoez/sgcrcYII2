@@ -16,7 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Marcar Asistencia', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Marcar Asistencia', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Reporte de Asistencia', ['reporteAsistencia'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -26,14 +27,37 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'idasis',
-            'fkuser',
+            [
+                'label'=>'Usuario',
+                'attribute'=>'username',
+                'value'=>function($data){
+                    return $data->getfkuser()->one()->username;
+                },
+            ],
             'fecha',
             'horain',
             'horaout',
-            //'observacion:ntext',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            'observacion:ntext',
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header'=>'Action',
+                'headerOptions'=>['width'=>'60'],
+                'template'=>'{view}{delete}',
+                'buttons'=> [
+                    'view' => function($url){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-eye-open"></span>',
+                            $url
+                        );
+                    },
+                    'delete' => function($url){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-remove"></span>',
+                            $url
+                        );
+                    },
+                ],
+            ],
         ],
     ]); ?>
 

@@ -6,26 +6,42 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Asistencia */
 /* @var $form yii\widgets\ActiveForm */
+$hora	= date("h:i:s",time());
 ?>
 
-<div class="asistencia-form">
+<div class="row clearfix">
+    <div class="col-md-offset-3 col-md-6">
+        <div class="asistencia-form">
+            <h1 class="text-center">Registro de asistencia</h1>
+            <?php var_dump($hora); ?>
+            <?php
+            $form = ActiveForm::begin();
+            if ($hora >= $horaE && $hora <= $lhoraE) {
+                echo Html::activeHiddenInput($horario,'horain',['value'=>$hora]);
+            } elseif($hora >= $horaS && $hora <= $lhoraS) {
+                echo Html::activeHiddenInput($horario,'horaout',['value'=>$hora]);
+            }
+            ?>
 
-    <?php $form = ActiveForm::begin(); ?>
+            <?php if ( $hora >= $horaS && $hora <= $lhoraS ): ?>
+                <?= $form->field($horario, 'observacion')->textarea(['rows' => 6,'style'=>['resize'=>'none']]) ?>
+            <?php endif; ?>
 
-    <?= $form->field($model, 'fkuser')->textInput() ?>
+            <div class="form-group">
+                <?php if ( $hora >= $horaE && $hora <= $lhoraE ): ?>
+                    <?= Html::submitButton('Registrar Entrada', ['class' => 'btn btn-success']) ?>
+                <?php elseif($hora >= $horaS && $hora <= $lhoraS): ?>
+                    <?= Html::a('Registrar Salida', ['create','ms'=>'hs'], [
+                        'class' => 'btn btn-success',
+                        'data' => [
+                            'method' => 'post',
+                        ],
+                    ]) ?>
+                <?php endif; ?>
+            </div>
 
-    <?= $form->field($model, 'fecha')->textInput() ?>
+            <?php ActiveForm::end(); ?>
 
-    <?= $form->field($model, 'horain')->textInput() ?>
-
-    <?= $form->field($model, 'horaout')->textInput() ?>
-
-    <?= $form->field($model, 'observacion')->textarea(['rows' => 6]) ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

@@ -52,7 +52,7 @@ class SignupForm extends Model
         $user->username = $this->username;
         $user->email = $this->email;
         $user->password=$this->password;
-        $user->auth_key=$this->password;
+        $user->auth_key=random_int(5, 10);
         $user->password_reset_token=random_int(5, 10);
         $user->status=1;
         $user->created_at=date("Y",time());

@@ -19,8 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Subir Formato', ['create'], ['class' => 'btn btn-success']) ?>
-        <?= Html::a('Canaimitas registradas', ['/canaimita/index'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Subir Formato', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Canaimitas registradas', ['/canaimita/index'], ['class' => 'btn btn-primary']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php $form = ActiveForm::begin([
                     'id'=>'descargables',
                     //'method' => 'post',
-                    'action'=>Url::toRoute('/descargables/index'),
+                    'action'=>Url::toRoute('/descargables/descargarf'),
                     'enableClientValidation'=>true,
                     //'enableAjaxValidation' => true,
                 ]);?>
@@ -124,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Action',
                 'headerOptions'=>['width'=>'60'],
-                'template'=>'{view}{update}{delete}{index}{marcar}',
+                'template'=>'{view}{update}{delete}{descargarf}{marcar}',
                 'buttons'=> [
                     'view' => function($url){
                         return Html::a(
@@ -144,7 +144,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $url
                         );
                     },
-                    'index' => function($url,$model,$index){
+                    'descargarf' => function($url,$model,$index){
                         return Html::a(
                             '<span class="glyphicon glyphicon-download"></span>',
                             $url

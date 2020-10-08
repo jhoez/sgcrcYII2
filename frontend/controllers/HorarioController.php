@@ -8,6 +8,8 @@ use frontend\models\AsistenciaSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
+use yii\helpers\HtmlPurifier;
 
 /**
  * AsistenciaController implements the CRUD actions for Asistencia model.
@@ -20,6 +22,17 @@ class HorarioController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index','create','update','delete','reporteasistencia','reportemes','marcarsalida'],
+                'rules' => [
+                    [
+                        'actions' => ['index','create','update','delete','reporteasistencia','reportemes','marcarsalida'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -64,14 +77,52 @@ class HorarioController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Asistencia();
+        $horario = new Asistencia;
+        $purifier = new HtmlPurifier;
+        $horaE  = '05:30:00';
+        $lhoraE = '05:31:00';
+        $horaS  = '05:31:30';
+        $lhoraS = '05:35:00';
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->idasis]);
+        if ( $horario->load(Yii::$app->request->post()) ) {
+            if ( $horario->validate() ) {
+                $paramget = isset($_GET['ms']) ? $purifier->process($_GET['ms']) : null;
+                if ($paramget == null) {
+                    $horario->fkuser = Yii::$app->user->getId();
+                    $horario->fecha = date("Y-m-d",time());
+
+                    if ( $horario->save() ) {
+                        return $this->redirect(['view', 'id' => $horario->idasis]);
+                    }
+                }else {
+                    $fecha	= date("Y-m-d",time());
+                    $asistencia = Asistencia::find()
+                                ->where(['fecha'=>$fecha])
+                                ->andWhere(['fkuser'=>Yii::$app->user->getId()])
+                                ->one();
+                    if ( $asistencia !== null ) {
+                        $asistencia->horaout = $horario->horaout;
+                        $asistencia->observacion = $horario->observacion;
+                        if ( $asistencia->save() ) {
+                            //$horario = $asistencia;
+                            return $this->redirect(['view', 'id' => $asistencia->idasis]);
+                        }
+                    }else {
+                        $horario->fkuser = Yii::$app->user->getId();
+                        if ( $horario->save() ) {
+                            return $this->redirect(['view', 'id' => $horario->idasis]);
+                        }
+                    }
+                }
+            }
         }
 
         return $this->render('create', [
-            'model' => $model,
+            'horario'   => $horario,
+            'horaE'     => $horaE,
+            'horaS'     => $horaS,
+            'lhoraE'    => $lhoraE,
+            'lhoraS'    => $lhoraS
         ]);
     }
 

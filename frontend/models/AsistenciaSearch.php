@@ -11,6 +11,7 @@ use frontend\models\Asistencia;
  */
 class AsistenciaSearch extends Asistencia
 {
+    public $username;
     /**
      * {@inheritdoc}
      */
@@ -18,6 +19,7 @@ class AsistenciaSearch extends Asistencia
     {
         return [
             [['idasis', 'fkuser'], 'integer'],
+            ['username','string', 'max' => 255],
             [['fecha', 'horain', 'horaout', 'observacion'], 'safe'],
         ];
     }
@@ -40,12 +42,18 @@ class AsistenciaSearch extends Asistencia
      */
     public function search($params)
     {
-        $query = Asistencia::find();
+        $query = Asistencia::find()->joinWith(['fkuser']);
 
         // add conditions that should always apply here
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder'=>['idasis'=>SORT_DESC]
+            ],
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
 
         $this->load($params);
@@ -65,7 +73,8 @@ class AsistenciaSearch extends Asistencia
             'horaout' => $this->horaout,
         ]);
 
-        $query->andFilterWhere(['ilike', 'observacion', $this->observacion]);
+        $query->andFilterWhere(['ilike', 'observacion', $this->observacion])
+            ->andFilterWhere(['ilike', 'username', $this->username]);
 
         return $dataProvider;
     }

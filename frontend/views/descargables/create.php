@@ -13,6 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="formato-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
+    <?= Html::a('Formato registrados', ['index'], ['class' => 'btn btn-primary']) ?>
 
     <?= $this->render('_form', [
         'formato' => $formato,

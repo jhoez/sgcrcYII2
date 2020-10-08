@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Asistencia */
 
-$this->title = 'Create Asistencia';
+$this->title = 'Registrar Asistencia';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
@@ -15,7 +15,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'horario' => $horario,
+        'horaE'     => $horaE,
+        'horaS'     => $horaS,
+        'lhoraE'    => $lhoraE,
+        'lhoraS'    => $lhoraS
     ]) ?>
 
 </div>

@@ -27,10 +27,10 @@ class DescargablesController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','update','delete','updatestatus'],
+                'only' => ['index','create','update','delete','updatestatus','descargarf'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','update','delete','updatestatus'],
+                        'actions' => ['index','create','update','delete','updatestatus','descargarf'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -78,23 +78,6 @@ class DescargablesController extends Controller
         $searchModel = new FormatoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
-        /*
-        *   Descarga el formato del Campo Select
-        *   Descarga el formato del boton Download de GridView
-        */
-        if ( Yii::$app->request->post() || Yii::$app->request->get() ) {
-            $purifier = new HtmlPurifier;
-            $peticion = !empty(Yii::$app->request->post('FormatoSearch')) ?
-                    Yii::$app->request->post('FormatoSearch')['idf'] :
-                    Yii::$app->request->get('id');
-            $valor = $purifier->process($peticion);
-            $formato = Formato::find()->where(['idf'=>$valor])->one();
-            if (!$this->descargar($formato->ruta, $formato->nombf.'.'.$formato->extens ,['ods','xls','odt','docx'])) {
-                Yii::$app->session->setFlash('errormsj', "el archivo no se pudo descargar");
-                $this->refresh();
-            }
-        }
-
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
@@ -117,19 +100,22 @@ class DescargablesController extends Controller
 
     /**
     *   @method Descargarf
-    *
+    *   Descarga el formato del Campo Select
+    *   Descarga el formato del boton Download de GridView
     */
     public function actionDescargarf()
     {
-        if (Yii::$app->request->get()) {
+        if ( Yii::$app->request->isPost || Yii::$app->request->isGet ) {
             $purifier = new HtmlPurifier;
-            $valor = $purifier->process(Yii::$app->request->get('id'));
+            $peticion = !empty(Yii::$app->request->post('FormatoSearch')) ?
+                    Yii::$app->request->post('FormatoSearch')['idf'] :
+                    Yii::$app->request->get('id');
+            $valor = $purifier->process($peticion);
             $formato = Formato::find()->where(['idf'=>$valor])->one();
             if (!$this->descargar($formato->ruta, $formato->nombf.'.'.$formato->extens ,['ods','xls','odt','docx'])) {
                 Yii::$app->session->setFlash('errormsj', "el archivo no se pudo descargar");
                 $this->refresh();
             }
-            exit;
         }
     }
 

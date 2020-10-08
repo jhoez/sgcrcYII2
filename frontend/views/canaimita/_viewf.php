@@ -4,6 +4,8 @@ use yii\helpers\ArrayHelper;
 use yii\grid\GridView;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
+//use kartik\date\DatePicker;
+use yii\jui\DatePicker;
 ?>
 <div class="">
 
@@ -13,7 +15,7 @@ use yii\helpers\Url;
             <?php $form = ActiveForm::begin([
                 'id'=>'descargables',
                 //'method' => 'post',
-                'action'=>Url::toRoute('/descargables/index'),
+                'action'=>Url::toRoute('/descargables/descargarf'),
                 'enableClientValidation'=>true,
                 //'enableAjaxValidation' => true,
             ]);?>
@@ -58,7 +60,13 @@ use yii\helpers\Url;
             'attribute'=>'create_at',
             'value'=>function($data){
                 return $data->create_at;
-            }
+            },
+            'filter'=> DatePicker::widget([
+             'model' => $fsearchModel,
+             'attribute' => 'create_at',
+             'language' => 'es',
+             'dateFormat' => 'yyyy-MM-dd',
+            ])
         ],
         [
             'label'=>'Opcion',
@@ -103,7 +111,7 @@ use yii\helpers\Url;
             'class' => 'yii\grid\ActionColumn',
             'header'=>'Action',
             'headerOptions'=>['width'=>'60'],
-            'template'=>'{view}{update}{delete}{download}{marcar}',
+            'template'=>'{view}{update}{delete}{descargarf}{marcar}',
             'buttons'=> [
                 'view' => function($data){
                     return Html::a(
@@ -123,12 +131,11 @@ use yii\helpers\Url;
                         $data
                     );
                 },
-                'download' => function($url,$model){
+                'descargarf' => function($url,$model){
                     //formato/verformato
                     return Html::a(
                         '<span class="glyphicon glyphicon-download"></span>',
-                        $url
-                        //Url::to(["product/download", "id" => implode($id)])
+                        Url::to(["descargables/descargarf", "id" => implode((array)$model->idf)])
                     );
                 },
                 'marcar' => function($data){

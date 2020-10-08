@@ -50,7 +50,8 @@ AppAsset::register($this);
             ['label' => 'Realidad Aumentada', 'url' => ['/rea/index']],
             ['label' => 'Acerca de', 'url' => ['/site/about']],
             ['label' => 'Contactanos', 'url' => ['/site/contact']],
-            ['label' => 'Iniciar Session', 'url' => ['/site/login']]
+            ['label' => 'Iniciar Session', 'url' => ['/site/login']],
+            //['label' => 'Crear Cuenta', 'url' => ['/site/signup']],
         ];
     } else {
         $menuItems = [
@@ -59,7 +60,6 @@ AppAsset::register($this);
             ['label' => 'Proyectos Digitales', 'url' => ['/prodig/index']],
             ['label' => 'Realidad Aumentada', 'url' => ['/rea/index']],
             ['label' => 'Tutor', 'url' => ['/canaimita/index']],
-            //['label' => 'Crear Cuenta', 'url' => ['/site/signup']],
         ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')

@@ -76,16 +76,6 @@ class CanaimitaController extends Controller
         $csearchModel = new EquipoSearch;
         $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);
 
-        if (Yii::$app->request->isPost) {
-            $purifier = new HtmlPurifier;
-            $valor = $purifier->process($_POST['FormatoSearch']['idf']);
-            $formato = Formato::find()->where(['idf'=>$valor])->one();
-            if (!$this->descargar($formato->ruta, $formato->nombf.'.'.$formato->extens ,['ods','xls','odt','docx'])) {
-                Yii::$app->session->setFlash('errormsj', "el archivo no se pudo descargar");
-                $this->refresh();
-            }
-        }
-
         return $this->render('index', [
             'fsearchModel' => $fsearchModel,
             'fdataProvider' => $fdataProvider,
@@ -137,8 +127,8 @@ class CanaimitaController extends Controller
 
         if ($sedeciat->load(Yii::$app->request->post()) && Yii::$app->request->isAjax) {
             Yii::$app->response->format = Response::FORMAT_JSON;
-            Yii::$app->session->setFlash('warning', "La Sede $sedeciat->sede ya existe...");
-            //$this->refresh();
+            Yii::$app->session->setFlash('error', "La Sede $sedeciat->sede ya existe...");
+            $this->refresh();
             return ActiveForm::validate($sedeciat);
         }
 

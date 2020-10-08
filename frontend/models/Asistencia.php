@@ -55,4 +55,9 @@ class Asistencia extends \yii\db\ActiveRecord
 			'mes'=>'Reporte Mensual'
         ];
     }
+
+    public function getfkuser()
+    {
+        return $this->hasOne(Usuario::className(), ['iduser' => 'fkuser']);
+    }
 }
