@@ -1,4 +1,5 @@
 <?php
+//https://www.htmlquick.com/es/reference/tags/audio.html
 //http://www.iana.org/assignments/media-types/media-types.xhtml#video
 // Fallback for servers without Fileinfo, mime_content_type, or PEAR support.
 $mime_types_map = array(

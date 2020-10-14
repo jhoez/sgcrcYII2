@@ -89,7 +89,7 @@
         "version_normalized": "3.3.11.0",
         "source": {
             "type": "git",
-            "url": "git@github.com:RobinHerbots/Inputmask.git",
+            "url": "https://github.com/RobinHerbots/Inputmask.git",
             "reference": "5e670ad62f50c738388d4dcec78d2888505ad77b"
         },
         "dist": {
@@ -188,43 +188,6 @@
         "license": [
             "MIT"
         ]
-    },
-    {
-        "name": "buttflattery/yii2-videowall",
-        "version": "dev-master",
-        "version_normalized": "9999999-dev",
-        "source": {
-            "type": "git",
-            "url": "https://github.com/buttflattery/yii2-videowall.git",
-            "reference": "eafbcedbdec45034e1b1d31b781b1b3986b1348b"
-        },
-        "dist": {
-            "type": "zip",
-            "url": "https://api.github.com/repos/buttflattery/yii2-videowall/zipball/eafbcedbdec45034e1b1d31b781b1b3986b1348b",
-            "reference": "eafbcedbdec45034e1b1d31b781b1b3986b1348b",
-            "shasum": ""
-        },
-        "require": {
-            "kartik-v/yii2-widget-select2": "@dev",
-            "php": ">=5.4.0",
-            "yiisoft/yii2": ">=2.0.15.1"
-        },
-        "time": "2018-10-22T16:14:56+00:00",
-        "type": "yii2-extension",
-        "installation-source": "source",
-        "autoload": {
-            "psr-4": {
-                "buttflattery\\videowall\\": "/src"
-            }
-        },
-        "notification-url": "https://packagist.org/downloads/",
-        "authors": [
-            {
-                "name": "Muhammad Omer Aslam",
-                "email": "buttflattery@gmail.com"
-            }
-        ],
-        "description": "A Yii2 plugin to display a video wall for videoJS player, and create different layouts for video wall like carousel, thumbnails and playlists."
     },
     {
         "name": "cebe/markdown",
@@ -1652,28 +1615,28 @@
     },
     {
         "name": "kartik-v/yii2-widget-select2",
-        "version": "v2.1.8",
-        "version_normalized": "2.1.8.0",
+        "version": "v2.2.0",
+        "version_normalized": "2.2.0.0",
         "source": {
             "type": "git",
             "url": "https://github.com/kartik-v/yii2-widget-select2.git",
-            "reference": "78efbcd1ae87b87803f9beb5e692acf790106cfb"
+            "reference": "ee9d54f9af745c0ad7b3578bf640c12d800479e3"
         },
         "dist": {
             "type": "zip",
-            "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/78efbcd1ae87b87803f9beb5e692acf790106cfb",
-            "reference": "78efbcd1ae87b87803f9beb5e692acf790106cfb",
+            "url": "https://api.github.com/repos/kartik-v/yii2-widget-select2/zipball/ee9d54f9af745c0ad7b3578bf640c12d800479e3",
+            "reference": "ee9d54f9af745c0ad7b3578bf640c12d800479e3",
             "shasum": ""
         },
         "require": {
             "kartik-v/yii2-krajee-base": ">=1.9",
             "select2/select2": ">=4.0"
         },
-        "time": "2020-07-22T10:40:59+00:00",
+        "time": "2020-09-28T15:15:52+00:00",
         "type": "yii2-extension",
         "extra": {
             "branch-alias": {
-                "dev-master": "2.1.x-dev"
+                "dev-master": "2.2.x-dev"
             }
         },
         "installation-source": "dist",
@@ -4955,6 +4918,61 @@
             "assert",
             "check",
             "validate"
+        ]
+    },
+    {
+        "name": "yii2tech/html2pdf",
+        "version": "1.0.7",
+        "version_normalized": "1.0.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/yii2tech/html2pdf.git",
+            "reference": "c38755d55777ab671d31d8724ef385d60fdbb298"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/yii2tech/html2pdf/zipball/c38755d55777ab671d31d8724ef385d60fdbb298",
+            "reference": "c38755d55777ab671d31d8724ef385d60fdbb298",
+            "shasum": ""
+        },
+        "require": {
+            "yiisoft/yii2": "~2.0.14"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.8.27|^5.0|^6.0"
+        },
+        "time": "2019-10-17T11:02:50+00:00",
+        "type": "yii2-extension",
+        "extra": {
+            "branch-alias": {
+                "dev-master": "1.0.x-dev"
+            }
+        },
+        "installation-source": "dist",
+        "autoload": {
+            "psr-4": {
+                "yii2tech\\html2pdf\\": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "BSD-3-Clause"
+        ],
+        "authors": [
+            {
+                "name": "Paul Klimov",
+                "email": "klimov.paul@gmail.com"
+            }
+        ],
+        "description": "Provides support for HTML to PDF and PHP to PDF conversion",
+        "keywords": [
+            "conversion",
+            "convert",
+            "html2pdf",
+            "pdf",
+            "php2pdf",
+            "template",
+            "yii2"
         ]
     },
     {

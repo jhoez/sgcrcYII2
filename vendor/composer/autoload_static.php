@@ -37,6 +37,7 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
             'yii\\composer\\' => 13,
             'yii\\bootstrap\\' => 14,
             'yii\\' => 4,
+            'yii2tech\\html2pdf\\' => 18,
         ),
         'p' => 
         array (
@@ -66,10 +67,6 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         'c' => 
         array (
             'cebe\\markdown\\' => 14,
-        ),
-        'b' => 
-        array (
-            'buttflattery\\videowall\\' => 23,
         ),
         'W' => 
         array (
@@ -166,6 +163,10 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2',
         ),
+        'yii2tech\\html2pdf\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/yii2tech/html2pdf/src',
+        ),
         'phpDocumentor\\Reflection\\' => 
         array (
             0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
@@ -235,10 +236,6 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         'cebe\\markdown\\' => 
         array (
             0 => __DIR__ . '/..' . '/cebe/markdown',
-        ),
-        'buttflattery\\videowall\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/buttflattery/yii2-videowall/src',
         ),
         'Webmozart\\Assert\\' => 
         array (
