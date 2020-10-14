@@ -35,11 +35,18 @@ class Multimedia extends \yii\db\ActiveRecord
         return [
             [
                 ['mva'],'file',
-                'skipOnEmpty'=>false,
+                //'skipOnEmpty'=>true,
+                'uploadRequired'=>'No has seleccionado ningun Archivo multimedia',// error
+                'maxSize'=>1024*1024*100,//100MB
+                'tooBig'=>'El tamaño maximo permitido es de 100MB',// error
+                'minSize'=>1024*1024*5,//5MB
+                'tooSmall'=>'El tamaño minimo permitido son 5MB',// error
                 'extensions'=>'mp4,mp3',
-                'maxFiles'=>1
+                //"mimeTypes" => "video/mp4,audio/mpeg3,audio/x-mpeg-3",
+                'wrongExtension'=>'El archivo no contiene una extension permitida',
+                //'maxFiles'=>4
+                //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['mva'],'required'],
             [['fkidpro'], 'default', 'value' => null],
             [['fkidpro'], 'integer'],
             [['nombmult', 'ruta'], 'string', 'max' => 255],
@@ -61,8 +68,19 @@ class Multimedia extends \yii\db\ActiveRecord
 			'tipomult' => 'Tipo de archivo',
 			'tamanio' => 'Tamaño del archivo',
 			'ruta' => 'Ruta',
-			'mva' => 'Archivo multimedia a subir',
+			'mva' => 'Audio o Video',
 			'fkidpro' => 'proyecto'
         ];
+    }
+
+    /**
+    *   @method upload guarda el file en un directorio
+    *   @return boolean
+    */
+    public function uploadMultimedia()
+    {
+        if ( $this->tipomult == ('video' || 'audio') ) {
+            $this->mva->saveAs($this->ruta.$this->mva->baseName.'.'.$this->mva->extension);
+        }
     }
 }

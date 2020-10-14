@@ -36,10 +36,16 @@ class Realaum extends \yii\db\ActiveRecord
             [
                 ['fileglb'],'file',
                 'skipOnEmpty'=>false,
+                'uploadRequired'=>'No has seleccionado ningun Archivo',// error
+                'maxSize'=>1024*1024*100,//10MB
+                'tooBig'=>'El tamaño maximo permitido es de 100MB',// error
+                'minSize'=>4,
+                'tooSmall'=>'El tamaño minimo permitido son 4Byte',// error
                 'extensions'=>'glb',
-                'maxFiles'=>1
+                'wrongExtension'=>'El archivo no contiene una extension permitida',
+                //'maxFiles'=>4,
+                //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['fileglb'],'required'],
             [['fk_pro', 'fkimag'], 'default', 'value' => null],
             [['fk_pro', 'fkimag'], 'integer'],
             [['nra', 'ruta'], 'string', 'max' => 255],

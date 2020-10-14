@@ -39,6 +39,7 @@ return [
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
+            'maxSourceLines'=>20
         ],
         'urlManager' => [
             'enablePrettyUrl' => true,// Disable r= routes

@@ -5,16 +5,21 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Libros */
 
-$this->title = 'Create Libros';
-$this->params['breadcrumbs'][] = ['label' => 'Libros', 'url' => ['index']];
+$this->title = 'Subir Libro';
+$this->params['breadcrumbs'][] = ['label' => 'Contenido Educativo', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="libros-create">
+<div class="contenido-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <p>
+        <?= Html::a('Contenido Educativo', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Contenido registrado', ['registros'], ['class' => 'btn btn-primary']) ?>
+    </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'contenido' => $contenido,
+        'img'=>$img
     ]) ?>
 
 </div>

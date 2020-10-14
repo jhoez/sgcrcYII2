@@ -37,16 +37,15 @@ class Formato extends \yii\db\ActiveRecord
     {
         return [
             [
-                'ftutor',
-                'file',
+                ['ftutor'],'file',
                 'skipOnEmpty'=>false,
                 'uploadRequired'=>'No has seleccionado ningun ARCHIVO',// error
                 'maxSize'=>1024*1024*10,//10MB
                 'tooBig'=>'El tamaño permitido es de 10MB',// error
                 'minSize'=>4,
                 'tooSmall'=>'El tamaño permitido son 4Byte',// error
-                'extensions'=>'ods,xls,odt,docx',
-                'wrongExtension'=>'El archivo no contiene una extension permitida',
+                'extensions'=>'ods,xls,odt,docx,doc',
+                'wrongExtension'=>'El archivo no contiene una extension permitida ods,xls,odt,docx,doc',
                 //'maxFiles'=>4,
                 //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
@@ -69,11 +68,11 @@ class Formato extends \yii\db\ActiveRecord
     public function uploadArchivo()
     {
         if ($this->statusacta == '1') {
-            $this->ftutor->saveAs('formatos/fd/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
+            $this->ftutor->saveAs('archivos/fd/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
         }
 
         if($this->statusacta == '0'){
-            $this->ftutor->saveAs('formatos/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
+            $this->ftutor->saveAs('archivos/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
         }
     }
 
@@ -83,7 +82,7 @@ class Formato extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'idf'		=> 'Acta',
+            'idf'		=> 'ID',
 			'opcion'	=> 'Opcion de formato',
 			'nombf'		=> 'Nombre del formato',
 			'extens'	=> 'Extension',
@@ -98,7 +97,7 @@ class Formato extends \yii\db\ActiveRecord
     }
 
     /**
-    *
+    *   @method getiduser
     *
     */
     public function getiduser()

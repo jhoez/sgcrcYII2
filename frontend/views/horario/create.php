@@ -12,12 +12,11 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="asistencia-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Asistencias registradas', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Canaimitas regitradas', ['canaimita/index'], ['class' => 'btn btn-primary']) ?>
     </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'horario' => $horario,

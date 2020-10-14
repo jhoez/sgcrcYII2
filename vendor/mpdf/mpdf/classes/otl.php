@@ -5837,7 +5837,7 @@ class otl
 	function trimOTLdata(&$cOTLdata, $Left = true, $Right = true)
 	{
 
-		$len = @count($cOTLdata['char_data']);// agregue @count da error lanza por php 7.2
+		$len = @count($cOTLdata['char_data']);// agregue @count da error lanza por php 7.2 con la api mPDF
 		$nLeft = 0;
 		$nRight = 0;
 		for ($i = 0; $i < $len; $i++) {

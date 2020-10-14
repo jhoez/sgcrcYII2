@@ -35,7 +35,9 @@ class Asistencia extends \yii\db\ActiveRecord
         return [
             [['fkuser'], 'default', 'value' => null],
             [['fkuser'], 'integer'],
-            [['fecha', 'mes', 'fechain', 'fechaout', 'horain', 'horaout'], 'safe'],
+			[['fechain', 'fechaout'],'string','max'=>10],
+			[['mes'], 'string', 'max' => 2],// propiedad agregada, no esta en la base de datos.
+            [['fecha', 'horain', 'horaout'], 'safe'],
             [['observacion'], 'string'],
             [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
         ];
@@ -48,7 +50,7 @@ class Asistencia extends \yii\db\ActiveRecord
     {
         return [
             'idasis' => 'Idasis',
-			//'fkuser' => 'Fkuser',
+			'fkuser' => 'Usuario',
 			'fecha' => 'Fecha',
 			'horain' => 'Hora Entrada',
             'horaout' => 'Hora Salida',
@@ -57,6 +59,12 @@ class Asistencia extends \yii\db\ActiveRecord
 			'fechaout'=>'Fecha fin',
 			'mes'=>'Reporte Mensual'
         ];
+    }
+
+	public function getFkusuario()
+    {
+		$usuario = Usuario::find()->where(['iduser'=>$this->fkuser])->one();
+        return $usuario;
     }
 
     public function getfkuser()

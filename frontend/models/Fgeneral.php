@@ -44,4 +44,10 @@ class Fgeneral extends \yii\db\ActiveRecord
             'ideq' => 'Ideq',
         ];
     }
+
+    public function getFgenequipo()
+    {
+        $equipo = Equipo::find()->where(['ideq'=>'ideq'])->one();
+        return $equipo;
+    }
 }

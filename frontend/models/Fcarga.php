@@ -44,4 +44,10 @@ class Fcarga extends \yii\db\ActiveRecord
             'ideq' => 'Ideq',
         ];
     }
+
+    public function getFcargequipo()
+    {
+        $equipo = Equipo::find()->where(['ideq'=>'ideq'])->one();
+        return $equipo;
+    }
 }

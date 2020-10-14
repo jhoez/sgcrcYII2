@@ -1,3 +1,11 @@
+<?php
+'filter'=> DatePicker::widget([
+    'model' => $searchModel,
+    'attribute' => 'create_at',
+    'language' => 'es',
+    'dateFormat' => 'yyyy-MM-dd',
+])
+?>
 <?= yii\jui\DatePicker::widget(['name' => 'attributeName']) ?>
 
 Configuring the Jquery UI options should be done using the clientOptions attribute:

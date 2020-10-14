@@ -6,31 +6,15 @@ use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
 
 $this->title = 'Reportes';
-$this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['canaimita/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="">
-    <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a('Asistencias registradas', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Marcar asistencia',['create'],['class'=>'btn btn-primary']);?>
     </p>
-</div>
-
-
-<!-- ejemplo para mostrar los libros y videos -->
-<div class="row clearfix">
-    <div class="col-md-offset-3 col-md-6">
-        <div class="card text-center">
-            <img src="<?=Yii::$app->request->baseUrl.'/img/logo.jpg'?>" alt="Avatar" width='200'>
-            <h1>Tailored Jeans</h1>
-            <p class="price">$19.99</p>
-            <p>Some text about the jeans..</p>
-            <p><button class="btn btn-primary">Add to Cart</button></p>
-       </div>
-    </div>
-</div>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
 <div class="row clearfix">
     <div class="col-md-offset-3 col-md-6">
@@ -92,14 +76,14 @@ $this->params['breadcrumbs'][] = $this->title;
             <!------------------------------------------------------------------------->
             <!-- REPORTE POR CANAIMITA -->
             <!------------------------------------------------------------------------->
-            <h3 class="text-center">Reporte horario Desde/Hasta</h3>
+            <h3 class="text-center">Reporte Desde/Hasta</h3>
             <div class="form-group">
                 <div class="">
-                    <?= Html::label('Desde la Fecha', 'fechain', ['class' => ''])?>
+                    <?= Html::label('Fecha de inicio', 'fechain', ['class' => ''])?>
                     <?= DatePicker::widget([
                         'model' => $horario,
                         'attribute' => 'fechain',
-                        'options' => ['placeholder' => 'DESDE'],
+                        'options' => ['placeholder' => 'INICIO'],
                         'pluginOptions' => [
                             'autoclose'=>true,
                             'format' => 'yyyy-mm-dd'
@@ -107,11 +91,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     ]); ?>
                 </div>
                 <div class="">
-                    <?= Html::label('Hasta la Fecha', 'fechaout', ['class' => ''])?>
+                    <?= Html::label('Fecha fin', 'fechaout', ['class' => ''])?>
                     <?= DatePicker::widget([
                         'model' => $horario,
                         'attribute' => 'fechaout',
-                        'options' => ['placeholder' => 'HASTA'],
+                        'options' => ['placeholder' => 'FIN'],
                         'pluginOptions' => [
                             'autoclose'=>true,
                             'format' => 'yyyy-mm-dd'

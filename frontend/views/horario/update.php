@@ -8,12 +8,13 @@ use yii\helpers\Html;
 $this->title = 'Actualizar Asistencia: ' . $model->idasis;
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->idasis, 'url' => ['view', 'id' => $model->idasis]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="asistencia-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+    <p>
+        <?= Html::a('Asistencias registradas', ['index'], ['class' => 'btn btn-primary']) ?>
+    </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

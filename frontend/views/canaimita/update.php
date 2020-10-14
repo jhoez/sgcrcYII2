@@ -11,10 +11,10 @@ $this->params['breadcrumbs'][] = 'Acualizar';
 ?>
 <div class="equipo-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'estado'		=>	$estado,

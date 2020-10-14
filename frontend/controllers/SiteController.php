@@ -37,7 +37,7 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout'],
+                        'actions' => ['logout','notfound'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -262,4 +262,14 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
+
+    /**
+     * @method noutfound
+     *
+     *
+     */
+     public function actionNotfound()
+     {
+         return $this->render('notfound');
+     }
 }

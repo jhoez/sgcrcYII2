@@ -117,19 +117,19 @@ class Pdf extends Component
      * millimetres. If you are creating a DOUBLE-SIDED document, the margin values specified will be used for
      * ODD pages; left and right margins will be mirrored for EVEN pages.
      */
-    public $marginLeft = 15;
+    public $marginLeft = 0;
     /**
      * @var float sets the page right margin for the new document (in millimetres).
      */
-    public $marginRight = 15;
+    public $marginRight = 0;
     /**
      * @var float sets the page top margin for the new document (in millimetres).
      */
-    public $marginTop = 16;
+    public $marginTop = 0;
     /**
      * @var float sets the page bottom margin for the new document (in millimetres).
      */
-    public $marginBottom = 16;
+    public $marginBottom = 0;
     /**
      * @var float sets the page header margin for the new document (in millimetres).
      */

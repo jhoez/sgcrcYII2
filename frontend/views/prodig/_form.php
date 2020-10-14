@@ -8,26 +8,56 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="multimedia-form">
+<div class="row clearfix">
+    <div class="col-md-6 col-md-offset-3">
+        <div class="prodig-form">
+            <?php $form = ActiveForm::begin([
+                'method'=>'post',
+                'options'=>['enctype' => 'multipart/form-data']
+            ]); ?>
 
-    <?php $form = ActiveForm::begin(); ?>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'nombpro')->textInput() ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'nombmult')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'creador')->textInput() ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'extension')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'colaboracion')->textInput() ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'tipomult')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'descripcion')->textarea(['style'=>['resize'=>'none']]) ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'tamanio')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <?php	if (!$multimedia->isNewRecord) {?>
+        			<div class="">
+        					<?php	echo "$multimedia->tipomult a reemplazar: " . $multimedia->nombmult;?>
+        			</div>
+        		<?php } ?>
+                <div class="">
+                    <?= $form->field($multimedia, 'mva')->fileInput(); ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'ruta')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <?= Html::submitButton('Subir Multimedia', ['class' => 'btn btn-success']) ?>
+                <?= Html::resetButton('Limpiar', ['class' => 'btn btn-primary']) ?>
+            </div>
 
-    <?= $form->field($model, 'fkidpro')->textInput() ?>
+            <?php ActiveForm::end(); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

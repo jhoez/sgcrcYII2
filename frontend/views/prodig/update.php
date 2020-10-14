@@ -5,14 +5,16 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Multimedia */
 
-$this->title = 'Update Multimedia: ' . $model->idmult;
-$this->params['breadcrumbs'][] = ['label' => 'Multimedia', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->idmult, 'url' => ['view', 'id' => $model->idmult]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Actualizar Proyectos Digitales: ' . $model->nombmult;
+$this->params['breadcrumbs'][] = ['label' => 'Proyectos Digitales', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="multimedia-update">
+<div class="prodig-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <p>
+        <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
+    </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

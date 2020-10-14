@@ -7,20 +7,21 @@ use yii\grid\GridView;
 /* @var $searchModel frontend\models\AsistenciaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Asistencias';
+$this->title = 'Asistencia';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="asistencia-index">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Marcar Asistencia', ['create'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Reporte de Asistencia', ['reporteasistencia'], ['class' => 'btn btn-primary']) ?>
     </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
+
+    <h3 class="text-center"><?= Html::encode('Asistencias registradas') ?></h3>
 
     <?= GridView::widget([
         'dataProvider' => $dataProvider,

@@ -1,13 +1,12 @@
-<?php if($canaimita !== null):?>
-
-<page backtop="15" backbottom="15" backleft="0" backright="0">
+<?php if($equipo !== null):?>
+<page backtop="0" backbottom="0" backleft="0" backright="0">
     <bookmark title="Reporte asistencia" level="0" ></bookmark>
     <page_header>
-        <img id="imgheader" src="<?= Yii::$app->request->baseUrl."/img/printpdf/bannerfundabit.jpg" ?>" alt="">
+        <img class="imgheader" src="<?= Yii::$app->request->baseUrl."/img/printpdf/bannerfundabit.jpg" ?>" alt="">
     </page_header>
 
-    <div class="fecha"><b>Reporte Fecha: </b><?=date("d/m/Y");?></div>
-    <div id="titlereport">
+    <div class="text-right"><b>Reporte Fecha: </b><?=date("d/m/Y");?></div>
+    <div class="text-center">
         <?php if (!empty($finicio) && !empty($ffin)) {
             echo "<h4>Reporte de Mascota desde ".$finicio." hasta ".$ffin."</h4>";
         }else if(!empty($mes)){
@@ -16,14 +15,14 @@
             echo "<h4>Reporte Mascotas del ".ucwords( (string)strftime("%B",(int)$fech->getTimestamp()) )."</h4>";
         }?>
     </div>
-    <?php foreach($canaimita as $data): ?>
-    <div>
+    <div class="">
+        <?php foreach($equipo as $data): ?>
         <table class="table table-bordered">
             <!-- primera fila -->
             <thead>
                 <tr>
                     <th style="background-color:#28a745;">ID</th>
-                    <th>CIAT</th>
+                    <th>Sede CIAT</th>
                     <th>Institución</th>
                     <th>Representante</th>
                     <th>Cedula</th>
@@ -33,13 +32,13 @@
             </thead>
             <tbody>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td><?=$data->ideq;?></td>
+                    <td><?=$data->getCanrepresentante()->getRepSedeciat()->sede;?></td>
+                    <td><?=$data->getCanrepresentante()->getRepInstituto()->nombinst;?></td>
+                    <td><?=$data->getCanrepresentante()->nombre;?></td>
+                    <td><?=$data->getCanrepresentante()->cedula;?></td>
+                    <td><?=$data->getCanrepresentante()->docente;?></td>
+                    <td><?=$data->getCanrepresentante()->telf;?></td>
                 </tr>
             </tbody>
             <!-- segunda fila -->
@@ -47,22 +46,22 @@
                 <tr>
                     <th>Estudiante</th>
                     <th>Grado</th>
-                    <th>Graduado</th>
+                    <th>Esta graduado</th>
                     <th>Equipo</th>
                     <th>Serial equipo</th>
-                    <th>Status</th>
+                    <th>Status equipo</th>
                     <th>Diagnostico</th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td><?=$data->getCanrepresentante()->getRepEstudiante()->nombestu;?></td>
+                    <td><?=$data->getCanrepresentante()->getRepEstudiante()->getEstNiveleduc()->nivel;?></td>
+                    <td><?=$data->getCanrepresentante()->getRepEstudiante()->getEstNiveleduc()->graduado;?></td>
+                    <td><?=$data->eqversion;?></td>
+                    <td><?=$data->eqserial;?></td>
+                    <td><?=$data->eqstatus;?></td>
+                    <td><?=$data->diagnostico;?></td>
                 </tr>
             </tbody>
             <!-- tercera fila -->
@@ -79,20 +78,20 @@
             </thead>
             <tbody>
                 <tr>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
-                    <td></td>
+                    <td><?=$data->observacion; ?></td>
+                    <td><?=$data->getCanfsoftware()->fsoft;?></td>
+                    <td><?=$data->getCanfpantalla()->fpant;?></td>
+                    <td><?=$data->getCanftarjetamadre()->ftarj;?></td>
+                    <td><?=$data->getCanfteclado()->ftec;?></td>
+                    <td><?=$data->getCanfcarga()->fcarg;?></td>
+                    <td><?=$data->getCanfgeneral()->fgen;?></td>
                 </tr>
             </tbody>
         </table>
-    </div>
     <?php endforeach; ?>
+    </div>
     <page_footer>
-        <img id="imgfooter" src="<?= Yii::$app->request->baseUrl."/img/printpdf/cintillomppe.jpg" ?>" alt="">
+        <img class="imgfooter" src="<?= Yii::$app->request->baseUrl."/img/printpdf/cintillomppe.jpg" ?>" alt="">
     </page_footer>
 </page>
 <?php endif;?>

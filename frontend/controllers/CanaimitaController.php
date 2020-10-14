@@ -3,6 +3,7 @@
 namespace frontend\controllers;
 
 use Yii;
+use yii\base\ErrorException;
 use frontend\models\Estado;
 use frontend\models\Municipio;
 use frontend\models\Parroquia;
@@ -124,13 +125,6 @@ class CanaimitaController extends Controller
         $fteclado       =   new     Fteclado;
         $fcarga         =   new     Fcarga;
         $fgeneral       =   new     Fgeneral;
-
-        if ($sedeciat->load(Yii::$app->request->post()) && Yii::$app->request->isAjax) {
-            Yii::$app->response->format = Response::FORMAT_JSON;
-            Yii::$app->session->setFlash('error', "La Sede $sedeciat->sede ya existe...");
-            $this->refresh();
-            return ActiveForm::validate($sedeciat);
-        }
 
         if (
             $estado->load(Yii::$app->request->post()) &&
@@ -391,11 +385,12 @@ class CanaimitaController extends Controller
     */
     public function actionReportespdf()
     {
+        $mpdf = null;
         $conteo = null;
         $finicio = null;
         $ffin = null;
         $mes = null;
-        $equipo         =   null;
+        $equipo = null;
         $canaimita      =   new     Equipo;
         $fsoftware      =   new     Fsoftware;
         $fpantalla      =   new     Fpantalla;
@@ -404,32 +399,34 @@ class CanaimitaController extends Controller
         $fcarga         =   new     Fcarga;
         $fgeneral       =   new     Fgeneral;
 
-        if (
-            $canaimita->load(Yii::$app->request->post())
-        ) {
-            if ( !empty($canaimita->mes) ) {
-				$mes = $canaimita->mes;
-				$anio = date('Y');
-				$fechainicio = "$anio-$mes-01";
-
-				if ($mes == 12) {
-					$anionuevo = $anio + 1;
-					$fechafinal = "$anioNuevo-01-01";
-				}else {
-					$mesnuevo = $mes + 1;
-					$fechafinal = "$anio-$mesnuevo-01";
-				}
-                $equipo = Equipo::find()->where(['>=','frecepcion',$fechainicio])->andWhere(['<','frecepcion',$fechafinal])->all();
-                $conteo = Equipo::find()->where(['>=','frecepcion',$fechainicio])->andWhere(['<','frecepcion',$fechafinal])->count();
-			}else if ( !empty($canaimita->frecepcion) && !empty($canaimita->fentrega) ) {
-				$finicio = $canaimita->frecepcion;
-				$ffin = $canaimita->fentrega;
-                $equipo = Equipo::find()->where(['>=','frecepcion',$finicio])->andWhere(['<=','frecepcion',$ffin])->all();
-                $conteo = Equipo::find()->where(['>=','frecepcion',$finicio])->andWhere(['<=','frecepcion',$ffin])->count();
-			}
-
+        // MEDIDAS DE HOJA A4 WIDTH='992PX' HEIGHT='1403PX'
+        if ( $canaimita->load(Yii::$app->request->post()) )
+        {
             try {
-                if ( $equipo !== null ) {
+                if ( !empty($canaimita->mes) ) {
+    				$mes = $canaimita->mes;
+    				$anio = date('Y');
+    				$fechainicio = "$anio-$mes-01";
+
+    				if ($mes == 12) {
+    					$anionuevo = $anio + 1;
+    					$fechafinal = "$anioNuevo-01-01";
+    				}else {
+                        $mesnuevo = (int)$mes + 1;
+                        $mesnuevo = '0'.$mesnuevo;
+    					$fechafinal = "$anio-$mesnuevo-01";
+    				}
+                    $equipo = Equipo::find()->where(['>=','frecepcion',$fechainicio])->andWhere(['<','frecepcion',$fechafinal])->all();
+                    $conteo = Equipo::find()->where(['>=','frecepcion',$fechainicio])->andWhere(['<','frecepcion',$fechafinal])->count();
+    			}
+                if ( !empty($canaimita->frecepcion) && !empty($canaimita->fentrega) ) {
+    				$finicio = $canaimita->frecepcion;
+    				$ffin = $canaimita->fentrega;
+                    $equipo = Equipo::find()->where(['>=','frecepcion',$finicio])->andWhere(['<=','frecepcion',$ffin])->all();
+                    $conteo = Equipo::find()->where(['>=','frecepcion',$finicio])->andWhere(['<=','frecepcion',$ffin])->count();
+    			}
+
+                if ( $conteo > 0 ) {
 					$registros	= 6; // maximo de registros a mostrar en el PDF
 					$incre		= 0;
 					$control 	= 0;
@@ -437,60 +434,66 @@ class CanaimitaController extends Controller
 
                     //API MPDF
                     $pdf = Yii::$app->pdf;
-                    $mpdf = $pdf->api;
+                    $API = $pdf->api;
+                    $pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
 
 					foreach ($equipo as $key => $value):
 					    if ($incre == $registros) {
 							if ( !empty($mes) ) {
                                 $vista = $this->renderPartial('_reportesPDF',[
-                                    'canaimita'=>$eq,
+                                    'equipo'=>$caneq,
                                     'mes'=>$mes
                                 ]);
-                                $mpdf->WriteHtml($vista);
+                                //$mpdf = $this->cargarVista($vista,$pdfFilename);
+                                $API->WriteHtml($vista);
 							}else {
                                 $vista = $this->renderPartial('_reportesPDF',[
-                                    'canaimita'=>$eq,
+                                    'equipo'=>$caneq,
                                     'finicio'=>$finicio,
 									'ffin'=>$ffin
                                 ]);
-                                $mpdf->WriteHtml($vista);
+                                //$mpdf = $this->cargarVista($vista,$pdfFilename);
+                                $API->WriteHtml($vista);
 							}
-							unset($eq); // VACIA $eq PARA VOLVER A INICIALIZARLA
+							unset($caneq); // VACIA $caneq PARA VOLVER A INICIALIZARLA
 							$incre = 0; // SE INICIALIZA A SU VALOR POR DEFECTO PARA LUEGO IMPRIMIR OTROS 6 REGISTROS EN EL PDF
 						}
-						$eq[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
+						$caneq[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
 						$incre++;
 						$control++; // INCREMENTA HASTA QUE SEA IGUAL AL NUMERO DE REGISTROS EN LA BASE DE DATOS
 						// IMPRIME EL RESTO DE LOS REGISTROS
 						if ($control == $contador) {
                             if ( !empty($mes) ) {
                                 $vista = $this->renderPartial('_reportesPDF',[
-                                    'canaimita'=>$eq,
+                                    'equipo'=>$caneq,
                                     'mes'=>$mes
                                 ]);
-                                $mpdf->WriteHtml($vista);
+                                //$mpdf = $this->cargarVista($vista,$pdfFilename);
+                                $API->WriteHtml($vista);
 							}else {
                                 $vista = $this->renderPartial('_reportesPDF',[
-                                    'canaimita'=>$eq,
+                                    'equipo'=>$caneq,
                                     'finicio'=>$finicio,
 									'ffin'=>$ffin
                                 ]);
-                                $mpdf->WriteHtml($vista);
+                                //$mpdf = $this->cargarVista($vista,$pdfFilename);
+                                $API->WriteHtml($vista);
 							}
+                            unset($caneq); // VACIA $caneq PARA VOLVER A INICIALIZARLA
 						}
 					endforeach;
-
-                    $pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
-                    echo $mpdf->Output($pdfFilename,'D');
-                    if (isset($mes)) {
+                    //echo "<pre>";var_dump($mpdf);die;
+                    //return $mpdf->render();
+                    $API->Output($pdfFilename,'D');
+                    if ( !empty($canaimita->mes) ) {
                         Yii::$app->session->setFlash('success', "¡Se ha creado el reporte del $mes!");
-                    }else {
+                    }else if ( !empty($canaimita->frecepcion) && !empty($canaimita->fentrega) ) {
                         Yii::$app->session->setFlash('success', "¡Se ha creado el reporte de la Falla: $falla!");
                     }
-                    die;
 				}
-            } catch (Exception $e) {
-                $e->getMessage();
+            } catch (ErrorException $e) {
+                Yii::warning("¡Por favor seleccione alguna opcion de los distintos reportes...!");
+                Yii::$app->session->setFlash('error', "¡Por favor!");
             }
 
         }
@@ -507,6 +510,36 @@ class CanaimitaController extends Controller
     }
 
     /**
+    *   @method reporteasistencia
+    *
+    */
+    public function cargarVista($vista,$pdfFilename)
+    {
+        return new Pdf([
+            'mode' => Pdf::MODE_UTF8,// set to use core fonts only
+            'format' => Pdf::FORMAT_A4,// A4 paper format
+            'orientation' => Pdf::ORIENT_PORTRAIT,// portrait orientation
+            'destination' => Pdf::DEST_DOWNLOAD,// stream to browser inline
+            'defaultFontSize'=>12,
+            'marginLeft'=>0,
+            'marginRight'=>0,
+            'marginTop'=>0,
+            'marginBottom'=>0,
+            'content' => $vista,// your html content input
+            'filename'=>$pdfFilename,
+            // format content from your own css file if needed or use the
+            // enhanced bootstrap css built by Krajee for mPDF formatting
+            'cssFile' => '@vendor/kartik-v/yii2-mpdf/assets/kv-mpdf-bootstrap.min.css',
+            'cssInline' => '.kv-heading-1{font-size:18px}',// any css to be embedded if required
+            //'options' => ['title' => 'Krajee Report Title'],// set mPDF properties on the fly
+            /*'methods' => [// call mPDF methods on the fly
+                //'SetHeader'=>['Krajee Report Header'],
+                //'SetFooter'=>['{PAGENO}'],
+            ]*/
+        ]);
+    }
+
+    /**
     *   @method
     *
     */
@@ -514,7 +547,8 @@ class CanaimitaController extends Controller
     {
         $falla          =   '';
         $conteo         =   0;
-        $canaimita      =   null;
+        $equipo = null;
+        $canaimita      =   new     Equipo;
         $fsoftware      =   new     Fsoftware;
         $fpantalla      =   new     Fpantalla;
         $ftarjetamadre  =   new     Ftarjetamadre;
@@ -522,82 +556,85 @@ class CanaimitaController extends Controller
         $fcarga         =   new     Fcarga;
         $fgeneral       =   new     Fgeneral;
 
-        if( $fsoftware->load(Yii::$app->request->post()) ){
-            $falla = $fsoftware->fsoft;
-            $canaimita = $this->construirConsultar(new Fsoftware,'fsoft',$fsoftware->fsoft);
-            $conteo = Fsoftware::find()->where(['fsoft'=>$fsoftware->fsoft])->count();
-        }else
-        if( $fpantalla->load(Yii::$app->request->post()) ){
-            $falla = $fpantalla->fpant;
-            $canaimita = $this->construirConsultar(new Fpantalla,'fpant',$fpantalla->fpant);
-            $conteo = Fpantalla::find()->where(['fpant'=>$fpantalla->fpant])->count();
-        }else
-        if( $ftarjetamadre->load(Yii::$app->request->post()) ){
-            $falla = $ftarjetamadre->ftarj;
-            $canaimita = $this->construirConsultar(new Ftarjetamadre,'ftarj',$ftarjetamadre->ftarj);
-            $conteo = Ftarjetamadre::find()->where(['ftarj'=>$ftarjetamadre->ftarj])->count();
-        }else
-        if( $fteclado->load(Yii::$app->request->post()) ){
-            $falla = $fteclado->ftec;
-            $canaimita = $this->construirConsultar(new Fteclado,'ftec',$fteclado->ftec);
-            $conteo = Fteclado::find()->where(['ftec'=>$fteclado->ftec])->count();
-        }else
-        if( $fcarga->load(Yii::$app->request->post()) ){
-            $falla = $fcarga->fcarg;
-            $canaimita = $this->construirConsultar(new Fcarga,'fcarg',$fcarga->fcarg);
-            $conteo = Fcarga::find()->where(['fcarg'=>$fcarga->fcarg])->count();
-        }else
-        if( $fgeneral->load(Yii::$app->request->post()) ){
-            $falla = $fgeneral->fgen;
-            $canaimita = $this->construirConsultar(new Fgeneral,'fgen',$fgeneral->fgen);
-            $conteo = Fgeneral::find()->where(['fgen'=>$fgeneral->fgen])->count();
-        }
-
-        if ( $canaimita != false ) {
-            $registros	= 6; // maximo de registros a mostrar en el PDF
-            $incre		= 0;
-            $control 	= 0;
-            $contador	= (integer)$conteo; // variable de increment
-
-            // API MPDF
-            $pdf = Yii::$app->pdf;
-            $mpdf = $pdf->api;
-
-
-            foreach ($canaimita as $key => $value) {
-                if ($incre == $registros) {
-                    $vista = $this->renderPartial('_reportesFallas',[
-                        'canaimita'=>$eq,
-                        'falla'=>$falla
-                    ]);
-                    $mpdf->WriteHtml($vista);
-                    unset($eq); // VACIA $eq PARA VOLVER A INICIALIZARLA
-                    $incre = 0; // SE INICIALIZA A SU VALOR POR DEFECTO PARA LUEGO IMPRIMIR OTROS 6 REGISTROS EN EL PDF
-                }
-                $eq[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
-                $incre++;
-                $control++; // INCREMENTA HASTA QUE SEA IGUAL AL NUMERO DE REGISTROS EN LA BASE DE DATOS
-                // IMPRIME EL RESTO DE LOS REGISTROS
-                if ($control == $contador) {
-                    $vista = $this->renderPartial('_reportesFallas',[
-                        'canaimita'=>$eq,
-                        'falla'=>$falla
-                    ]);
-                    $mpdf->WriteHtml($vista);
-                    unset($eq);
-                }
+        try {
+            if( $fsoftware->load(Yii::$app->request->post()) ){
+                $falla = $fsoftware->fsoft;
+                $equipo = $this->construirConsultar(new Fsoftware,'fsoft',$fsoftware->fsoft);
+                $conteo = Fsoftware::find()->where(['fsoft'=>$fsoftware->fsoft])->count();
+            }else
+            if( $fpantalla->load(Yii::$app->request->post()) ){
+                $falla = $fpantalla->fpant;
+                $equipo = $this->construirConsultar(new Fpantalla,'fpant',$fpantalla->fpant);
+                $conteo = Fpantalla::find()->where(['fpant'=>$fpantalla->fpant])->count();
+            }else
+            if( $ftarjetamadre->load(Yii::$app->request->post()) ){
+                $falla = $ftarjetamadre->ftarj;
+                $equipo = $this->construirConsultar(new Ftarjetamadre,'ftarj',$ftarjetamadre->ftarj);
+                $conteo = Ftarjetamadre::find()->where(['ftarj'=>$ftarjetamadre->ftarj])->count();
+            }else
+            if( $fteclado->load(Yii::$app->request->post()) ){
+                $falla = $fteclado->ftec;
+                $equipo = $this->construirConsultar(new Fteclado,'ftec',$fteclado->ftec);
+                $conteo = Fteclado::find()->where(['ftec'=>$fteclado->ftec])->count();
+            }else
+            if( $fcarga->load(Yii::$app->request->post()) ){
+                $falla = $fcarga->fcarg;
+                $equipo = $this->construirConsultar(new Fcarga,'fcarg',$fcarga->fcarg);
+                $conteo = Fcarga::find()->where(['fcarg'=>$fcarga->fcarg])->count();
+            }else
+            if( $fgeneral->load(Yii::$app->request->post()) ){
+                $falla = $fgeneral->fgen;
+                $equipo = $this->construirConsultar(new Fgeneral,'fgen',$fgeneral->fgen);
+                $conteo = Fgeneral::find()->where(['fgen'=>$fgeneral->fgen])->count();
             }
-            echo $mpdf->Output('Reportes_de_Falla_'.$falla.'.pdf','D');
-            Yii::$app()->session->setFlash('success','El reporte ha sido Creado');
-            $this->refresh();
-            die;
-        }else {
-            Yii::$app->session->setFlash('error',"Disculpe no existe data");
-            $this->redirect(Url::toRoute('site/notfound'));
+
+            if ( $conteo > 0 ) {
+                //echo "<pre>";var_dump($equipo);die;
+                $registros	= 6; // maximo de registros a mostrar en el PDF
+                $incre		= 0;
+                $control 	= 0;
+                $contador	= (integer)$conteo; // variable de increment
+
+                // API MPDF
+                $pdf = Yii::$app->pdf;
+                $mpdf = $pdf->api;
+                //$mpdf->WriteHTML(file_get_contents(Yii::$app->request->baseUrl.'/css/csspdf.css'),1);
+
+                foreach ($equipo as $key => $value) {
+                    if ($incre == $registros) {
+                        $vista = $this->renderPartial('_reportesFallas',[
+                            'canaimita'=>$eq,
+                            'falla'=>$falla
+                        ]);
+                        $mpdf->WriteHTML($vista);
+                        $mpdf->AddPage();
+                        $eq = null; // VACIA $eq PARA VOLVER A INICIALIZARLA
+                        $incre = 0; // SE INICIALIZA A SU VALOR POR DEFECTO PARA LUEGO IMPRIMIR OTROS 6 REGISTROS EN EL PDF
+                    }
+                    $eq[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
+                    $incre++;
+                    $control++; // INCREMENTA HASTA QUE SEA IGUAL AL NUMERO DE REGISTROS EN LA BASE DE DATOS
+                    // IMPRIME EL RESTO DE LOS REGISTROS
+                    if ($control == $contador) {
+                        $vista = $this->renderPartial('_reportesFallas',[
+                            'canaimita'=>$eq,
+                            'falla'=>$falla
+                        ]);
+                        $mpdf->WriteHTML($vista);
+                        $eq = null; // VACIA $eq PARA VOLVER A INICIALIZARLA
+                    }
+                }
+                $mpdf->Output('Reportes_de_Falla_'.$falla.'.pdf','D');
+                Yii::$app()->session->setFlash('success','El reporte ha sido Creado');
+                $this->refresh();
+            }
+        } catch (ErrorException $e) {
+            Yii::warning('Ocurrio un error en donde nose');
+            Yii::$app->session->setFlash('error',"Disculpe no existe la data");
             //$this->redirect(Yii::$app->urlManager->createUrl('site/notfound') );
         }
 
-        $this->render('reporte', [
+        return $this->render('reportes', [
 			'canaimita'		=>	$canaimita,
 			'fsoftware'		=>	$fsoftware,
 			'fpantalla'		=>	$fpantalla,
@@ -614,11 +651,12 @@ class CanaimitaController extends Controller
 	*/
 	protected function construirConsultar($clase,$index,$falla){
 		$modelo = $clase::find()->where("$index = :f_$index", [":f_$index" => $falla])->all();
-		if ($modelo) {
-			for ($i=0; $i < count($modelo); $i++) {
-				$ideq[$i] = $modelo[$i]->ideq;
+        $conteo = $clase::find()->where("$index = :f_$index", [":f_$index" => $falla])->count();
+		if ($conteo > 0) {
+			foreach ($modelo as $valor) {
+				$ideq[] = $valor->ideq;
 			}
-			return Equipo::find()->where(['in','ideq',$ideq]);
+			return Equipo::find()->where(['in','ideq',$ideq])->all();
 		}else {
 			return false;
 		}

@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * UsuarioController implements the CRUD actions for Usuario model.
  */
-class UsuarioController extends Controller
+class FuncionarioController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -64,7 +64,7 @@ class UsuarioController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Usuario();
+        $model = new Usuario;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);

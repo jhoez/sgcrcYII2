@@ -35,10 +35,17 @@ class Libros extends \yii\db\ActiveRecord
             [
                 ['files'],'file',
                 'skipOnEmpty'=>false,
+                'uploadRequired'=>'No has seleccionado ningun Archivo',// error
+                'maxSize'=>1024*1024*100,//10MB
+                'tooBig'=>'El tamaño maximo permitido es de 100MB',// error
+                'minSize'=>4,
+                'tooSmall'=>'El tamaño minimo permitido son 4Byte',// error
                 'extensions'=>'pdf',
-                'maxFiles'=>1
+                'wrongExtension'=>'El archivo no contiene una extension permitida',
+                //'maxFiles'=>4,
+                //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['coleccion','files'],'required'],
+            [['coleccion'],'required'],
             [['idfkimag'], 'default', 'value' => null],
             [['idfkimag'], 'integer'],
             [['nomblib', 'ruta', 'coleccion'], 'string', 'max' => 255],
@@ -66,4 +73,28 @@ class Libros extends \yii\db\ActiveRecord
 			'files' => 'Archivo a subir'
         ];
     }
+
+    /**
+    *   @method upload valida y guarda el file en un directorio
+    *   @return boolean
+    */
+    public function getimagen()
+    {
+        $imagen = Imagen::find()->where(['idimag'=>$this->idfkimag])->one();
+        return $imagen;
+    }
+
+    /**
+    *   @method uploadArchivo
+    *   @return boolean
+    */
+    public function uploadArchivo()
+    {
+        if ( $this->coleccion == 'coleccionBicentenaria' ) {
+            $this->files->saveAs("coleccionLibros/$this->coleccion/$this->nivel/".$this->files->baseName.'.'.$this->files->extension);
+        }elseif ( $this->coleccion == ('coleccionMaestros' || 'lectura') ) {
+            $this->files->saveAs("coleccionLibros/$this->coleccion/".$this->files->baseName.'.'.$this->files->extension);
+        }
+    }
+
 }

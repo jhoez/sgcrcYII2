@@ -12,8 +12,7 @@ $hora	= date("h:i:s",time());
 <div class="row clearfix">
     <div class="col-md-offset-3 col-md-6">
         <div class="asistencia-form">
-            <h1 class="text-center">Registro de asistencia</h1>
-            <?php var_dump($hora); ?>
+            <h1 class="text-center">Marque su asistencia</h1>
             <?php
             $form = ActiveForm::begin();
             if ($hora >= $horaE && $hora <= $lhoraE) {

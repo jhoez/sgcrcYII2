@@ -46,6 +46,12 @@ class LibrosSearch extends Libros
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder'=>['idlib'=>SORT_DESC]
+            ],
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
 
         $this->load($params);

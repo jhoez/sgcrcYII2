@@ -1,4 +1,5 @@
 <?php if($horario !== null):?>
+<!--
 <style>
     * {
         margin:0px;
@@ -59,15 +60,17 @@
         text-align:center;
     }
 </style>
-
-<page backtop="15" backbottom="15" backleft="0" backright="0">
+-->
+<page backtop="0" backbottom="0" backleft="0" backright="0">
     <bookmark title="Reporte asistencia" level="0" ></bookmark>
     <page_header background="#199">
         <img id="imgheader" src="<?= Yii::$app->request->baseUrl."/img/printpdf/bannerfundabit.jpg" ?>" alt="">
     </page_header>
 
-    <div class="fecha"><b>Reporte Fecha: </b><?=date("d/m/Y");?></div>
-    <div id="titlereport">
+    <div class="fecha text-right">
+        <p class="col-md-12"><b>Reporte Fecha: </b><?=date("d/m/Y");?></p>
+    </div>
+    <div id="titlereport" class="text-center">
         <?php if (isset($finicio) && isset($ffin)) {
             echo "<h4>Reporte de Asistencia desde ".$finicio." hasta ".$ffin."</h4>";
         }else if(!empty($mes)){
@@ -76,8 +79,8 @@
             echo "<h4>Reporte de Asistencia de ".ucwords((string)strftime("%B",(int)$fecha->getTimestamp()))."</h4>";
         }?>
     </div>
-    <div id="cuerpo">
-        <table class="items">
+    <div id="cuerpo" class="col-md-12">
+        <table class="table table-bordered">
             <thead>
                 <tr>
                     <th>Usuario</th>
@@ -88,15 +91,15 @@
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($horario as $value) {?>
+                <?php foreach ($horario as $data) :?>
                     <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
+                        <td><?=$data->getFkusuario()->username;?></td>
+                        <td><?=$data->fecha;?></td>
+                        <td><?=$data->horain;?></td>
+                        <td><?=$data->horaout;?></td>
+                        <td><?=$data->observacion;?></td>
                     </tr>
-                <?php } ?>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </div>

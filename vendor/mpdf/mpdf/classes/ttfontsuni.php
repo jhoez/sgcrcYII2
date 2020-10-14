@@ -610,7 +610,7 @@ class TTFontFile
 			throw new MpdfException("Could not find PostScript font name: " . $this->filename);
 		// CHECK IF psName valid (PadaukBook contains illegal characters in Name ID 6 i.e. Postscript Name)
 		$psNameInvalid = false;
-		for ($i = 0; $i < count($psName); $i++) {
+		for ($i = 0; $i < count($psName); $i++) {// agregue @ a count() da error lanza por php 7.2 con la api mPDF
 			$c = $psName[$i];
 			$oc = ord($c);
 			if ($oc > 126 || strpos(' [](){}<>/%', $c) !== false) {

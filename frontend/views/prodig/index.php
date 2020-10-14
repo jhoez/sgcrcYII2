@@ -2,41 +2,50 @@
 
 use yii\helpers\Html;
 use yii\grid\GridView;
+use yii\bootstrap\Tabs;
 
 /* @var $this yii\web\View */
 /* @var $searchModel frontend\models\MultimediaSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Multimedia';
+$this->title = 'Proyectos Digitales';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="multimedia-index">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="prodig-index">
 
     <p>
-        <?= Html::a('Create Multimedia', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Subir Multimedia', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Subir img Carousel', ['/portadas/create'], ['class' => 'btn btn-primary']) ?>
     </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
 
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'idmult',
-            'nombmult',
-            'extension',
-            'tipomult',
-            'tamanio',
-            //'ruta',
-            //'fkidpro',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
-
+    <div class="">
+        <?=Tabs::widget([
+            'items' => [
+                [
+                    'label' => 'Videos',
+                    'content' => $this->render('_viewv',['prodig'=>$prodig]),
+                    'active' => true,
+                    'headerOptions' => ['role'=>'presentation'],// tag li
+                    'options' => ['id' => 'inicial','data-toggle'=>'tab'],//tag a
+                ],
+                [
+                    'label' => 'Audioradial',
+                    'content' => $this->render('_viewa',['prodig'=>$prodig]),
+                    'headerOptions' => ['role'=>'presentation'],// tag li
+                    'options' => ['id' => 'primaria','data-toggle'=>'tab'],//tag a
+                    'itemOptions' => ['tag' => 'div'],
+                ],
+            ],
+            //'options' => ['tag' => 'div'],
+            //'itemOptions' => ['tag' => 'div'],
+            'options'=>['class'=>'nav nav-pills'],
+            //'clientOptions' => ['collapsible' => false],
+        ]);
+        ?>
+    </div>
 
 </div>

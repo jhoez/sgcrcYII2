@@ -35,7 +35,7 @@ class ReaController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new RealaumSearch();
+        $searchModel = new RealaumSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->render('index', [
@@ -64,7 +64,7 @@ class ReaController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Realaum();
+        $model = new Realaum;
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->idra]);

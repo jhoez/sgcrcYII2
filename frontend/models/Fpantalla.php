@@ -44,4 +44,10 @@ class Fpantalla extends \yii\db\ActiveRecord
             'ideq' => 'Ideq',
         ];
     }
+
+    public function getFpantequipo()
+    {
+        $equipo = Equipo::find()->where(['ideq'=>'ideq'])->one();
+        return $equipo;
+    }
 }

@@ -9,13 +9,13 @@ $this->title = 'Registrar Canaimita';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="equipo-create">
+<div class="canaimita-create">
 
-    <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
     </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'estado'		=>	$estado,

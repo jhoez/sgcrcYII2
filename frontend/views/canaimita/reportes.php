@@ -10,14 +10,13 @@ $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<div class="">
-    <h1><?= Html::encode($this->title) ?></h1>
     <p>
         <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Registrar Canaimita',['/canaimita/create'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Subir Formato',['/descargables/create'],['class'=>'btn btn-primary']);?>
+        <?= Html::a('Subir archivos',['/archivos/create'],['class'=>'btn btn-primary']);?>
     </p>
-</div>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
+
 
 <div class="row clearfix">
     <div class="col-md-offset-3 col-md-6">

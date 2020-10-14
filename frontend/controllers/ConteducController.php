@@ -4,13 +4,16 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\Libros;
+use frontend\models\Imagen;
 use frontend\models\LibrosSearch;
 use yii\web\Controller;
+use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\helpers\HtmlPurifier;
 
 /**
- * LibrosController implements the CRUD actions for Libros model.
+ * ConteducController implements the CRUD actions for Libros model.
  */
 class ConteducController extends Controller
 {
@@ -30,15 +33,40 @@ class ConteducController extends Controller
     }
 
     /**
+     * permite descargar visualizar un libro
+     * @param integer $param
+     */
+    public function actionVerlib()
+    {
+        $purifier = new HtmlPurifier;
+        $get = $purifier->process( Yii::$app->request->get('param') );
+        $contenido = Libros::findOne($get);
+        return $this->redirect(Yii::$app->request->baseUrl.'/'.$contenido->ruta.$contenido->nomblib.'.'.$contenido->extension);
+    }
+
+    /**
      * Lists all Libros models.
      * @return mixed
      */
     public function actionIndex()
     {
-        $searchModel = new LibrosSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $contenido = Libros::find()->all();
 
         return $this->render('index', [
+            'contenido'=>$contenido
+        ]);
+    }
+
+    /**
+     * Lists all Libros registrados.
+     * @return mixed
+     */
+    public function actionRegistros()
+    {
+        $searchModel = new LibrosSearch;
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->render('registros', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
         ]);
@@ -64,14 +92,64 @@ class ConteducController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Libros();
+        $contenido = new Libros;
+        $img = new Imagen;
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->idlib]);
-        }
+        if (
+            $contenido->load(Yii::$app->request->post()) &&
+            $img->load(Yii::$app->request->post())
+        ) {
+            $contenido->files = UploadedFile::getInstance($contenido,'files');
+            $img->imagen = UploadedFile::getInstance($img,'imagen');
+
+            $img->nombimg	= $img->imagen->baseName;
+            $img->extension = $img->imagen->extension;
+            $img->ruta		= "coleccionLibros/cimg/";
+            $img->tamanio	= $this->convert_format_bytes($img->imagen->size);
+            $img->fkuser	= Yii::$app->user->getId();
+
+            if ( $img->imagen && $img->validate() ) {
+                if ( $img->save() ) {
+                    $contenido->nomblib	= $contenido->files->baseName;
+                    $contenido->extension	= $contenido->files->extension;
+
+                    $coleccion	= $contenido->coleccion;
+                    $niv		= $contenido->nivel;
+                    if ($coleccion == 'coleccionBicentenaria') {
+                        $contenido->ruta = "coleccionLibros/$coleccion/$niv/";
+                    }elseif( $coleccion == ('coleccionMaestros' || 'lectura') ){
+                        $contenido->ruta = "coleccionLibros/$coleccion/";
+                    }
+
+                    if ($niv == ('inicial' || 'primaria' || 'media')) {
+                        $contenido->nivel	= $niv;
+                    }else if($coleccion == 'coleccionMaestros'){
+                        $contenido->nivel	=  'maestro';
+                    }else if($coleccion == 'lectura') {
+                        $contenido->nivel = 'lectura';
+                    }
+
+                    $contenido->tamanio	= $this->convert_format_bytes($contenido->files->size);
+                    $contenido->idfkimag = $img->idimag;
+
+                    if ( $contenido->files && $contenido->validate() ) {
+                        if ( $contenido->save() ) {
+                            $img->uploadArchivo();//Guardamos el fichero
+                            $contenido->uploadArchivo();//Guardamos el fichero
+                            //Yii::$app->session->setFlash('libroC',"El Libro '$contenido->nomblib' a sido Registrado");
+                        }
+                    }
+                }// save
+            }// validate
+
+            return $this->redirect(['view', 'id' => $contenido->idlib]);
+            //return $this->render('/site/notfound',['msj'=>$msj]);
+
+        }// carga post
 
         return $this->render('create', [
-            'model' => $model,
+            'contenido' => $contenido,
+            'img'=>$img
         ]);
     }
 
