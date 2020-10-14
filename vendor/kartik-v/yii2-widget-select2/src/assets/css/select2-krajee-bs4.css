@@ -1,6 +1,6 @@
 /*!
  * @copyright Copyright &copy; Kartik Visweswaran, Krajee.com, 2014 - 2020
- * @version 2.1.8
+ * @version 2.2.0
  *
  * Krajee Bootstrap 4.x Theme for Select2
  *
@@ -200,6 +200,7 @@
     border-radius: 0;
 }
 
+.select2-container--krajee-bs4 .select2-results__option.select2-results__option--selected,
 .select2-container--krajee-bs4 .select2-results__option[aria-selected=true] {
     color: #31708f;
     background-color: #d9edf7;
@@ -326,7 +327,6 @@
 
 .select2-container--krajee-bs4 .select2-selection--multiple .select2-selection__rendered {
     box-sizing: border-box;
-    display: block;
     line-height: 1.5;
     list-style: none;
     margin: 0;
@@ -384,6 +384,7 @@
 /**
  * Bootstrap validation states
  */
+select.is-invalid + .select2-container--krajee-bs4 .select2-selection--single,
 .has-error.select2-container--krajee-bs4 .select2-dropdown,
 .has-error .select2-container--krajee-bs4 .select2-selection {
     border-color: #dc3545;
@@ -395,6 +396,7 @@
     border-color: #dc3545;
 }
 
+select.is-valid + .select2-container--krajee-bs4 .select2-selection--single,
 .has-success.select2-container--krajee-bs4 .select2-dropdown,
 .has-success .select2-container--krajee-bs4 .select2-selection {
     border-color: #28a745;
@@ -539,8 +541,6 @@
  * Selection Clear
  */
 .select2-container--krajee-bs4 .select2-selection__clear {
-    position: absolute;
-    font-size: 1.4rem;
     font-weight: 700;
     line-height: 1;
     color: #000;
@@ -554,6 +554,7 @@
 
 .select2-container--krajee-bs4 .select2-selection--single .select2-selection__clear,
 .select2-container--krajee-bs4 .select2-selection--multiple .select2-selection__clear {
+    position: absolute;
     font-size: 1.2rem;
 }
 

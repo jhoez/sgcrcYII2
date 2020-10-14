@@ -21,11 +21,11 @@
         "kartik-v/yii2-mpdf": "*",
         "mdmsoft/yii2-admin": "~2.0",
         "kartik-v/yii2-social": "@dev",
-        "buttflattery/yii2-videowall": "@dev",
         "kartik-v/yii2-widget-datepicker": "dev-master",
         "kartik-v/yii2-export": "@dev",
         "kartik-v/yii2-widget-depdrop": "dev-master",
-        "yiisoft/yii2-jui": "*"
+        "yiisoft/yii2-jui": "*",
+        "yii2tech/html2pdf": "^1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",
