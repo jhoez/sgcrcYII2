@@ -134,7 +134,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'class' => 'yii\grid\ActionColumn',
                     'header'=>'Action',
                     'headerOptions'=>['width'=>'60'],
-                    'template'=>'{marcar}{view}{update}{delete}',
+                    'template'=>'{marcar}{view}{update}',
+                    //'template'=>'{marcar}{view}{update}{delete}',
                     'buttons'=> [
                         'marcar' => function($url,$model){
                             if ($model->status == 0) {
@@ -157,12 +158,12 @@ $this->params['breadcrumbs'][] = $this->title;
                                 $url
                             );
                         },
-                        'delete' => function($url,$model){
+                        /*'delete' => function($url,$model){
                             return Html::a(
                                 '<span class="glyphicon glyphicon-remove"></span>',
                                 $url
                             );
-                        },
+                        },*/
                     ],
                 ],
             ],
@@ -258,15 +259,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'value'=>function($data){
                             return $data->extens;
                         }
-                        ],
-                        [
+                    ],
+                    [
                         'label'=>'Tamaño File',
                         'attribute'=>'tamanio',
                         'value'=>function($data){
                             return $data->tamanio;
                         }
-                        ],
-                        [
+                    ],
+                    [
                         'label'=>'Status',
                         'attribute'=>'status',
                         'value'=>function($data){
@@ -275,14 +276,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter'=>[
                         '0'=>'Por ver',
                         '1'=>'Visto'
-                        ]
-                        ],
-                        [
-                        'class' => 'yii\grid\ActionColumn',
-                        'header'=>'Action',
-                        'headerOptions'=>['width'=>'60'],
-                        'template'=>'{view}{update}{delete}{descargarfa}{marcar}',
-                        'buttons'=> [
+                    ]
+                ],
+                [
+                    'class' => 'yii\grid\ActionColumn',
+                    'header'=>'Action',
+                    'headerOptions'=>['width'=>'60'],
+                    'template'=>'{marcar}{view}{update}{delete}{descargarfa}',
+                    'buttons'=> [
                         'view' => function($url,$model){
                             return Html::a(
                             '<span class="glyphicon glyphicon-eye-open"></span>',
@@ -316,9 +317,9 @@ $this->params['breadcrumbs'][] = $this->title;
                             } else {
                             }
                         },
-                        ],
-                        ],
-                        ],
-                        ]); ?>
-        </div>
+                    ],
+                ],
+            ],
+        ]); ?>
     </div>
+</div>

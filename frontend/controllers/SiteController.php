@@ -29,7 +29,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'signup'],
+                'only' => ['logout', 'user', 'admin'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -41,6 +41,36 @@ class SiteController extends Controller
                         'allow' => true,
                         'roles' => ['@'],
                     ],
+                    /*
+                    [
+                        //El administrador tiene permisos sobre las siguientes acciones
+                        'actions' => ['logout', 'admin'],
+                        //Esta propiedad establece que tiene permisos
+                        'allow' => true,
+                        //Usuarios autenticados, el signo ? es para invitados
+                        'roles' => ['@'],
+                        //Este método nos permite crear un filtro sobre la identidad del usuario
+                        //y así establecer si tiene permisos o no
+                        'matchCallback' => function ($rule, $action) {
+                            //Llamada al método que comprueba si es un administrador
+                            return User::isUserAdmin(Yii::$app->user->identity->id);
+                        },
+                    ],
+                    [
+                       //Los usuarios simples tienen permisos sobre las siguientes acciones
+                       'actions' => ['logout', 'user'],
+                       //Esta propiedad establece que tiene permisos
+                       'allow' => true,
+                       //Usuarios autenticados, el signo ? es para invitados
+                       'roles' => ['@'],
+                       //Este método nos permite crear un filtro sobre la identidad del usuario
+                       //y así establecer si tiene permisos o no
+                       'matchCallback' => function ($rule, $action) {
+                          //Llamada al método que comprueba si es un usuario simple
+                          return User::isUserSimple(Yii::$app->user->identity->id);
+                      },
+                   ],
+                    */
                 ],
             ],
             'verbs' => [
@@ -67,6 +97,8 @@ class SiteController extends Controller
             ],
         ];
     }
+
+
 
     /**
      * Displays homepage.
@@ -104,6 +136,36 @@ class SiteController extends Controller
         }
         return $this->render('login',['model'=>$model]);
     }
+
+    /*
+    public function actionLogin()
+    {
+        $this->layout = 'login';
+        if (!Yii::$app->user->isGuest)
+        {
+            if (Usuario::isUserAdmin(Yii::$app->user->identity->id))
+            {
+                return $this->redirect(["site/admin"]);
+            }else{
+                return $this->redirect(["site/user"]);
+            }
+        }
+        $model = new LoginForm();
+        if ($model->load(Yii::$app->request->post()) && $model->login())
+        {
+            if (Usuario::isUserAdmin(Yii::$app->user->identity->id))
+            {
+                return $this->redirect(["site/admin"]);
+            }else{
+                return $this->redirect(["site/user"]);
+            }
+        } else {
+            return $this->render('login', [
+                'model' => $model,
+            ]);
+        }
+    }
+    */
 
     /**
      * Logs out the current user.

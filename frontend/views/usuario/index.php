@@ -26,7 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
 
-            'id',
+            'iduser',
             'username',
             'auth_key',
             'password',
@@ -36,6 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
             //'created_at',
             //'updated_at',
             //'verification_token',
+            //'role',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],

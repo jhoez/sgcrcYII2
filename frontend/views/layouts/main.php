@@ -60,6 +60,7 @@ AppAsset::register($this);
             ['label' => 'Proyectos Digitales', 'url' => ['/prodig/index']],
             ['label' => 'Realidad Aumentada', 'url' => ['/rea/index']],
             ['label' => 'Tutor', 'url' => ['/canaimita/index']],
+            ['label' => 'Administrar Usuario', 'url' => ['/admin']],
         ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')

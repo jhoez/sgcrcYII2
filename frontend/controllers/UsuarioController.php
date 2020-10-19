@@ -12,7 +12,7 @@ use yii\filters\VerbFilter;
 /**
  * UsuarioController implements the CRUD actions for Usuario model.
  */
-class FuncionarioController extends Controller
+class UsuarioController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -64,16 +64,38 @@ class FuncionarioController extends Controller
      */
     public function actionCreate()
     {
-        $model = new Usuario;
+        $model = new Usuario();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->iduser]);
         }
 
         return $this->render('create', [
             'model' => $model,
         ]);
     }
+    /*
+    public function actionCreate() {
+        $model = new Usuario();
+        if ($model->load(Yii::$app->request->post())) {
+            $hash =  Yii::$app->security->generatePasswordHash($model->password);
+            // echo "hash:" . $hash;
+            $model->password = $hash;
+            if ($model->save()) {
+                $auth = \Yii::$app->authManager;
+                $authorRole = $auth->getRole('administrador');
+                $auth->assign($authorRole, $model->id);
+                //echo "<br>Se ha creado el permiso";
+            } else {
+                die('Error al guardar');
+            }
+            return $this->redirect(['view', 'id' => $model->id]);
+        }
+        return $this->render('create', [
+            'model' => $model,
+        ]);
+    }
+    */
 
     /**
      * Updates an existing Usuario model.
@@ -87,7 +109,7 @@ class FuncionarioController extends Controller
         $model = $this->findModel($id);
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->id]);
+            return $this->redirect(['view', 'id' => $model->iduser]);
         }
 
         return $this->render('update', [

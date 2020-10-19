@@ -15,7 +15,7 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'id') ?>
+    <?= $form->field($model, 'iduser') ?>
 
     <?= $form->field($model, 'username') ?>
 
@@ -34,6 +34,8 @@ use yii\widgets\ActiveForm;
     <?php // echo $form->field($model, 'updated_at') ?>
 
     <?php // echo $form->field($model, 'verification_token') ?>
+
+    <?php // echo $form->field($model, 'role') ?>
 
     <div class="form-group">
         <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>

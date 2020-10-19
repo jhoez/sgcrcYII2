@@ -124,8 +124,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Action',
                 'headerOptions'=>['width'=>'60'],
-                'template'=>'{view}{update}{delete}{descargarf}{marcar}',
+                'template'=>'{marcar}{view}{update}{delete}{descargarf}',
                 'buttons'=> [
+                    'marcar' => function($url){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-ok-circle"></span>',
+                            $url
+                        );
+                    },
                     'view' => function($url){
                         return Html::a(
                             '<span class="glyphicon glyphicon-eye-open"></span>',
@@ -147,12 +153,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     'descargarf' => function($url,$model,$index){
                         return Html::a(
                             '<span class="glyphicon glyphicon-download"></span>',
-                            $url
-                        );
-                    },
-                    'marcar' => function($url){
-                        return Html::a(
-                            '<span class="glyphicon glyphicon-ok-circle"></span>',
                             $url
                         );
                     },

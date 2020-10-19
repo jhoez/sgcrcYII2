@@ -124,8 +124,17 @@ $this->params['breadcrumbs'][] = $this->title;
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Action',
                 'headerOptions'=>['width'=>'60'],
-                'template'=>'{view}{update}{delete}{descargarfa}{updatestatus}',
+                'template'=>'{updatestatus}{view}{update}{delete}{descargarfa}',
                 'buttons'=> [
+                    'updatestatus' => function($url,$model){
+                        if ($model->status == '0') {
+                            return Html::a(
+                                '<span class="glyphicon glyphicon-ok-circle"></span>',
+                                Url::to(["archivos/updatestatus", "id" => implode((array)$model->idf)])
+                            );
+                        } else {
+                        }
+                    },
                     'view' => function($url){
                         return Html::a(
                             '<span class="glyphicon glyphicon-eye-open"></span>',
@@ -149,15 +158,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             '<span class="glyphicon glyphicon-download"></span>',
                             $url
                         );
-                    },
-                    'updatestatus' => function($url,$model){
-                        if ($model->status == '0') {
-                            return Html::a(
-                                '<span class="glyphicon glyphicon-ok-circle"></span>',
-                                Url::to(["archivos/updatestatus", "id" => implode((array)$model->idf)])
-                            );
-                        } else {
-                        }
                     },
                 ],
             ],

@@ -1,136 +1,48 @@
-CREATE TABLE sc.cruge_system
-(
-  idsystem serial NOT NULL,
-  name character varying(45),
-  largename character varying(45),
-  sessionmaxdurationmins integer DEFAULT 30,
-  sessionmaxsameipconnections integer DEFAULT 10,
-  sessionreusesessions integer DEFAULT 1,
-  sessionmaxsessionsperday integer DEFAULT '-1'::integer,
-  sessionmaxsessionsperuser integer DEFAULT '-1'::integer,
-  systemnonewsessions integer DEFAULT 0,
-  systemdown integer DEFAULT 0,
-  registerusingcaptcha integer DEFAULT 0,
-  registerusingterms integer DEFAULT 0,
-  terms character varying(4096),
-  registerusingactivation integer DEFAULT 1,
-  defaultroleforregistration character varying(64),
-  registerusingtermslabel character varying(100),
-  registrationonlogin integer DEFAULT 1,
-  CONSTRAINT cruge_system_pkey PRIMARY KEY (idsystem)
-);
-
-INSERT INTO sc.cruge_system (idsystem,name,largename,sessionmaxdurationmins,sessionmaxsameipconnections,sessionreusesessions,sessionmaxsessionsperday,sessionmaxsessionsperuser,systemnonewsessions,systemdown,registerusingcaptcha,registerusingterms,terms,registerusingactivation,defaultroleforregistration,registerusingtermslabel,registrationonlogin)
-VALUES
-(1,'default',NULL,30,10,1,-1,-1,0,0,0,0,'',0,'','',1);
-
-CREATE TABLE sc.cruge_session
-(
-  idsession serial NOT NULL,
-  iduser integer NOT NULL,
-  created bigint,
-  expire bigint,
-  status integer DEFAULT 0,
-  ipaddress character varying(45),
-  usagecount integer DEFAULT 0,
-  lastusage bigint,
-  logoutdate bigint,
-  ipaddressout character varying(45),
-  CONSTRAINT cruge_session_pkey PRIMARY KEY (idsession)
-);
-
-CREATE TABLE sc.cruge_user
-(
-  iduser serial NOT NULL,
-  regdate bigint,
-  actdate bigint,
-  logondate bigint,
-  username character varying(64),
-  email character varying(45),
-  cedula character varying(10),
-  cbit character varying(255),
-  password character varying(64),
-  authkey character varying(100),
-  state integer DEFAULT 0,
-  totalsessioncounter integer DEFAULT 0,
-  currentsessioncounter integer DEFAULT 0,
-  CONSTRAINT cruge_user_pkey PRIMARY KEY (iduser)
-);
-
-insert into sc.cruge_user(username, email, password, state)
-values
-('jhon', 'jhon@gmail.com','123456',1),
-('invitado', 'invitado@gmail.com','123456',1),
-('administrador', 'administrador@gmail.com','123456',1),
-('tutor', 'tutor@gmail.com','123456',1);
-
-CREATE TABLE sc.cruge_field
-(
-  idfield serial NOT NULL,
-  fieldname character varying(20) NOT NULL,
-  longname character varying(50),
-  "position" integer DEFAULT 0,
-  required integer DEFAULT 0,
-  fieldtype integer DEFAULT 0,
-  fieldsize integer DEFAULT 20,
-  maxlength integer DEFAULT 45,
-  showinreports integer DEFAULT 0,
-  useregexp character varying(512),
-  useregexpmsg character varying(512),
-  predetvalue character varying(4096),
-  CONSTRAINT cruge_field_pkey PRIMARY KEY (idfield)
-);
-
-CREATE TABLE sc.cruge_fieldvalue
-(
-  idfieldvalue serial NOT NULL,
-  iduser integer NOT NULL,
-  idfield integer NOT NULL,
-  value character varying(4096),
-  CONSTRAINT cruge_fieldvalue_pkey PRIMARY KEY (idfieldvalue),
-  CONSTRAINT fk_cruge_fieldvalue_cruge_field1 FOREIGN KEY (idfield)
-      REFERENCES sc.cruge_field (idfield) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE,
-  CONSTRAINT fk_cruge_fieldvalue_cruge_user1 FOREIGN KEY (iduser)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
-);
-
-CREATE TABLE sc.cruge_authitem
+CREATE TABLE public.auth_rule
 (
   name character varying(64) NOT NULL,
-  type integer NOT NULL,
-  description text,
-  bizrule text,
-  data text,
-  CONSTRAINT cruge_authitem_pkey PRIMARY KEY (name)
+  data bytea,
+  created_at integer,
+  updated_at integer,
+  CONSTRAINT auth_rule_pkey PRIMARY KEY (name)
 );
 
-CREATE TABLE sc.cruge_authassignment
+CREATE TABLE public.auth_item
 (
-  userid integer NOT NULL,
-  bizrule text,
-  data text,
-  itemname character varying(64) NOT NULL,
-  CONSTRAINT cruge_authassignment_pkey PRIMARY KEY (userid, itemname),
-  CONSTRAINT fk_cruge_authassignment_cruge_authitem1 FOREIGN KEY (itemname)
-      REFERENCES sc.cruge_authitem (name) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT fk_cruge_authassignment_user FOREIGN KEY (userid)
-      REFERENCES sc.cruge_user (iduser) MATCH SIMPLE
-      ON UPDATE NO ACTION ON DELETE CASCADE
+  name character varying(64) NOT NULL,
+  type smallint NOT NULL,
+  description text,
+  rule_name character varying(64),
+  data bytea,
+  created_at integer,
+  updated_at integer,
+  CONSTRAINT auth_item_pkey PRIMARY KEY (name),
+  CONSTRAINT auth_item_rule_name_fkey FOREIGN KEY (rule_name)
+      REFERENCES public.auth_rule (name) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE SET NULL
 );
 
-CREATE TABLE sc.cruge_authitemchild
+CREATE TABLE public.auth_item_child
 (
   parent character varying(64) NOT NULL,
   child character varying(64) NOT NULL,
-  CONSTRAINT cruge_authitemchild_pkey PRIMARY KEY (parent, child),
-  CONSTRAINT crugeauthitemchild_ibfk_1 FOREIGN KEY (parent)
-      REFERENCES sc.cruge_authitem (name) MATCH SIMPLE
+  CONSTRAINT auth_item_child_pkey PRIMARY KEY (parent, child),
+  CONSTRAINT auth_item_child_child_fkey FOREIGN KEY (child)
+      REFERENCES public.auth_item (name) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE,
-  CONSTRAINT crugeauthitemchild_ibfk_2 FOREIGN KEY (child)
-      REFERENCES sc.cruge_authitem (name) MATCH SIMPLE
+  CONSTRAINT auth_item_child_parent_fkey FOREIGN KEY (parent)
+      REFERENCES public.auth_item (name) MATCH SIMPLE
+      ON UPDATE CASCADE ON DELETE CASCADE
+);
+
+CREATE TABLE public.auth_assignment
+(
+  item_name character varying(64) NOT NULL,
+  user_id character varying(64) NOT NULL,
+  created_at integer,
+  CONSTRAINT auth_assignment_pkey PRIMARY KEY (item_name, user_id),
+  CONSTRAINT auth_assignment_item_name_fkey FOREIGN KEY (item_name)
+      REFERENCES public.auth_item (name) MATCH SIMPLE
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 

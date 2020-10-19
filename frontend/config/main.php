@@ -15,7 +15,17 @@ return [
     'bootstrap' => ['log'],
     'timeZone'=>'America/Caracas',//para definir bien la hora local
     'controllerNamespace' => 'frontend\controllers',
+    'modules' => [
+        'admin' => [
+            'class' => 'mdm\admin\Module',
+            'layout' => 'left-menu', // por defaults es null, cuando no deseas usar el menú Otros valores opcionales son 'right-menu' and 'top-menu'
+            'mainLayout' => '@app/views/layouts/main.php',
+        ]
+    ],
     'components' => [
+        'authManager' => [
+            'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
+        ],
         'request' => [
             'csrfParam' => '_csrf-frontend',
         ],
@@ -54,17 +64,22 @@ return [
             'destination' => Pdf::DEST_BROWSER,
             // refer settings section for all configuration options
         ],
-        'html2pdf' => [
-            'class' => 'yii2tech\html2pdf\Manager',
-            'viewPath' => '@app/pdf',
-            'converter' => [
-                'class' => 'yii2tech\html2pdf\converters\Wkhtmltopdf',
-                'defaultOptions' => [
-                    'pageSize' => 'A4'
-                ],
-            ],
-        ],
     ],
+    'as access' => [
+        'class' => 'mdm\admin\components\AccessControl',
+        'allowActions' => [
+            'site/*',
+            'admin/*',
+            'gii/*',
+            'usuario/*',
+            //'some-controller/some-action',
+            // The actions listed here will be allowed to everyone including guests.
+            // So, 'admin/*' should not appear here in the production, of course.
+            // But in the earlier stages of your development, you may probably want to
+            // add a lot of actions here until you finally completed setting up rbac,
+            // otherwise you may not even take a first step.
+       ]
+   ],
     'params' => $params,
     'language'=>'es'
 ];

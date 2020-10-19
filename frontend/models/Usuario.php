@@ -70,6 +70,25 @@ class Usuario extends ActiveRecord implements IdentityInterface
         ];
     }
 
+    public static function isUserAdmin($id)
+    {
+        if (Users::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 1])){
+            return true;
+        } else {
+            return false;
+        }
+
+    }
+
+    public static function isUserSimple($id)
+    {
+        if (Users::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 2])){
+            return true;
+        } else {
+            return false;
+        }
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -151,6 +170,7 @@ class Usuario extends ActiveRecord implements IdentityInterface
      */
     public function getId()
     {
+        //return $this->iduser;
         return $this->getPrimaryKey();
     }
 
