@@ -1,41 +1,49 @@
 <?php
 
 use yii\helpers\Html;
-use yii\grid\GridView;
 
-/* @var $this yii\web\View */
-/* @var $searchModel frontend\models\RealaumSearch */
-/* @var $dataProvider yii\data\ActiveDataProvider */
-
-$this->title = 'Realaums';
+$this->title = 'Proyectos Realidad Aumentada';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="realaum-index">
+<div class="rea-index">
 
     <p>
         <?= Html::a('Subir Realidad Aumentada', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros de RA', ['regrea'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <?= GridView::widget([
-        'dataProvider' => $dataProvider,
-        'filterModel' => $searchModel,
-        'columns' => [
-            ['class' => 'yii\grid\SerialColumn'],
-
-            'idra',
-            'nra',
-            'exten',
-            'ruta',
-            'fk_pro',
-            //'fkimag',
-
-            ['class' => 'yii\grid\ActionColumn'],
-        ],
-    ]); ?>
+</div>
 
 
+<div class="row clearfix">
+    <?php foreach ($realidadaumentada as $value): ?>
+        <div class="col-md-2">
+            <div class="card text-center">
+                <?= Html::img(
+                    Yii::$app->request->baseUrl.'/'.$value->getRaImagen()->ruta.$value->getRaImagen()->nombimg.'.'.$value->getRaImagen()->extension,
+                    ['id' => '','width'=>160]
+                ); ?>
+                <h1 class="text-center" style="overflow:hidden; font-size:14px;">
+                <?=Html::encode($value->getRaImagen()->nombimg);?>
+                </h1>
+                <p>
+                    <?= Html::a(
+                        'Ver libro',
+                        [
+                            '/rea/ra',
+                            'param'=>$value->idra
+                        ],
+                        [
+                            'class' => 'btn btn-primary',
+                            /*'data'=>[
+                                'method'=>'post'
+                            ],*/
+                            'target'=>'_blank'
+                        ]
+                    )?>
+                </p>
+            </div>
+        </div>
+    <?php endforeach; ?>
 </div>

@@ -5,10 +5,10 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Formato */
 
-$this->title = 'Actualizar Archivo: ' . Html::encode($archivos->nombf);
+$this->title = 'Actualizar Archivo: ' . Html::encode($archivos->nombf.'.'.$archivos->extens);
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = ['label' => 'Archivos', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->tittle;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="archivo-update">
 

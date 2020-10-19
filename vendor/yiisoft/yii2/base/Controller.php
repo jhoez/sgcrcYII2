@@ -609,10 +609,10 @@ class Controller extends Component implements ViewContextInterface
 			{
 				$result = @unlink($ruta.$archivo);
 			}else {
-				throw new HttpException('No existe el archivo.');
+                return false;
 			}
 		}else {
-			throw new HttpException('El directorio no existe.');
+            return false;
 		}
 		return $result;
 	}

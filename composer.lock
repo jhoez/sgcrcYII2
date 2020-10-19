@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6a929f311ffd355abc3ec562c7fa62fc",
+    "content-hash": "1449ae3942771448d06e46b2420dc272",
     "packages": [
         {
             "name": "bower-asset/bootstrap",
@@ -1923,59 +1923,6 @@
                 "shim"
             ],
             "time": "2020-07-14T12:35:20+00:00"
-        },
-        {
-            "name": "yii2tech/html2pdf",
-            "version": "1.0.7",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/yii2tech/html2pdf.git",
-                "reference": "c38755d55777ab671d31d8724ef385d60fdbb298"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/yii2tech/html2pdf/zipball/c38755d55777ab671d31d8724ef385d60fdbb298",
-                "reference": "c38755d55777ab671d31d8724ef385d60fdbb298",
-                "shasum": ""
-            },
-            "require": {
-                "yiisoft/yii2": "~2.0.14"
-            },
-            "require-dev": {
-                "phpunit/phpunit": "4.8.27|^5.0|^6.0"
-            },
-            "type": "yii2-extension",
-            "extra": {
-                "branch-alias": {
-                    "dev-master": "1.0.x-dev"
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "yii2tech\\html2pdf\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "BSD-3-Clause"
-            ],
-            "authors": [
-                {
-                    "name": "Paul Klimov",
-                    "email": "klimov.paul@gmail.com"
-                }
-            ],
-            "description": "Provides support for HTML to PDF and PHP to PDF conversion",
-            "keywords": [
-                "conversion",
-                "convert",
-                "html2pdf",
-                "pdf",
-                "php2pdf",
-                "template",
-                "yii2"
-            ],
-            "time": "2019-10-17T11:02:50+00:00"
         },
         {
             "name": "yiisoft/yii2",

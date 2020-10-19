@@ -74,6 +74,8 @@ class CanaimitaController extends Controller
         $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>'1'])->all();
         $fsearchModel = new FormatoSearch;
         $fdataProvider = $fsearchModel->search(Yii::$app->request->queryParams);
+        // colocar un if para el tutor solamente
+        //$fdataProvider->query->where(['status'=>'0'])->all();
         $csearchModel = new EquipoSearch;
         $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);
 
@@ -161,7 +163,7 @@ class CanaimitaController extends Controller
                 $fcarga->validate() &&
                 $fgeneral->validate()
             ) {
-                $transaction = $equipo->db->beginTransaction();
+                $transaction = $fgeneral->db->beginTransaction();
                 try {
                     if ($sedeciat->save()) {
                         if ($insteduc->save()) {
@@ -213,10 +215,10 @@ class CanaimitaController extends Controller
                     }
                     $transaction->commit();
                     return $this->redirect(['view', 'id' => $equipo->ideq]);
-                } catch (Exception $e) {
+                } catch (ErrorException $e) {
                     $e->getMessage();die;
                     $transaction->rollback();
-                    Yii::$app->session->setFlash('warning', "La Canaimita $equipo->eqserial no se pudo registrar");
+                    Yii::$app->session->setFlash('warning', "La Canaimita $equipo->eqserial no pudo ser registrar");
                 }// fin try catch
             }/*else {
                 $estado->getErrors();
@@ -266,29 +268,47 @@ class CanaimitaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $equipo         =   $this->findModel($id);
-        $estado         =   new     Estado;
-        $municipio      =   new     Municipio;
-        $parroquia      =   new     Parroquia;
-        $estadoArray    =   Estado::find()->asArray()->all();
-        $municipioArray =   Municipio::find()->asArray()->all();
-        $parroquiaArray =   Parroquia::find()->asArray()->all();
-        $sedeciat       =   new     Sedeciat;
-        $insteduc       =   new     Insteduc;
-        $representante  =   new     Representante;
-        $direcuser      =   new     Direcuser;
-        $estudiante     =   new     Estudiante;
-        $niveleduc      =   new     Niveleduc;
-        $fsoftware      =   new     Fsoftware;
-        $fpantalla      =   new     Fpantalla;
-        $ftarjetamadre  =   new     Ftarjetamadre;
-        $fteclado       =   new     Fteclado;
-        $fcarga         =   new     Fcarga;
-        $fgeneral       =   new     Fgeneral;
+        $purifier       =   new HtmlPurifier;
+        $param          =   $purifier->process( Yii::$app->request->get('id') );
+        $equipo         =   $this->findModel($param);
+        $representante  =   Representante::find()->where(['idrep'=>$equipo->idrep])->one();
+        $estudiante     =   Estudiante::find()->where(['idrep'=>$representante->idrep])->one();
+        $direcuser      =   Direcuser::find()->where(['idfkrep'=>$representante->idrep])->one();
+        $estado         =   new Estado;
+        $municipio      =   new Municipio;
+        $parroquia      =   new Parroquia;
+        $estadoArray    =   Estado::find()->asArray()->where(['idesta'=>$direcuser->idfkesta])->all();
+        $municipioArray =   Municipio::find()->asArray()->where(['idmunc'=>$direcuser->idfkmunc])->all();
+        $parroquiaArray =   Parroquia::find()->asArray()->where(['idpar'=>$direcuser->idfkpar])->all();
+        $sedeciat       =   Sedeciat::find()->where(['idciat'=>$direcuser->idfkciat])->one();
+        $insteduc       =   Insteduc::find()->where(['idinst'=>$direcuser->idfkinst])->one();
+        $niveleduc      =   Niveleduc::find()->where(['idestu'=>$estudiante->idestu])->one();
+        $fsoftware      =   Fsoftware::find()->where(['ideq'=>$equipo->ideq])->one();
+        $fpantalla      =   Fpantalla::find()->where(['ideq'=>$equipo->ideq])->one();
+        $ftarjetamadre  =   Ftarjetamadre::find()->where(['ideq'=>$equipo->ideq])->one();
+        $fteclado       =   Fteclado::find()->where(['ideq'=>$equipo->ideq])->one();
+        $fcarga         =   Fcarga::find()->where(['ideq'=>$equipo->ideq])->one();
+        $fgeneral       =   Fgeneral::find()->where(['ideq'=>$equipo->ideq])->one();
 
-        if ($equipo->load(Yii::$app->request->post()) && $equipo->save()) {
+        if (
+            $estado->load(Yii::$app->request->post()) &&
+            $municipio->load(Yii::$app->request->post()) &&
+            $parroquia->load(Yii::$app->request->post()) &&
+            $sedeciat->load(Yii::$app->request->post()) &&
+            $insteduc->load(Yii::$app->request->post()) &&
+            $representante->load(Yii::$app->request->post()) &&
+            $estudiante->load(Yii::$app->request->post()) &&
+            $niveleduc->load(Yii::$app->request->post()) &&
+            $equipo->load(Yii::$app->request->post()) &&
+            $fsoftware->load(Yii::$app->request->post()) &&
+            $fpantalla->load(Yii::$app->request->post()) &&
+            $ftarjetamadre->load(Yii::$app->request->post()) &&
+            $fteclado->load(Yii::$app->request->post()) &&
+            $fcarga->load(Yii::$app->request->post()) &&
+            $fgeneral->load(Yii::$app->request->post())
+        ) {
             return $this->redirect(['view', 'id' => $equipo->ideq]);
         }
 
@@ -321,8 +341,10 @@ class CanaimitaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
+        $purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
         //$this->findModel($id)->delete();
         return $this->redirect(['index']);
     }
@@ -347,9 +369,11 @@ class CanaimitaController extends Controller
     *   @method
     *
     */
-    public function actionMuncall($id)
+    public function actionMuncall()
     {
-        $municipio = Municipio::find()->where(['idesta'=>$id])->all();
+        $purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
+        $municipio = Municipio::find()->where(['idesta'=>$param])->all();
 
         if ($municipio != null) {
             echo '<option value="">---- Seleccione ----</option>';
@@ -365,9 +389,11 @@ class CanaimitaController extends Controller
     *   @method
     *
     */
-    public function actionParrall($id)
+    public function actionParrall()
     {
-        $parroquia = Parroquia::find()->where(['idmunc'=>$id])->all();
+        $purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
+        $parroquia = Parroquia::find()->where(['idmunc'=>$param])->all();
 
         if ($parroquia != null) {
             echo '<option value="">---- Seleccione ----</option>';
@@ -413,7 +439,7 @@ class CanaimitaController extends Controller
     					$fechafinal = "$anioNuevo-01-01";
     				}else {
                         $mesnuevo = (int)$mes + 1;
-                        $mesnuevo = '0'.$mesnuevo;
+                        $mesnuevo = $mesnuevo;
     					$fechafinal = "$anio-$mesnuevo-01";
     				}
                     $equipo = Equipo::find()->where(['>=','frecepcion',$fechainicio])->andWhere(['<','frecepcion',$fechafinal])->all();
@@ -435,6 +461,9 @@ class CanaimitaController extends Controller
                     //API MPDF
                     $pdf = Yii::$app->pdf;
                     $API = $pdf->api;
+                    // Yii::$app->basePath igual a Yii::$app->getBasePath()
+                    $stylesheet = file_get_contents(Yii::$app->getBasePath().'/web/css/csspdf.css');
+                    $API->WriteHTML($stylesheet,1);
                     $pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
 
 					foreach ($equipo as $key => $value):
@@ -483,8 +512,8 @@ class CanaimitaController extends Controller
 						}
 					endforeach;
                     //echo "<pre>";var_dump($mpdf);die;
-                    //return $mpdf->render();
                     $API->Output($pdfFilename,'D');
+                    //return $mpdf->render();
                     if ( !empty($canaimita->mes) ) {
                         Yii::$app->session->setFlash('success', "¡Se ha creado el reporte del $mes!");
                     }else if ( !empty($canaimita->frecepcion) && !empty($canaimita->fentrega) ) {

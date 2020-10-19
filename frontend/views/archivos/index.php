@@ -138,7 +138,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             $url
                         );
                     },
-                    'delete' => function($url){
+                    'delete' => function($url,$model){
                         return Html::a(
                             '<span class="glyphicon glyphicon-remove"></span>',
                             $url

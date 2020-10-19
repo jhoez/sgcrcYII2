@@ -55,11 +55,9 @@ class DescargablesController extends Controller
 
 		if ( !empty($param) ) {
             $formato = Formato::find()->where(['idf'=>$param])->one();
-            $formato->status = 1;
+            $formato->status = '1';
             if( $formato->save() ) {
-                return $this->render('view', [
-                    'model' => $formato,
-                ]);
+                return $this->redirect(['view','id' => $formato->idf]);
             }else {
                 $this->redirect(['site/notfound']);
             }

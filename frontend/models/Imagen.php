@@ -33,7 +33,7 @@ class Imagen extends \yii\db\ActiveRecord
         return [
             [
                 ['imagen'],'file',
-                'skipOnEmpty'=>false,
+                'skipOnEmpty'=>true,
                 'uploadRequired'=>'No has seleccionado ninguna Imagen',// error
                 'maxSize'=>1024*1024*10,//10MB
                 'tooBig'=>'El tamaño maximo permitido es de 10MB',// error
@@ -85,8 +85,8 @@ class Imagen extends \yii\db\ActiveRecord
     *   @method upload valida y guarda el file en un directorio
     *   @return boolean
     */
-    public function uploadArchivo()
+    public function uploadImg()
     {
-        $this->imagen->saveAs($this->ruta.$this->imagen->baseName.'.'.$this->imagen->extension);
+        $this->imagen->saveAs($this->ruta.$this->nombimg.'.'.$this->extension);
     }
 }

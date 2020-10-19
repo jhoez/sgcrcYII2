@@ -36,12 +36,12 @@ class ArchivosController extends Controller
                     ],
                 ],
             ],
-            'verbs' => [
+            /*'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
                     'delete' => ['POST'],
                 ],
-            ],
+            ],*/
         ];
     }
 
@@ -57,7 +57,7 @@ class ArchivosController extends Controller
             $archivos = Formato::findOne($param);// obtiene el registro cuya clave primaria es $param
             $archivos->status = '1';
             if( $archivos->save(false) ) {
-                return $this->render('view',['archivos'=>$archivos]);
+                return $this->redirect(['view','archivos'=>$archivos]);
             }else {
                 $msj = "Ocurrio un error al marcar como visto el Archivo...";
                 return $this->render('/site/notfound',['msj'=>$msj]);
@@ -114,8 +114,10 @@ class ArchivosController extends Controller
      */
     public function actionView($id)
     {
+        $purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
         return $this->render('view', [
-            'archivos' => $this->findModel($id),
+            'archivos' => $this->findModel($param),
         ]);
     }
 
@@ -168,13 +170,41 @@ class ArchivosController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $archivos = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
+        $archivos = $this->findModel($param);
 
-        /*if ($archivos->load(Yii::$app->request->post()) && $archivos->save()) {
-            return $this->redirect(['view', 'id' => $archivos->idf]);
-        }*/
+        if ( $archivos->load(Yii::$app->request->post()) ) {
+            $archivos->ftutor = UploadedFile::getInstance($archivos,'ftutor');
+
+			if ( $archivos->ftutor != NULL ) {
+				$filef = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$archivos->ruta,$archivos->nombf.'.'.$achivos->extens);
+
+				if ($filef) {
+					$archivos->nombf   = $archivos->ftutor->baseName;
+					$archivos->extens  = $archivos->ftutor->extension;
+					if (!empty($archivos->statusacta)) {
+						$archivos->ruta		= 'archivos/fd/';
+					}else {
+						$archivos->ruta		= 'archivos/';
+					}
+					$archivos->tamanio	= $this->convert_format_bytes($archivos->ftutor->size);
+					$archivos->create_at = date( "Y-m-d h:i:s",time() );
+
+					if( $archivos->save() ){
+						$archivos->uploadArchivo();
+						Yii::app()->user->setFlash('formatoC','El formato fue Actualizado.');
+						return $this->redirect(['view', 'id' => $archivos->idf]);
+					}else {//Crear mensaje flash
+						Yii::app()->user->setFlash('error','El formato no fue Actualizado');
+						return $this->redirect($this->createUrl('site/notfound') );
+						//$this->refresh();
+					}
+				}
+			}
+        }
 
         return $this->render('update', [
             'archivos' => $archivos,
@@ -188,17 +218,21 @@ class ArchivosController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-	public function actionDelete($id)
+	public function actionDelete()
 	{
-		$archivos = $this->findModel($id);
-		$ruta = Yii::$app->request->baseUrl.$archivos->ruta;
-		$archivo = $archivos->nombf;
-		$filef = $this->eliminarArchivo($ruta,$archivo);
-		if ($filef) {
+        //echo "<pre>";var_dump('POST:',$_POST,'GET:',$_GET);die;
+        $purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
+		$archivos = $this->findModel($param);
+		$ruta = Yii::$app->basePath.'/web/'.$archivos->ruta;
+		$file = $archivos->nombf.'.'.$archivos->extens;
+		$result = $this->eliminarArchivo($ruta,$file);
+		if ($result) {
 			$archivos->delete();
-            $this->redirect(Yii::$app->urlManager->createUrl('archivos/index'));
+            return $this->redirect(Yii::$app->urlManager->createUrl('archivos/index'));
 		}else {
-            $this->redirect(Yii::$app->urlManager->createUrl('site/notfound'));
+            $msj = 'No se pudo eliminar el registro y el Archivo.';
+            return $this->redirect(['site/notfound',['msj'=>$msj]]);
         }
 
 	}

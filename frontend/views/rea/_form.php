@@ -8,24 +8,66 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="realaum-form">
+<div class="row clearfix">
+    <div class="col-md-offset-3 col-md-6">
+        <div class="rea-form">
 
-    <?php $form = ActiveForm::begin(); ?>
+            <?php $form = ActiveForm::begin([
+                'id'=>'raform',
+                'enableClientValidation'=>true,
+                //'enableAjaxValidation' => true,
+                'options'=>['enctype' => 'multipart/form-data']
+            ]); ?>
 
-    <?= $form->field($model, 'nra')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'nombpro')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'creador')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'colaboracion')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($proyecto, 'descripcion')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'exten')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <?php if (!$imag->isNewRecord) {?>
+        			<div class="row">
+                        <?php echo "Imagen a cambiar: " . $imag->nombimg;?>
+        			</div>
+        		<?php } ?>
+                <div class="">
+                    <?= $form->field($imag, 'imagen')->fileInput() ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'ruta')->textInput(['maxlength' => true]) ?>
+            <div class="form-group">
+                <?php if (!$realidadaumentada->isNewRecord) {?>
+        			<div class="row">
+                        <?php	echo "Patron de Realidad Aumentada a ser reemplazado: " . $realidadaumentada->nra;?>
+        			</div>
+        		<?php } ?>
+                <div class="">
+                    <?= $form->field($realidadaumentada, 'fileglb')->fileInput() ?>
+                </div>
+            </div>
 
-    <?= $form->field($model, 'fk_pro')->textInput() ?>
+            <div class="form-group">
+                <?= Html::submitButton('Subir proyecto', ['class' => 'btn btn-success']) ?>
+            </div>
 
-    <?= $form->field($model, 'fkimag')->textInput() ?>
+            <?php ActiveForm::end(); ?>
 
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
+        </div>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

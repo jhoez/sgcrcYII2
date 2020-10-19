@@ -37,7 +37,6 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
             'yii\\composer\\' => 13,
             'yii\\bootstrap\\' => 14,
             'yii\\' => 4,
-            'yii2tech\\html2pdf\\' => 18,
         ),
         'p' => 
         array (
@@ -162,10 +161,6 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         'yii\\' => 
         array (
             0 => __DIR__ . '/..' . '/yiisoft/yii2',
-        ),
-        'yii2tech\\html2pdf\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/yii2tech/html2pdf/src',
         ),
         'phpDocumentor\\Reflection\\' => 
         array (

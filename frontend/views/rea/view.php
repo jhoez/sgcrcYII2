@@ -4,10 +4,10 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model frontend\models\Realaum */
+/* @var $realidadaumentada frontend\models\Realaum */
 
-$this->title = $model->idra;
-$this->params['breadcrumbs'][] = ['label' => 'Realaums', 'url' => ['index']];
+$this->title = $realidadaumentada->nra;
+$this->params['breadcrumbs'][] = ['label' => 'Proyectos Realidad Aumentada', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -16,8 +16,8 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Update', ['update', 'id' => $model->idra], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Delete', ['delete', 'id' => $model->idra], [
+        <?= Html::a('Update', ['update', 'id' => $realidadaumentada->idra], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Delete', ['delete', 'id' => $realidadaumentada->idra], [
             'class' => 'btn btn-danger',
             'data' => [
                 'confirm' => 'Are you sure you want to delete this item?',
@@ -27,13 +27,13 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model' => $realidadaumentada,
         'attributes' => [
             'idra',
             'nra',
             'exten',
             'ruta',
-            'fk_pro',
+            'idpro',
             'fkimag',
         ],
     ]) ?>

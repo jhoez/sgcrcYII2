@@ -5,14 +5,13 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Realaum */
 
-$this->title = 'Update Realaum: ' . $model->idra;
-$this->params['breadcrumbs'][] = ['label' => 'Realaums', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->idra, 'url' => ['view', 'id' => $model->idra]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->title = 'Actualizar: ' . $model->nra;
+$this->params['breadcrumbs'][] = ['label' => 'Proyectos Realidad Aumentada', 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="realaum-update">
+<div class="rea-update">
 
-    <h1><?= Html::encode($this->title) ?></h1>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

@@ -24,8 +24,7 @@
         "kartik-v/yii2-widget-datepicker": "dev-master",
         "kartik-v/yii2-export": "@dev",
         "kartik-v/yii2-widget-depdrop": "dev-master",
-        "yiisoft/yii2-jui": "*",
-        "yii2tech/html2pdf": "^1.0"
+        "yiisoft/yii2-jui": "*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.1.0",

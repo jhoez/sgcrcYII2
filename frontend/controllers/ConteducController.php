@@ -134,7 +134,7 @@ class ConteducController extends Controller
 
                     if ( $contenido->files && $contenido->validate() ) {
                         if ( $contenido->save() ) {
-                            $img->uploadArchivo();//Guardamos el fichero
+                            $img->uploadImg();//Guardamos el fichero
                             $contenido->uploadArchivo();//Guardamos el fichero
                             //Yii::$app->session->setFlash('libroC',"El Libro '$contenido->nomblib' a sido Registrado");
                         }

@@ -174,15 +174,6 @@ return array (
       '@yii/jui' => $vendorDir . '/yiisoft/yii2-jui',
     ),
   ),
-  'yii2tech/html2pdf' => 
-  array (
-    'name' => 'yii2tech/html2pdf',
-    'version' => '1.0.7.0',
-    'alias' => 
-    array (
-      '@yii2tech/html2pdf' => $vendorDir . '/yii2tech/html2pdf/src',
-    ),
-  ),
   'kartik-v/yii2-widget-select2' => 
   array (
     'name' => 'kartik-v/yii2-widget-select2',

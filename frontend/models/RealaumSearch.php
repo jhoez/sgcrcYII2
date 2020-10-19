@@ -2,9 +2,11 @@
 
 namespace frontend\models;
 
+use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 use frontend\models\Realaum;
+use frontend\models\Usuario;
 
 /**
  * RealaumSearch represents the model behind the search form of `frontend\models\Realaum`.
@@ -17,7 +19,9 @@ class RealaumSearch extends Realaum
     public function rules()
     {
         return [
-            [['idra', 'fk_pro', 'fkimag'], 'integer'],
+            [['nombpro'], 'string','max'=>255],
+            [['creador'], 'string','max'=>50],
+            [['idra', 'idpro', 'fkimag'], 'integer'],
             [['nra', 'exten', 'ruta'], 'safe'],
         ];
     }
@@ -46,6 +50,12 @@ class RealaumSearch extends Realaum
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
+            'sort' => [
+                'defaultOrder'=>['idra'=>SORT_DESC]
+            ],
+            'pagination' => [
+                'pageSize' => 5,
+            ],
         ]);
 
         $this->load($params);
@@ -59,13 +69,19 @@ class RealaumSearch extends Realaum
         // grid filtering conditions
         $query->andFilterWhere([
             'idra' => $this->idra,
-            'fk_pro' => $this->fk_pro,
+            'idpro' => $this->idpro,
             'fkimag' => $this->fkimag,
         ]);
 
+        // encerrar en un if para preguntar si el usuario logeado es superuser, administrador y tutor
+        //$user = Usuario::findOne(Yii::$app->user->getId());
+
         $query->andFilterWhere(['ilike', 'nra', $this->nra])
             ->andFilterWhere(['ilike', 'exten', $this->exten])
-            ->andFilterWhere(['ilike', 'ruta', $this->ruta]);
+            ->andFilterWhere(['ilike', 'ruta', $this->ruta])
+            ->andFilterWhere(['ilike', 'nombpro', $this->nombpro])
+            ->andFilterWhere(['ilike', 'creador', $this->creador]);
+            //->andFilterWhere(['ilike', 'fkuser', $user->iduser]);
 
         return $dataProvider;
     }

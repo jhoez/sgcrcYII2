@@ -62,7 +62,7 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             //'options' => ['tag' => 'div'],
             //'itemOptions' => ['tag' => 'div'],
-            'options'=>['class'=>'nav nav-pills'],
+            'options'=>['class'=>'nav nav-pills  nav-justified'],
             //'clientOptions' => ['collapsible' => false],
         ]);
         ?>

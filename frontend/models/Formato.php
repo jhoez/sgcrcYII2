@@ -68,11 +68,11 @@ class Formato extends \yii\db\ActiveRecord
     public function uploadArchivo()
     {
         if ($this->statusacta == '1') {
-            $this->ftutor->saveAs('archivos/fd/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
+            $this->ftutor->saveAs('archivos/fd/'.$this->nombf.'.'.$this->extens);
         }
 
         if($this->statusacta == '0'){
-            $this->ftutor->saveAs('archivos/'.$this->ftutor->baseName.'.'.$this->ftutor->extension);
+            $this->ftutor->saveAs('archivos/'.$this->nombf.'.'.$this->extens);
         }
     }
 

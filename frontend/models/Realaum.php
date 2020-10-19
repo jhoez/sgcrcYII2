@@ -10,14 +10,14 @@ use Yii;
  * @property string|null $nra
  * @property string|null $exten
  * @property string|null $ruta
- * @property int|null $fk_pro
+ * @property int|null $idpro
  * @property int|null $fkimag
  */
 class Realaum extends \yii\db\ActiveRecord
 {
     public $creador;
 	public $nombpro;
-	public $raimg;// imagen de RA
+    public $usuario;
 	public $fileglb;// archivo GLB
     /**
      * {@inheritdoc}
@@ -35,7 +35,7 @@ class Realaum extends \yii\db\ActiveRecord
         return [
             [
                 ['fileglb'],'file',
-                'skipOnEmpty'=>false,
+                'skipOnEmpty'=>true,
                 'uploadRequired'=>'No has seleccionado ningun Archivo',// error
                 'maxSize'=>1024*1024*100,//10MB
                 'tooBig'=>'El tamaño maximo permitido es de 100MB',// error
@@ -46,12 +46,12 @@ class Realaum extends \yii\db\ActiveRecord
                 //'maxFiles'=>4,
                 //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['fk_pro', 'fkimag'], 'default', 'value' => null],
-            [['fk_pro', 'fkimag'], 'integer'],
+            [['idpro', 'fkimag'], 'default', 'value' => null],
+            [['idpro', 'fkimag'], 'integer'],
             [['nra', 'ruta'], 'string', 'max' => 255],
             [['exten'], 'string', 'max' => 5],
             [['fkimag'], 'exist', 'skipOnError' => true, 'targetClass' => Imagen::className(), 'targetAttribute' => ['fkimag' => 'idimag']],
-            [['fk_pro'], 'exist', 'skipOnError' => true, 'targetClass' => Proyecto::className(), 'targetAttribute' => ['fk_pro' => 'idpro']],
+            [['idpro'], 'exist', 'skipOnError' => true, 'targetClass' => Proyecto::className(), 'targetAttribute' => ['idpro' => 'idpro']],
         ];
     }
 
@@ -63,11 +63,58 @@ class Realaum extends \yii\db\ActiveRecord
         return [
             'idra' => 'Idra',
 			'nra' => 'Nra',
-			'exten' => 'Exten',
+			'exten' => 'Extension',
 			'ruta' => 'Ruta',
-			'fk_pro' => 'fk_pro',
+			'idpro' => 'pro',
 			'fkimag' => 'Fkimag',
 			'fileglb' => 'Patron de Realidad Aumentada',
         ];
+    }
+
+    /**
+    *   @method uploadArchivo
+    *   @return boolean
+    */
+    public function uploadRa()
+    {
+        $this->fileglb->saveAs($this->ruta.$this->nra.'.'.$this->exten);
+    }
+
+    /**
+    *
+    *
+    */
+    public function getRaProyecto()
+    {
+        $proyecto = Proyecto::find()->where(['idpro'=>$this->idpro])->one();
+        return $proyecto;
+    }
+
+    /**
+    *
+    *
+    */
+    public function getRaImagen()
+    {
+        $imagen = Imagen::find()->where(['idimag'=>$this->fkimag])->one();
+        return $imagen;
+    }
+
+    /**
+    *
+    *
+    */
+    public function getidpro()
+    {
+        return $this->hashOne(Proyecto::className(), ['idpro'=>'idpro']);
+    }
+
+    /**
+    *
+    *
+    */
+    public function getfkimag()
+    {
+        return $this->hashOne(Imagen::className(), ['idimag'=>'fkimag']);
     }
 }
