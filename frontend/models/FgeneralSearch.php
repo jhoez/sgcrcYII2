@@ -17,7 +17,7 @@ class FgeneralSearch extends Fgeneral
     public function rules()
     {
         return [
-            [['idgen', 'ideq'], 'integer'],
+            [['idgen', 'fkeq'], 'integer'],
             [['fgen'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FgeneralSearch extends Fgeneral
         // grid filtering conditions
         $query->andFilterWhere([
             'idgen' => $this->idgen,
-            'ideq' => $this->ideq,
+            'fkeq' => $this->fkeq,
         ]);
 
         $query->andFilterWhere(['ilike', 'fgen', $this->fgen]);

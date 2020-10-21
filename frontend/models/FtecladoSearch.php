@@ -17,7 +17,7 @@ class FtecladoSearch extends Fteclado
     public function rules()
     {
         return [
-            [['idtec', 'ideq'], 'integer'],
+            [['idtec', 'fkeq'], 'integer'],
             [['ftec'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FtecladoSearch extends Fteclado
         // grid filtering conditions
         $query->andFilterWhere([
             'idtec' => $this->idtec,
-            'ideq' => $this->ideq,
+            'fkeq' => $this->fkeq,
         ]);
 
         $query->andFilterWhere(['ilike', 'ftec', $this->ftec]);

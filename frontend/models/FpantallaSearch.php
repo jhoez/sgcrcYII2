@@ -17,7 +17,7 @@ class FpantallaSearch extends Fpantalla
     public function rules()
     {
         return [
-            [['idpant', 'ideq'], 'integer'],
+            [['idpant', 'fkeq'], 'integer'],
             [['fpant'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FpantallaSearch extends Fpantalla
         // grid filtering conditions
         $query->andFilterWhere([
             'idpant' => $this->idpant,
-            'ideq' => $this->ideq,
+            'fkeq' => $this->fkeq,
         ]);
 
         $query->andFilterWhere(['ilike', 'fpant', $this->fpant]);

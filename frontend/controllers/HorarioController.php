@@ -90,13 +90,13 @@ class HorarioController extends Controller
                 $paramget = isset($_GET['ms']) ? $purifier->process($_GET['ms']) : null;
                 if ($paramget == null) {
                     $horario->fkuser = Yii::$app->user->getId();
-                    $horario->fecha = date("Y-m-d",time());
+                    $horario->fecha = date( "Y-m-d h:i:s",time() );
 
                     if ( $horario->save() ) {
                         return $this->redirect(['view', 'id' => $horario->idasis]);
                     }
                 }else {
-                    $fecha	= date("Y-m-d",time());
+                    $fecha	= date( "Y-m-d h:i:s",time() );
                     $horario = Asistencia::find()
                                 ->where(['fecha'=>$fecha])
                                 ->andWhere(['fkuser'=>Yii::$app->user->getId()])

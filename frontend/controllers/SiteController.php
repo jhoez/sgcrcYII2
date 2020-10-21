@@ -43,31 +43,24 @@ class SiteController extends Controller
                     ],
                     /*
                     [
-                        //El administrador tiene permisos sobre las siguientes acciones
-                        'actions' => ['logout', 'admin'],
-                        //Esta propiedad establece que tiene permisos
-                        'allow' => true,
-                        //Usuarios autenticados, el signo ? es para invitados
-                        'roles' => ['@'],
+                        'actions' => ['logout', 'admin'],//El administrador tiene permisos sobre las siguientes acciones
+                        'allow' => true,//Esta propiedad establece que tiene permisos
+                        'roles' => ['@'],//Usuarios autenticados, el signo ? es para invitados
                         //Este método nos permite crear un filtro sobre la identidad del usuario
                         //y así establecer si tiene permisos o no
                         'matchCallback' => function ($rule, $action) {
-                            //Llamada al método que comprueba si es un administrador
-                            return User::isUserAdmin(Yii::$app->user->identity->id);
+                            return User::isUserAdmin(Yii::$app->user->identity->id);//Llamada al método que comprueba si es un administrador
                         },
                     ],
                     [
-                       //Los usuarios simples tienen permisos sobre las siguientes acciones
-                       'actions' => ['logout', 'user'],
-                       //Esta propiedad establece que tiene permisos
-                       'allow' => true,
-                       //Usuarios autenticados, el signo ? es para invitados
-                       'roles' => ['@'],
+
+                       'actions' => ['logout', 'user'],//Los usuarios simples tienen permisos sobre las siguientes acciones
+                       'allow' => true,//Esta propiedad establece que tiene permisos
+                       'roles' => ['@'],//Usuarios autenticados, el signo ? es para invitados
                        //Este método nos permite crear un filtro sobre la identidad del usuario
                        //y así establecer si tiene permisos o no
                        'matchCallback' => function ($rule, $action) {
-                          //Llamada al método que comprueba si es un usuario simple
-                          return User::isUserSimple(Yii::$app->user->identity->id);
+                          return User::isUserSimple(Yii::$app->user->identity->id);//Llamada al método que comprueba si es un usuario simple
                       },
                    ],
                     */
@@ -118,54 +111,43 @@ class SiteController extends Controller
     public function actionLogin()
     {
         $this->layout = 'login';
+        $model = new LoginForm();
+
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
-        $model=new LoginForm();
-        if ( $model->load(yii::$app->request->post()) ){
+        // captura de datos enviados por el metodo POST
+        if ( $model->load(Yii::$app->request->post()) )
+        {
             if ( $model->validate() ){
                 $login = Usuario::find()->where(['username'=>$model->username,'password'=>$model->password])->one();
                 if (!empty($login)){
-                    yii::$app->user->login($login);
-                    return $this->redirect(['site/index']);
+                    if ( $model->login($login) )// logeo el usuario
+                    {
+                        if (Yii::$app->user->can('permisoSuperadmin')) {
+                            yii::$app->session->setFlash('success',"Bienvenido SuperAdmin: $login->username");
+                            return $this->redirect(["usuario/index"]);
+                        }
+                        if (Yii::$app->user->can('permisoAdministrador')) {
+                            yii::$app->session->setFlash('success',"Bienvenido administrador: $login->username");
+                            return $this->redirect(["canaimita/index"]);
+                        }
+                        if (Yii::$app->user->can('permisoTutor')) {
+                            yii::$app->session->setFlash('success',"Bienvenido Tutor: $login->username");
+                            return $this->redirect(["site/index"]);
+                        }
+                    }
                 }else{
                     yii::$app->session->setFlash('error','Usuario o contraseña incorrecto');
                 }
             }
         }
-        return $this->render('login',['model'=>$model]);
-    }
 
-    /*
-    public function actionLogin()
-    {
-        $this->layout = 'login';
-        if (!Yii::$app->user->isGuest)
-        {
-            if (Usuario::isUserAdmin(Yii::$app->user->identity->id))
-            {
-                return $this->redirect(["site/admin"]);
-            }else{
-                return $this->redirect(["site/user"]);
-            }
-        }
-        $model = new LoginForm();
-        if ($model->load(Yii::$app->request->post()) && $model->login())
-        {
-            if (Usuario::isUserAdmin(Yii::$app->user->identity->id))
-            {
-                return $this->redirect(["site/admin"]);
-            }else{
-                return $this->redirect(["site/user"]);
-            }
-        } else {
-            return $this->render('login', [
-                'model' => $model,
-            ]);
-        }
+        return $this->render('login', [
+            'model' => $model,
+        ]);
     }
-    */
 
     /**
      * Logs out the current user.
@@ -220,6 +202,7 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm;
+        
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             Yii::$app->session->setFlash('success', 'Gracias por registrarte. Por favor chequeé su inbox para verificación de email.');
             return $this->goHome();

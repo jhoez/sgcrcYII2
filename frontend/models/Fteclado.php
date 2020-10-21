@@ -26,10 +26,10 @@ class Fteclado extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ideq'], 'default', 'value' => null],
-            [['ideq'], 'integer'],
+            [['fkeq'], 'default', 'value' => null],
+            [['fkeq'], 'integer'],
             [['ftec'], 'string', 'max' => 255],
-            [['ideq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['ideq' => 'ideq']],
+            [['fkeq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['fkeq' => 'ideq']],
         ];
     }
 
@@ -41,7 +41,7 @@ class Fteclado extends \yii\db\ActiveRecord
         return [
             'idtec' => 'Idtec',
             'ftec' => 'Ftec',
-            'ideq' => 'Ideq',
+            'fkeq' => 'eq',
         ];
     }
 }

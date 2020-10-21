@@ -17,8 +17,9 @@ class FormatoSearch extends Formato
     public function rules()
     {
         return [
-            [['idf', 'statusacta', 'fkuser'], 'integer'],
-            [['opcion', 'nombf', 'extens', 'ruta', 'tamanio', 'status', 'create_at'], 'safe'],
+            [['idf', 'fkuser'], 'integer'],
+            [['opcion', 'nombf', 'extens', 'ruta', 'tamanio', 'create_at'], 'safe'],
+            [['status', 'statusacta'], 'boolean'],
         ];
     }
 
@@ -65,8 +66,9 @@ class FormatoSearch extends Formato
         // grid filtering conditions
         $query->andFilterWhere([
             'idf' => $this->idf,
-            'create_at' => $this->create_at,
             'statusacta' => $this->statusacta,
+            'status' => $this->status,
+            'create_at' => $this->create_at,
             'fkuser' => $this->fkuser,
         ]);
 
@@ -74,8 +76,7 @@ class FormatoSearch extends Formato
             ->andFilterWhere(['ilike', 'nombf', $this->nombf])
             ->andFilterWhere(['ilike', 'extens', $this->extens])
             ->andFilterWhere(['ilike', 'ruta', $this->ruta])
-            ->andFilterWhere(['ilike', 'tamanio', $this->tamanio])
-            ->andFilterWhere(['ilike', 'status', $this->status]);
+            ->andFilterWhere(['ilike', 'tamanio', $this->tamanio]);
 
         return $dataProvider;
     }

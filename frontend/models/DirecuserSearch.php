@@ -17,7 +17,7 @@ class DirecuserSearch extends Direcuser
     public function rules()
     {
         return [
-            [['iddiruser', 'idfkesta', 'idfkmunc', 'idfkpar', 'idfkciat', 'idfkinst', 'idfkrep'], 'integer'],
+            [['iddiruser', 'fkesta', 'fkmunc', 'fkpar', 'fkciat', 'fkinst', 'fkrep'], 'integer'],
         ];
     }
 
@@ -58,12 +58,12 @@ class DirecuserSearch extends Direcuser
         // grid filtering conditions
         $query->andFilterWhere([
             'iddiruser' => $this->iddiruser,
-            'idfkesta' => $this->idfkesta,
-            'idfkmunc' => $this->idfkmunc,
-            'idfkpar' => $this->idfkpar,
-            'idfkciat' => $this->idfkciat,
-            'idfkinst' => $this->idfkinst,
-            'idfkrep' => $this->idfkrep,
+            'fkesta' => $this->fkesta,
+            'fkmunc' => $this->fkmunc,
+            'fkpar' => $this->fkpar,
+            'fkciat' => $this->fkciat,
+            'fkinst' => $this->fkinst,
+            'fkrep' => $this->fkrep,
         ]);
 
         return $dataProvider;

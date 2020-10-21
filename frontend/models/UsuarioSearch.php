@@ -17,8 +17,22 @@ class UsuarioSearch extends Usuario
     public function rules()
     {
         return [
-            [['iduser', 'status', 'created_at', 'updated_at'], 'integer'],
-            [['username', 'auth_key', 'password', 'password_reset_token', 'email', 'verification_token'], 'safe'],
+            [['iduser', 'status', 'role'], 'integer'],
+            [
+                [
+                    'username',
+                    'auth_key',
+                    'password',
+                    'password_reset_token',
+                    'email',
+                    'created_at',
+                    'updated_at',
+                    'verification_token',
+                    'cedula',
+                    'cbit'
+                ],
+                'safe'
+            ],
         ];
     }
 
@@ -62,6 +76,7 @@ class UsuarioSearch extends Usuario
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'role' => $this->role,
         ]);
 
         $query->andFilterWhere(['ilike', 'username', $this->username])
@@ -69,7 +84,9 @@ class UsuarioSearch extends Usuario
             ->andFilterWhere(['ilike', 'password', $this->password])
             ->andFilterWhere(['ilike', 'password_reset_token', $this->password_reset_token])
             ->andFilterWhere(['ilike', 'email', $this->email])
-            ->andFilterWhere(['ilike', 'verification_token', $this->verification_token]);
+            ->andFilterWhere(['ilike', 'verification_token', $this->verification_token])
+            ->andFilterWhere(['ilike', 'cedula', $this->cedula])
+            ->andFilterWhere(['ilike', 'cbit', $this->cbit]);
 
         return $dataProvider;
     }

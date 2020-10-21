@@ -33,15 +33,15 @@ class Representante extends \yii\db\ActiveRecord
     {
         return [
             [['nombre','cedula','telf'], 'required'],
-            [['idciat', 'idinst', 'fkuser'], 'default', 'value' => null],
-            [['idciat', 'idinst', 'fkuser'], 'integer'],
+            [['fkciat', 'fkinst', 'fkuser'], 'default', 'value' => null],
+            [['fkciat', 'fkinst', 'fkuser'], 'integer'],
             [['cedula'], 'string', 'max' => 8],
             [['nombre'], 'string', 'max' => 50],
             [['telf'], 'string', 'max' => 12],
-            [['docente'], 'string', 'max' => 1],
+            [['docente'], 'boolean'],
             [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
-            [['idinst'], 'exist', 'skipOnError' => true, 'targetClass' => Insteduc::className(), 'targetAttribute' => ['idinst' => 'idinst']],
-            [['idciat'], 'exist', 'skipOnError' => true, 'targetClass' => Sedeciat::className(), 'targetAttribute' => ['idciat' => 'idciat']],
+            [['fkinst'], 'exist', 'skipOnError' => true, 'targetClass' => Insteduc::className(), 'targetAttribute' => ['fkinst' => 'idinst']],
+            [['fkciat'], 'exist', 'skipOnError' => true, 'targetClass' => Sedeciat::className(), 'targetAttribute' => ['fkciat' => 'idciat']],
         ];
     }
 
@@ -64,13 +64,13 @@ class Representante extends \yii\db\ActiveRecord
 
     public function getRepInstituto()
     {
-        $instituto = Insteduc::find()->where(['idinst'=>$this->idinst])->one();
+        $instituto = Insteduc::find()->where(['idinst'=>$this->fkinst])->one();
         return $instituto;
     }
 
     public function getRepSedeciat()
     {
-        $sedeciat = Sedeciat::find()->where(['idciat'=>$this->idciat])->one();
+        $sedeciat = Sedeciat::find()->where(['idciat'=>$this->fkciat])->one();
         return $sedeciat;
     }
 

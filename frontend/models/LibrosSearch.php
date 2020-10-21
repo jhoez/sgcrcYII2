@@ -17,7 +17,7 @@ class LibrosSearch extends Libros
     public function rules()
     {
         return [
-            [['idlib', 'idfkimag'], 'integer'],
+            [['idlib', 'fkimag'], 'integer'],
             [['nomblib', 'extension', 'ruta', 'coleccion', 'nivel', 'tamanio'], 'safe'],
         ];
     }
@@ -65,7 +65,7 @@ class LibrosSearch extends Libros
         // grid filtering conditions
         $query->andFilterWhere([
             'idlib' => $this->idlib,
-            'idfkimag' => $this->idfkimag,
+            'fkimag' => $this->fkimag,
         ]);
 
         $query->andFilterWhere(['ilike', 'nomblib', $this->nomblib])

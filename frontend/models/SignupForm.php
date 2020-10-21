@@ -12,6 +12,8 @@ class SignupForm extends Model
 {
     public $username;
     public $email;
+    public $cedula;
+    public $cbit;
     public $password;
 
 
@@ -48,17 +50,25 @@ class SignupForm extends Model
             return null;
         }
 
-        $user = new Usuario();
+        $user = new Usuario;
         $user->username = $this->username;
         $user->email = $this->email;
         $user->password=$this->password;
-        $user->auth_key=random_int(5, 10);
-        $user->password_reset_token=random_int(5, 10);
+        $user->cedula=$this->cedula;
+        $user->cbit=$this->cbit;
+        $user->generateAuthKey();
+        $user->generatePasswordResetToken();
         $user->status=1;
-        $user->created_at=date("Y",time());
-        $user->updated_at=date("Y",time());
-        $user->verification_token=random_int(5, 10);
+        $user->created_at=date( "Y",time() );
+        $user->updated_at=date( "Y",time() );
+        $user->generateEmailVerificationToken();
 
+        /*
+        // se asigna por defecto el role tutor al usuario creado.
+        $auth = Yii::$app->authManager;
+        $tutorRole = $auth->getRole('tutor');
+        $auth->assign($tutorRole, $user->getId());
+        */
         return $user->save();
         //return $user->save() && $this->sendEmail($user);
 

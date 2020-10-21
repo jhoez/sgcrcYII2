@@ -55,7 +55,7 @@ class ArchivosController extends Controller
 
 		if ( !empty($param) ) {
             $archivos = Formato::findOne($param);// obtiene el registro cuya clave primaria es $param
-            $archivos->status = '1';
+            $archivos->status = true;
             if( $archivos->save(false) ) {
                 return $this->redirect(['view','archivos'=>$archivos]);
             }else {
@@ -95,7 +95,7 @@ class ArchivosController extends Controller
      */
     public function actionIndex()
     {
-        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>'1'])->all();
+        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
         $searchModel = new FormatoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -136,13 +136,13 @@ class ArchivosController extends Controller
 
             $archivos->nombf = $archivos->ftutor->baseName;
             $archivos->extens = $archivos->ftutor->extension;
-            if ($archivos->statusacta == '1') {
+            if ($archivos->statusacta == true) {
                 $archivos->ruta = 'archivos/fd/';
             }else {
                 $archivos->ruta = 'archivos/';
             }
             $archivos->tamanio = $this->convert_format_bytes($archivos->ftutor->size);
-            $archivos->status = '0';
+            $archivos->status = false;
             $archivos->create_at = date( "Y-m-d h:i:s",time() );
             $archivos->fkuser = Yii::$app->user->getId();
 

@@ -17,7 +17,7 @@ class FtarjetamadreSearch extends Ftarjetamadre
     public function rules()
     {
         return [
-            [['idtarj', 'ideq'], 'integer'],
+            [['idtarj', 'fkeq'], 'integer'],
             [['ftarj'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FtarjetamadreSearch extends Ftarjetamadre
         // grid filtering conditions
         $query->andFilterWhere([
             'idtarj' => $this->idtarj,
-            'ideq' => $this->ideq,
+            'fkeq' => $this->fkeq,
         ]);
 
         $query->andFilterWhere(['ilike', 'ftarj', $this->ftarj]);

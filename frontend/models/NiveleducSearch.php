@@ -18,7 +18,8 @@ class NiveleducSearch extends Niveleduc
     {
         return [
             [['idniv', 'idestu'], 'integer'],
-            [['nivel', 'graduado'], 'safe'],
+            [['nivel'], 'safe'],
+            [['graduado'], 'boolean'],
         ];
     }
 

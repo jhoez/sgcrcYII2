@@ -130,7 +130,7 @@ class ProdigController extends Controller
     						$multimedia->tipomult	= 'audio';
     						$multimedia->ruta		= 'proyectos/audio/';
     					}
-    					$multimedia->fkidpro = $proyecto->idpro;
+    					$multimedia->fkpro = $proyecto->idpro;
 
     					if (
     						$multimedia->extension == 'mp4' ||

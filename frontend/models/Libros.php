@@ -13,7 +13,7 @@ use Yii;
  * @property string|null $coleccion
  * @property string|null $nivel
  * @property string|null $tamanio
- * @property int|null $idfkimag
+ * @property int|null $fkimag
  */
 class Libros extends \yii\db\ActiveRecord
 {
@@ -46,13 +46,13 @@ class Libros extends \yii\db\ActiveRecord
                 //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
             [['coleccion'],'required'],
-            [['idfkimag'], 'default', 'value' => null],
-            [['idfkimag'], 'integer'],
+            [['fkimag'], 'default', 'value' => null],
+            [['fkimag'], 'integer'],
             [['nomblib', 'ruta', 'coleccion'], 'string', 'max' => 255],
             [['extension'], 'string', 'max' => 5],
             [['nivel'], 'string', 'max' => 11],
             [['tamanio'], 'string', 'max' => 50],
-            [['idfkimag'], 'exist', 'skipOnError' => true, 'targetClass' => Imagen::className(), 'targetAttribute' => ['idfkimag' => 'idimag']],
+            [['fkimag'], 'exist', 'skipOnError' => true, 'targetClass' => Imagen::className(), 'targetAttribute' => ['fkimag' => 'idimag']],
         ];
     }
 
@@ -69,7 +69,7 @@ class Libros extends \yii\db\ActiveRecord
 			'coleccion' => 'Coleccion',
 			'nivel' => 'Nivel Educativo',
 			'tamanio' => 'Size',
-			'idfkimag' => 'Imagen',
+			'fkimag' => 'Imagen',
 			'files' => 'Archivo a subir'
         ];
     }
@@ -80,7 +80,7 @@ class Libros extends \yii\db\ActiveRecord
     */
     public function getimagen()
     {
-        $imagen = Imagen::find()->where(['idimag'=>$this->idfkimag])->one();
+        $imagen = Imagen::find()->where(['idimag'=>$this->fkimag])->one();
         return $imagen;
     }
 

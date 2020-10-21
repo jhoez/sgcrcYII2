@@ -9,8 +9,8 @@ use frontend\models\Niveleduc;
  *
  * @property int $idestu
  * @property string|null $nombestu
- * @property int|null $idrep
- * @property int|null $idinst
+ * @property int|null $fkrep
+ * @property int|null $fkinst
  */
 class Estudiante extends \yii\db\ActiveRecord
 {
@@ -28,11 +28,11 @@ class Estudiante extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['idrep', 'idinst'], 'default', 'value' => null],
-            [['idrep', 'idinst'], 'integer'],
+            [['fkrep', 'fkinst'], 'default', 'value' => null],
+            [['fkrep', 'fkinst'], 'integer'],
             [['nombestu'], 'string', 'max' => 255],
-            [['idinst'], 'exist', 'skipOnError' => true, 'targetClass' => Insteduc::className(), 'targetAttribute' => ['idinst' => 'idinst']],
-            [['idrep'], 'exist', 'skipOnError' => true, 'targetClass' => Representante::className(), 'targetAttribute' => ['idrep' => 'idrep']],
+            [['fkinst'], 'exist', 'skipOnError' => true, 'targetClass' => Insteduc::className(), 'targetAttribute' => ['fkinst' => 'idinst']],
+            [['fkrep'], 'exist', 'skipOnError' => true, 'targetClass' => Representante::className(), 'targetAttribute' => ['fkrep' => 'idrep']],
         ];
     }
 
@@ -44,14 +44,14 @@ class Estudiante extends \yii\db\ActiveRecord
         return [
             'idestu' => 'ID',
             'nombestu' => 'Nombre Estudiante',
-            'idrep' => 'Rep',
-            'idinst' => 'Inst',
+            'fkrep' => 'Rep',
+            'fkinst' => 'Inst',
         ];
     }
 
     public function getEstNiveleduc()
     {
-        $niveleduc = Niveleduc::find()->where(['idestu'=>$this->idestu])->one();
+        $niveleduc = Niveleduc::find()->where(['fkestu'=>$this->idestu])->one();
         return $niveleduc;
     }
 }

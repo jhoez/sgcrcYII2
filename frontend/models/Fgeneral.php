@@ -26,10 +26,10 @@ class Fgeneral extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ideq'], 'default', 'value' => null],
-            [['ideq'], 'integer'],
+            [['fkeq'], 'default', 'value' => null],
+            [['fkeq'], 'integer'],
             [['fgen'], 'string', 'max' => 255],
-            [['ideq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['ideq' => 'ideq']],
+            [['fkeq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['fkeq' => 'ideq']],
         ];
     }
 
@@ -41,13 +41,13 @@ class Fgeneral extends \yii\db\ActiveRecord
         return [
             'idgen' => 'Idgen',
             'fgen' => 'Fgen',
-            'ideq' => 'Ideq',
+            'fkeq' => 'Ideq',
         ];
     }
 
     public function getFgenequipo()
     {
-        $equipo = Equipo::find()->where(['ideq'=>'ideq'])->one();
+        $equipo = Equipo::find()->where(['ideq'=>$this->fkeq])->one();
         return $equipo;
     }
 }

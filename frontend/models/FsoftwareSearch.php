@@ -17,7 +17,7 @@ class FsoftwareSearch extends Fsoftware
     public function rules()
     {
         return [
-            [['idsoft', 'ideq'], 'integer'],
+            [['idsoft', 'fkeq'], 'integer'],
             [['fsoft'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FsoftwareSearch extends Fsoftware
         // grid filtering conditions
         $query->andFilterWhere([
             'idsoft' => $this->idsoft,
-            'ideq' => $this->ideq,
+            'fkeq' => $this->fkeq,
         ]);
 
         $query->andFilterWhere(['ilike', 'fsoft', $this->fsoft]);

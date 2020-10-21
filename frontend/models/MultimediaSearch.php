@@ -17,7 +17,7 @@ class MultimediaSearch extends Multimedia
     public function rules()
     {
         return [
-            [['idmult', 'fkidpro'], 'integer'],
+            [['idmult', 'fkpro'], 'integer'],
             [['nombmult', 'extension', 'tipomult', 'tamanio', 'ruta'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class MultimediaSearch extends Multimedia
         // grid filtering conditions
         $query->andFilterWhere([
             'idmult' => $this->idmult,
-            'fkidpro' => $this->fkidpro,
+            'fkpro' => $this->fkpro,
         ]);
 
         $query->andFilterWhere(['ilike', 'nombmult', $this->nombmult])

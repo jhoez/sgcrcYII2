@@ -20,6 +20,9 @@ use yii\web\IdentityInterface;
  * @property int $created_at
  * @property int $updated_at
  * @property string|null $verification_token
+ * @property string|null $cedula
+ * @property string|null $cbit
+ * @property int|null $role
  */
 class Usuario extends ActiveRecord implements IdentityInterface
 {
@@ -43,10 +46,13 @@ class Usuario extends ActiveRecord implements IdentityInterface
         return [
             [['username','password', 'email'], 'required'],
             [['created_at', 'updated_at'], 'default', 'value' => null],
+            [['status', 'role'], 'default', 'value' => null],
+            [['status', 'role'], 'integer'],
             [['iduser','status', 'created_at', 'updated_at'], 'integer'],
+            [['cedula'], 'string', 'max' => 30],
             //['status', 'default', 'value' => self::STATUS_INACTIVE],
             //['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
-            //[['username', 'password', 'password_reset_token', 'email', 'verification_token'], 'string', 'max' => 255],
+            [['username', 'password', 'password_reset_token', 'email', 'verification_token', 'cbit'], 'string', 'max' => 255],
             //[['auth_key'], 'string', 'max' => 32],
         ];
     }
@@ -67,22 +73,24 @@ class Usuario extends ActiveRecord implements IdentityInterface
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'verification_token' => 'Verification Token',
+            'cedula' => 'Cedula',
+            'cbit' => 'Cbit',
+            'role' => 'Role',
         ];
     }
 
     public static function isUserAdmin($id)
     {
-        if (Users::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 1])){
+        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 1])){
             return true;
         } else {
             return false;
         }
-
     }
 
-    public static function isUserSimple($id)
+    public static function isUserTutor($id)
     {
-        if (Users::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 2])){
+        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 2])){
             return true;
         } else {
             return false;

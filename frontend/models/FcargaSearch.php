@@ -17,7 +17,7 @@ class FcargaSearch extends Fcarga
     public function rules()
     {
         return [
-            [['idcarg', 'ideq'], 'integer'],
+            [['idcarg', 'fkeq'], 'integer'],
             [['fcarg'], 'safe'],
         ];
     }
@@ -59,7 +59,7 @@ class FcargaSearch extends Fcarga
         // grid filtering conditions
         $query->andFilterWhere([
             'idcarg' => $this->idcarg,
-            'ideq' => $this->ideq,
+            'fkeq' => $this->fkeq,
         ]);
 
         $query->andFilterWhere(['ilike', 'fcarg', $this->fcarg]);

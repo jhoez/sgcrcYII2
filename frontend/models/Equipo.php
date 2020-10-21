@@ -18,7 +18,7 @@ use frontend\models\Fgeneral;
  * @property string|null $fentrega
  * @property string|null $eqversion
  * @property string|null $eqstatus
- * @property int|null $idrep
+ * @property int|null $fkrep
  * @property string|null $diagnostico
  * @property string|null $observacion
  * @property string|null $status
@@ -44,14 +44,14 @@ class Equipo extends \yii\db\ActiveRecord
             [['eqserial', 'eqversion', 'eqstatus'],'required'],
             [['mes'], 'string', 'max' => 2],// propiedad agregada, no esta en la base de datos.
             [['frecepcion', 'fentrega'], 'safe'],
-            [['idrep'], 'default', 'value' => null],
-            [['idrep'], 'integer'],
+            [['fkrep'], 'default', 'value' => null],
+            [['fkrep'], 'integer'],
             [['eqserial'], 'string', 'max' => 125],
             [['eqversion'], 'string', 'max' => 6],
             [['eqstatus'], 'string', 'max' => 11],
             [['diagnostico', 'observacion'], 'string', 'max' => 500],
-            [['status'], 'string', 'max' => 1],
-            [['idrep'], 'exist', 'skipOnError' => true, 'targetClass' => Representante::className(), 'targetAttribute' => ['idrep' => 'idrep']],
+            [['status'], 'boolean'],
+            [['fkrep'], 'exist', 'skipOnError' => true, 'targetClass' => Representante::className(), 'targetAttribute' => ['fkrep' => 'idrep']],
         ];
     }
 
@@ -67,7 +67,7 @@ class Equipo extends \yii\db\ActiveRecord
             'fentrega'      => 'Fecha entrega',
             'eqversion'     => 'Version del Equipo',
             'eqstatus'      => 'Status del Equipo',
-            'idrep'         => 'Representante',
+            'fkrep'         => 'Representante',
             'diagnostico'   => 'Diagnostico del Equipo',
             'observacion'   => 'Observacion del Equipo',
             'status'        => 'Status entrega',
@@ -79,7 +79,7 @@ class Equipo extends \yii\db\ActiveRecord
 
     public function getCanrepresentante()
     {
-        $representante = Representante::find()->where(['idrep'=>$this->idrep])->one();
+        $representante = Representante::find()->where(['idrep'=>$this->fkrep])->one();
         return $representante;
     }
 
@@ -87,9 +87,9 @@ class Equipo extends \yii\db\ActiveRecord
     *   @method obtiene relacion para utilizarla en el search con joinWith()
     *
     */
-    public function getidrep()
+    public function getfkrep()
     {
-        return $this->hasOne(Representante::className(), ['idrep' => 'idrep']);
+        return $this->hasOne(Representante::className(), ['idrep' => 'fkrep']);
     }
 
     /**
@@ -98,7 +98,7 @@ class Equipo extends \yii\db\ActiveRecord
     */
     public function getCanfsoftware()
     {
-        $fsoftware = Fsoftware::find()->where(['ideq'=>$this->ideq])->one();
+        $fsoftware = Fsoftware::find()->where(['fkeq'=>$this->ideq])->one();
         return $fsoftware;
     }
 
@@ -108,7 +108,7 @@ class Equipo extends \yii\db\ActiveRecord
     */
     public function getCanfpantalla()
     {
-        $fpantalla = Fpantalla::find()->where(['ideq'=>$this->ideq])->one();
+        $fpantalla = Fpantalla::find()->where(['fkeq'=>$this->ideq])->one();
         return $fpantalla;
     }
 
@@ -118,7 +118,7 @@ class Equipo extends \yii\db\ActiveRecord
     */
     public function getCanftarjetamadre()
     {
-        $ftarjetamadre = Ftarjetamadre::find()->where(['ideq'=>$this->ideq])->one();
+        $ftarjetamadre = Ftarjetamadre::find()->where(['fkeq'=>$this->ideq])->one();
         return $ftarjetamadre;
     }
 
@@ -128,7 +128,7 @@ class Equipo extends \yii\db\ActiveRecord
     */
     public function getCanfteclado()
     {
-        $fteclado = Fteclado::find()->where(['ideq'=>$this->ideq])->one();
+        $fteclado = Fteclado::find()->where(['fkeq'=>$this->ideq])->one();
         return $fteclado;
     }
 
@@ -138,7 +138,7 @@ class Equipo extends \yii\db\ActiveRecord
     */
     public function getCanfcarga()
     {
-        $fcarga = Fcarga::find()->where(['ideq'=>$this->ideq])->one();
+        $fcarga = Fcarga::find()->where(['fkeq'=>$this->ideq])->one();
         return $fcarga;
     }
 
@@ -148,7 +148,7 @@ class Equipo extends \yii\db\ActiveRecord
     */
     public function getCanfgeneral()
     {
-        $fgeneral = Fgeneral::find()->where(['ideq'=>$this->ideq])->one();
+        $fgeneral = Fgeneral::find()->where(['fkeq'=>$this->ideq])->one();
         return $fgeneral;
     }
 }

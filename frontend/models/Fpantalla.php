@@ -8,7 +8,7 @@ use Yii;
  *
  * @property int $idpant
  * @property string|null $fpant
- * @property int|null $ideq
+ * @property int|null $fkeq
  */
 class Fpantalla extends \yii\db\ActiveRecord
 {
@@ -26,10 +26,10 @@ class Fpantalla extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ideq'], 'default', 'value' => null],
-            [['ideq'], 'integer'],
+            [['fkeq'], 'default', 'value' => null],
+            [['fkeq'], 'integer'],
             [['fpant'], 'string', 'max' => 255],
-            [['ideq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['ideq' => 'ideq']],
+            [['fkeq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['fkeq' => 'ideq']],
         ];
     }
 
@@ -41,13 +41,13 @@ class Fpantalla extends \yii\db\ActiveRecord
         return [
             'idpant' => 'Idpant',
             'fpant' => 'Fpant',
-            'ideq' => 'Ideq',
+            'fkeq' => 'Ideq',
         ];
     }
 
     public function getFpantequipo()
     {
-        $equipo = Equipo::find()->where(['ideq'=>'ideq'])->one();
+        $equipo = Equipo::find()->where(['ideq'=>$this->fkeq])->one();
         return $equipo;
     }
 }

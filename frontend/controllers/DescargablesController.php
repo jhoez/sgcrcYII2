@@ -55,7 +55,7 @@ class DescargablesController extends Controller
 
 		if ( !empty($param) ) {
             $formato = Formato::find()->where(['idf'=>$param])->one();
-            $formato->status = '1';
+            $formato->status = true;
             if( $formato->save() ) {
                 return $this->redirect(['view','id' => $formato->idf]);
             }else {
@@ -72,7 +72,7 @@ class DescargablesController extends Controller
      */
     public function actionIndex()
     {
-        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>'1'])->all();
+        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
         $searchModel = new FormatoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -132,13 +132,13 @@ class DescargablesController extends Controller
 
             $formato->nombf = $formato->ftutor->baseName;
             $formato->extens = $formato->ftutor->extension;
-            if ($formato->statusacta == '1') {
+            if ($formato->statusacta == true) {
                 $formato->ruta = 'formatos/fd/';
             }else {
                 $formato->ruta = 'formatos/';
             }
             $formato->tamanio = $this->convert_format_bytes($formato->ftutor->size);
-            $formato->status = '0';
+            $formato->status = false;
             $formato->create_at = date( "Y-m-d h:i:s",time() );
 
             if ( $formato->ftutor && $formato->validate() ) {
@@ -163,15 +163,15 @@ class DescargablesController extends Controller
      */
     public function actionUpdate($id)
     {
-        /*$model = $this->findModel($id);
+        $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        /*if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->idf]);
-        }
+        }*/
 
         return $this->render('update', [
             'model' => $model,
-        ]);*/
+        ]);
     }
 
     /**

@@ -71,11 +71,11 @@ class CanaimitaController extends Controller
      */
     public function actionIndex()
     {
-        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>'1'])->all();
+        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
         $fsearchModel = new FormatoSearch;
         $fdataProvider = $fsearchModel->search(Yii::$app->request->queryParams);
         // colocar un if para el tutor solamente
-        //$fdataProvider->query->where(['status'=>'0'])->all();
+        //$fdataProvider->query->where(['status'=>false])->all();
         $csearchModel = new EquipoSearch;
         $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);
 
@@ -167,37 +167,37 @@ class CanaimitaController extends Controller
                 try {
                     if ($sedeciat->save()) {
                         if ($insteduc->save()) {
-                            $representante->idciat = $sedeciat->idciat;
+                            $representante->fkciat = $sedeciat->idciat;
                             $representante->fkuser = Yii::$app->user->getId();
-                            $representante->idinst = $insteduc->idinst;
+                            $representante->fkinst = $insteduc->idinst;
                             if ($representante->save()) {
-                                $estudiante->idinst = $insteduc->idinst;
-                                $estudiante->idrep = $representante->idrep;
+                                $estudiante->fkinst = $insteduc->idinst;
+                                $estudiante->fkrep = $representante->idrep;
                                 if ($estudiante->save()) {
-                                    $niveleduc->idestu = $estudiante->idestu;
+                                    $niveleduc->fkestu = $estudiante->idestu;
                                     if ($niveleduc->save()) {
-                                        $direcuser->idfkesta = $estado->idesta;
-                                        $direcuser->idfkmunc = $municipio->idmunc;
-                                        $direcuser->idfkpar = $parroquia->idpar;
-                                        $direcuser->idfkciat = $sedeciat->idciat;
-                                        $direcuser->idfkinst = $insteduc->idinst;
-                                        $direcuser->idfkrep = $representante->idrep;
+                                        $direcuser->fkesta = $estado->idesta;
+                                        $direcuser->fkmunc = $municipio->idmunc;
+                                        $direcuser->fkpar = $parroquia->idpar;
+                                        $direcuser->fkciat = $sedeciat->idciat;
+                                        $direcuser->fkinst = $insteduc->idinst;
+                                        $direcuser->fkrep = $representante->idrep;
                                         if ($direcuser->save()) {
                                             $fecha = date( "Y-m-d h:i:s",time() );// OBTIENE HORA ACTUAL DE MI MAQUINA
                                             $equipo->frecepcion = $fecha;
-                                            $equipo->idrep = $representante->idrep;
+                                            $equipo->fkrep = $representante->idrep;
                                             if ($equipo->save()) {
-                                                $fsoftware->ideq = $equipo->ideq;
+                                                $fsoftware->fkeq = $equipo->ideq;
     											if ( $fsoftware->save() ) {
-    												$fpantalla->ideq = $equipo->ideq;
+    												$fpantalla->fkeq = $equipo->ideq;
     												if ( $fpantalla->save() ) {
-    													$ftarjetamadre->ideq = $equipo->ideq;
+    													$ftarjetamadre->fkeq = $equipo->ideq;
     													if ( $ftarjetamadre->save() ) {
-    														$fteclado->ideq = $equipo->ideq;
+    														$fteclado->fkeq = $equipo->ideq;
     														if ( $fteclado->save() ) {
-    															$fcarga->ideq = $equipo->ideq;
+    															$fcarga->fkeq = $equipo->ideq;
     															if ( $fcarga->save() ) {
-    																$fgeneral->ideq = $equipo->ideq;
+    																$fgeneral->fkeq = $equipo->ideq;
     																if ( $fgeneral->save() ) {
                                                                         Yii::$app->session->setFlash('success', "La Canaimita $equipo->eqserial fue Registrada");
     																}
@@ -273,24 +273,24 @@ class CanaimitaController extends Controller
         $purifier       =   new HtmlPurifier;
         $param          =   $purifier->process( Yii::$app->request->get('id') );
         $equipo         =   $this->findModel($param);
-        $representante  =   Representante::find()->where(['idrep'=>$equipo->idrep])->one();
-        $estudiante     =   Estudiante::find()->where(['idrep'=>$representante->idrep])->one();
-        $direcuser      =   Direcuser::find()->where(['idfkrep'=>$representante->idrep])->one();
+        $representante  =   Representante::find()->where(['idrep'=>$equipo->fkrep])->one();
+        $estudiante     =   Estudiante::find()->where(['fkrep'=>$representante->idrep])->one();
+        $direcuser      =   Direcuser::find()->where(['fkrep'=>$representante->idrep])->one();
         $estado         =   new Estado;
         $municipio      =   new Municipio;
         $parroquia      =   new Parroquia;
-        $estadoArray    =   Estado::find()->asArray()->where(['idesta'=>$direcuser->idfkesta])->all();
-        $municipioArray =   Municipio::find()->asArray()->where(['idmunc'=>$direcuser->idfkmunc])->all();
-        $parroquiaArray =   Parroquia::find()->asArray()->where(['idpar'=>$direcuser->idfkpar])->all();
-        $sedeciat       =   Sedeciat::find()->where(['idciat'=>$direcuser->idfkciat])->one();
-        $insteduc       =   Insteduc::find()->where(['idinst'=>$direcuser->idfkinst])->one();
-        $niveleduc      =   Niveleduc::find()->where(['idestu'=>$estudiante->idestu])->one();
-        $fsoftware      =   Fsoftware::find()->where(['ideq'=>$equipo->ideq])->one();
-        $fpantalla      =   Fpantalla::find()->where(['ideq'=>$equipo->ideq])->one();
-        $ftarjetamadre  =   Ftarjetamadre::find()->where(['ideq'=>$equipo->ideq])->one();
-        $fteclado       =   Fteclado::find()->where(['ideq'=>$equipo->ideq])->one();
-        $fcarga         =   Fcarga::find()->where(['ideq'=>$equipo->ideq])->one();
-        $fgeneral       =   Fgeneral::find()->where(['ideq'=>$equipo->ideq])->one();
+        $estadoArray    =   Estado::find()->asArray()->where(['idesta'=>$direcuser->fkesta])->all();
+        $municipioArray =   Municipio::find()->asArray()->where(['idmunc'=>$direcuser->fkmunc])->all();
+        $parroquiaArray =   Parroquia::find()->asArray()->where(['idpar'=>$direcuser->fkpar])->all();
+        $sedeciat       =   Sedeciat::find()->where(['idciat'=>$direcuser->fkciat])->one();
+        $insteduc       =   Insteduc::find()->where(['idinst'=>$direcuser->fkinst])->one();
+        $niveleduc      =   Niveleduc::find()->where(['fkestu'=>$estudiante->idestu])->one();
+        $fsoftware      =   Fsoftware::find()->where(['fkeq'=>$equipo->ideq])->one();
+        $fpantalla      =   Fpantalla::find()->where(['fkeq'=>$equipo->ideq])->one();
+        $ftarjetamadre  =   Ftarjetamadre::find()->where(['fkeq'=>$equipo->ideq])->one();
+        $fteclado       =   Fteclado::find()->where(['fkeq'=>$equipo->ideq])->one();
+        $fcarga         =   Fcarga::find()->where(['fkeq'=>$equipo->ideq])->one();
+        $fgeneral       =   Fgeneral::find()->where(['fkeq'=>$equipo->ideq])->one();
 
         if (
             $estado->load(Yii::$app->request->post()) &&
@@ -701,7 +701,7 @@ class CanaimitaController extends Controller
     {
         $equipo = $this->findModel($id);
         $equipo->fentrega = date( "Y-m-d h:i:s",time() );
-        $equipo->status = '1';
+        $equipo->status = true;
         if ($equipo->save()) {
             return $this->redirect(['index']);
         }else {

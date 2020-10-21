@@ -17,8 +17,9 @@ class RepresentanteSearch extends Representante
     public function rules()
     {
         return [
-            [['idrep', 'idciat', 'idinst', 'fkuser'], 'integer'],
-            [['cedula', 'nombre', 'telf', 'docente'], 'safe'],
+            [['idrep', 'fkciat', 'fkinst', 'fkuser'], 'integer'],
+            [['cedula', 'nombre', 'telf'], 'safe'],
+            [['docente'], 'boolean'],
         ];
     }
 
@@ -59,15 +60,15 @@ class RepresentanteSearch extends Representante
         // grid filtering conditions
         $query->andFilterWhere([
             'idrep' => $this->idrep,
-            'idciat' => $this->idciat,
-            'idinst' => $this->idinst,
+            'docente' => $this->docente,
+            'fkciat' => $this->fkciat,
+            'fkinst' => $this->fkinst,
             'fkuser' => $this->fkuser,
         ]);
 
         $query->andFilterWhere(['ilike', 'cedula', $this->cedula])
             ->andFilterWhere(['ilike', 'nombre', $this->nombre])
-            ->andFilterWhere(['ilike', 'telf', $this->telf])
-            ->andFilterWhere(['ilike', 'docente', $this->docente]);
+            ->andFilterWhere(['ilike', 'telf', $this->telf]);
 
         return $dataProvider;
     }

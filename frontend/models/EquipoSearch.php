@@ -20,9 +20,10 @@ class EquipoSearch extends Equipo
     public function rules()
     {
         return [
-            [['ideq', 'cedula', 'idrep'], 'integer'],
+            [['ideq', 'cedula', 'fkrep'], 'integer'],
             ['nombre','string', 'max' => 50],
-            [['eqserial', 'frecepcion', 'fentrega', 'eqversion', 'eqstatus', 'diagnostico', 'observacion', 'status'], 'safe'],
+            [['eqserial', 'frecepcion', 'fentrega', 'eqversion', 'eqstatus', 'diagnostico', 'observacion'], 'safe'],
+            [['status'], 'boolean'],
         ];
     }
 
@@ -44,7 +45,7 @@ class EquipoSearch extends Equipo
      */
     public function search($params)
     {
-        $query = Equipo::find()->joinWith(['idrep']);
+        $query = Equipo::find()->joinWith(['fkrep']);
 
         // add conditions that should always apply here
 
@@ -71,7 +72,8 @@ class EquipoSearch extends Equipo
             'ideq' => $this->ideq,
             'frecepcion' => $this->frecepcion,
             'fentrega' => $this->fentrega,
-            'idrep' => $this->idrep,
+            'fkrep' => $this->fkrep,
+            'status' => $this->status,
             'cedula'=> $this->cedula
         ]);
 
@@ -80,7 +82,6 @@ class EquipoSearch extends Equipo
             ->andFilterWhere(['ilike', 'eqstatus', $this->eqstatus])
             ->andFilterWhere(['ilike', 'diagnostico', $this->diagnostico])
             ->andFilterWhere(['ilike', 'observacion', $this->observacion])
-            ->andFilterWhere(['ilike', 'status', $this->status])
             ->andFilterWhere(['ilike', 'nombre', $this->nombre]);
 
         return $dataProvider;

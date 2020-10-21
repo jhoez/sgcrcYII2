@@ -8,28 +8,43 @@ use yii\widgets\ActiveForm;
 /* @var $form yii\widgets\ActiveForm */
 ?>
 
-<div class="usuario-form">
+<div class="row clearfix">
+    <div class="col-md-offset-3 col-md-6">
+        <div class="us-form">
+            <?php $form = ActiveForm::begin(); ?>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($model, 'cedula')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($model, 'cbit')->textInput(['maxlength' => true]) ?>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="">
+                    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+                </div>
+            </div>
 
-    <?php $form = ActiveForm::begin(); ?>
+            <div class="form-group">
+                <?= Html::submitButton('Crear Usuario', ['class' => 'btn btn-success']) ?>
+            </div>
 
-    <?= $form->field($model, 'iduser')->textInput() ?>
+            <?php ActiveForm::end(); ?>
 
-    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+        </div>
 
-    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'status')->textInput() ?>
-
-    <?= $form->field($model, 'created_at')->textInput() ?>
-
-    <?= $form->field($model, 'updated_at')->textInput() ?>
-
-    <div class="form-group">
-        <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>
     </div>
-
-    <?php ActiveForm::end(); ?>
-
 </div>

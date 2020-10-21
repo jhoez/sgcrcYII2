@@ -8,7 +8,7 @@ use Yii;
  *
  * @property int $idcarg
  * @property string|null $fcarg
- * @property int|null $ideq
+ * @property int|null $fkeq
  */
 class Fcarga extends \yii\db\ActiveRecord
 {
@@ -26,10 +26,10 @@ class Fcarga extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ideq'], 'default', 'value' => null],
-            [['ideq'], 'integer'],
+            [['fkeq'], 'default', 'value' => null],
+            [['fkeq'], 'integer'],
             [['fcarg'], 'string', 'max' => 255],
-            [['ideq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['ideq' => 'ideq']],
+            [['fkeq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['fkeq' => 'ideq']],
         ];
     }
 
@@ -41,13 +41,13 @@ class Fcarga extends \yii\db\ActiveRecord
         return [
             'idcarg' => 'Idcarg',
             'fcarg' => 'Fcarg',
-            'ideq' => 'Ideq',
+            'fkeq' => 'Ideq',
         ];
     }
 
     public function getFcargequipo()
     {
-        $equipo = Equipo::find()->where(['ideq'=>'ideq'])->one();
+        $equipo = Equipo::find()->where(['ideq'=>$this->fkeq])->one();
         return $equipo;
     }
 }

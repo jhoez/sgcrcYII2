@@ -26,10 +26,10 @@ class Fsoftware extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['ideq'], 'default', 'value' => null],
-            [['ideq'], 'integer'],
+            [['fkeq'], 'default', 'value' => null],
+            [['fkeq'], 'integer'],
             [['fsoft'], 'string', 'max' => 255],
-            [['ideq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['ideq' => 'ideq']],
+            [['fkeq'], 'exist', 'skipOnError' => true, 'targetClass' => Equipo::className(), 'targetAttribute' => ['fkeq' => 'ideq']],
         ];
     }
 
@@ -41,7 +41,7 @@ class Fsoftware extends \yii\db\ActiveRecord
         return [
             'idsoft' => 'Idsoft',
             'fsoft' => 'Fsoft',
-            'ideq' => 'Ideq',
+            'fkeq' => 'Ideq',
         ];
     }
 }

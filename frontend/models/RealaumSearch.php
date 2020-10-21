@@ -21,7 +21,7 @@ class RealaumSearch extends Realaum
         return [
             [['nombpro'], 'string','max'=>255],
             [['creador'], 'string','max'=>50],
-            [['idra', 'idpro', 'fkimag'], 'integer'],
+            [['idra', 'fkpro', 'fkimag'], 'integer'],
             [['nra', 'exten', 'ruta'], 'safe'],
         ];
     }
@@ -69,7 +69,7 @@ class RealaumSearch extends Realaum
         // grid filtering conditions
         $query->andFilterWhere([
             'idra' => $this->idra,
-            'idpro' => $this->idpro,
+            'fkpro' => $this->fkpro,
             'fkimag' => $this->fkimag,
         ]);
 

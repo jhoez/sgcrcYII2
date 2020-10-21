@@ -8,6 +8,7 @@ use frontend\models\UsuarioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\base\ErrorException;
 
 /**
  * UsuarioController implements the CRUD actions for Usuario model.
@@ -62,40 +63,41 @@ class UsuarioController extends Controller
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
-    public function actionCreate()
-    {
-        $model = new Usuario();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->iduser]);
-        }
-
-        return $this->render('create', [
-            'model' => $model,
-        ]);
-    }
-    /*
     public function actionCreate() {
-        $model = new Usuario();
+        $model = new Usuario;
+
         if ($model->load(Yii::$app->request->post())) {
-            $hash =  Yii::$app->security->generatePasswordHash($model->password);
-            // echo "hash:" . $hash;
-            $model->password = $hash;
-            if ($model->save()) {
-                $auth = \Yii::$app->authManager;
-                $authorRole = $auth->getRole('administrador');
-                $auth->assign($authorRole, $model->id);
-                //echo "<br>Se ha creado el permiso";
-            } else {
-                die('Error al guardar');
+            $transaction = $model->db->beginTransaction();
+            try {
+                $model->generateAuthKey();
+                $model->generatePasswordResetToken();
+                $model->status=1;
+                $model->created_at=date( "Y-m-d",time() );
+                $model->updated_at=date( "Y-m-d",time() );
+                //$model->role=0;
+                $model->generateEmailVerificationToken();
+
+                if ($model->save()) {
+                    // se asigna por defecto el role tutor al usuario creado.
+                    $auth = Yii::$app->authManager;
+                    $tutorRole = $auth->getRole('tutor');
+                    $auth->assign($tutorRole, $model->getId());
+                } else {
+                    $msj = "El usuario no fue creado...";
+                    return $this->redirect(['/site/notfound', 'msj' => $msj]);
+                }
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $model->id]);
+            } catch (ErrorException $e) {
+                echo "<pre>".$e;die;
+                $transaction->rollback();
             }
-            return $this->redirect(['view', 'id' => $model->id]);
+
         }
         return $this->render('create', [
             'model' => $model,
         ]);
     }
-    */
 
     /**
      * Updates an existing Usuario model.

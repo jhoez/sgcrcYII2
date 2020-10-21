@@ -12,7 +12,7 @@ use Yii;
  * @property string|null $tipomult
  * @property string|null $tamanio
  * @property string|null $ruta
- * @property int|null $fkidpro
+ * @property int|null $fkpro
  */
 class Multimedia extends \yii\db\ActiveRecord
 {
@@ -47,12 +47,12 @@ class Multimedia extends \yii\db\ActiveRecord
                 //'maxFiles'=>4
                 //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['fkidpro'], 'default', 'value' => null],
-            [['fkidpro'], 'integer'],
+            [['fkpro'], 'default', 'value' => null],
+            [['fkpro'], 'integer'],
             [['nombmult', 'ruta'], 'string', 'max' => 255],
             [['extension', 'tipomult'], 'string', 'max' => 5],
             [['tamanio'], 'string', 'max' => 20],
-            [['fkidpro'], 'exist', 'skipOnError' => true, 'targetClass' => Proyecto::className(), 'targetAttribute' => ['fkidpro' => 'idpro']],
+            [['fkpro'], 'exist', 'skipOnError' => true, 'targetClass' => Proyecto::className(), 'targetAttribute' => ['fkpro' => 'idpro']],
         ];
     }
 
@@ -69,7 +69,7 @@ class Multimedia extends \yii\db\ActiveRecord
 			'tamanio' => 'Tamaño del archivo',
 			'ruta' => 'Ruta',
 			'mva' => 'Audio o Video',
-			'fkidpro' => 'proyecto'
+			'fkpro' => 'proyecto'
         ];
     }
 

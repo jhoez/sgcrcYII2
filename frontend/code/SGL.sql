@@ -46,6 +46,27 @@ CREATE TABLE public.auth_assignment
       ON UPDATE CASCADE ON DELETE CASCADE
 );
 
+CREATE TABLE sc.usuario
+(
+  iduser serial,
+  username character varying(255) NOT NULL,
+  auth_key character varying(32) NOT NULL,
+  password character varying(255) NOT NULL,
+  password_reset_token character varying(255),
+  email character varying(255) NOT NULL,
+  status smallint NOT NULL DEFAULT 10,
+  created_at time without time zone,
+  updated_at time without time zone,
+  verification_token character varying(255) DEFAULT NULL::character varying,
+  cedula character varying(30),
+  cbit character varying(255),
+  role integer DEFAULT 2,
+  CONSTRAINT user_pkey PRIMARY KEY (iduser),
+  CONSTRAINT user_email_key UNIQUE (email),
+  CONSTRAINT user_password_reset_token_key UNIQUE (password_reset_token),
+  CONSTRAINT user_username_key UNIQUE (username)
+);
+
 CREATE TABLE sc.estado
 (
   idesta serial NOT NULL,
@@ -95,18 +116,18 @@ CREATE TABLE sc.representante
   cedula character varying(8),
   nombre character varying(50),
   telf character varying(12),
-  docente character varying(1) DEFAULT 0,
-  idciat integer,
-  idinst integer,
+  docente boolean DEFAULT false,
+  fkciat integer,
+  fkinst integer,
   fkuser integer,
   CONSTRAINT idrep PRIMARY KEY (idrep),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
       REFERENCES sc.usuario (iduser) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idciat FOREIGN KEY (idciat)
+  CONSTRAINT fkciat FOREIGN KEY (fkciat)
       REFERENCES sc.sedeciat (idciat) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idinst FOREIGN KEY (idinst)
+  CONSTRAINT fkinst FOREIGN KEY (fkinst)
       REFERENCES sc.insteduc (idinst) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -115,13 +136,13 @@ CREATE TABLE sc.estudiante
 (
   idestu serial NOT NULL,
   nombestu character varying(255),
-  idrep integer,
-  idinst integer,
+  fkrep integer,
+  fkinst integer,
   CONSTRAINT idestu PRIMARY KEY (idestu),
-  CONSTRAINT idinst FOREIGN KEY (idinst)
+  CONSTRAINT fkinst FOREIGN KEY (fkinst)
       REFERENCES sc.insteduc (idinst) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idrep FOREIGN KEY (idrep)
+  CONSTRAINT fkrep FOREIGN KEY (fkrep)
       REFERENCES sc.representante (idrep) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -130,10 +151,10 @@ CREATE TABLE sc.niveleduc
 (
   idniv serial NOT NULL,
   nivel character varying(20),
-  graduado character varying(1) DEFAULT 0,
-  idestu integer,
+  graduado boolean DEFAULT false,
+  fkestu integer,
   CONSTRAINT idniv PRIMARY KEY (idniv),
-  CONSTRAINT idestu FOREIGN KEY (idestu)
+  CONSTRAINT fkestu FOREIGN KEY (fkestu)
       REFERENCES sc.estudiante (idestu) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -141,29 +162,29 @@ CREATE TABLE sc.niveleduc
 CREATE TABLE sc.direcuser
 (
   iddiruser serial NOT NULL,
-  idfkesta integer,
-  idfkmunc integer,
-  idfkpar integer,
-  idfkciat integer,
-  idfkinst integer,
-  idfkrep integer,
+  fkesta integer,
+  fkmunc integer,
+  fkpar integer,
+  fkciat integer,
+  fkinst integer,
+  fkrep integer,
   CONSTRAINT iddiruser PRIMARY KEY (iddiruser),
-  CONSTRAINT idfkesta FOREIGN KEY (idfkesta)
+  CONSTRAINT fkesta FOREIGN KEY (fkesta)
       REFERENCES sc.estado (idesta) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idfkmunc FOREIGN KEY (idfkmunc)
+  CONSTRAINT fkmunc FOREIGN KEY (fkmunc)
       REFERENCES sc.municipio (idmunc) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idfkpar FOREIGN KEY (idfkpar)
+  CONSTRAINT fkpar FOREIGN KEY (fkpar)
       REFERENCES sc.parroquia (idpar) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idfkciat FOREIGN KEY (idfkciat)
+  CONSTRAINT fkciat FOREIGN KEY (fkciat)
       REFERENCES sc.sedeciat (idciat) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idfkinst FOREIGN KEY (idfkinst)
+  CONSTRAINT fkinst FOREIGN KEY (fkinst)
       REFERENCES sc.insteduc (idinst) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
-  CONSTRAINT idfkrep FOREIGN KEY (idfkrep)
+  CONSTRAINT fkrep FOREIGN KEY (fkrep)
       REFERENCES sc.representante (idrep) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -172,16 +193,16 @@ CREATE TABLE sc.equipo
 (
   ideq serial NOT NULL,
   eqserial character varying(125),
-  frecepcion date,
-  fentrega date,
+  frecepcion time without time zone,
+  fentrega time without time zone,
   eqversion character varying(6),
   eqstatus character varying(11),
-  idrep integer,
-  diagnostico character varying(500),
-  observacion character varying(500),
-  status character varying(1) DEFAULT 0,
+  fkrep integer,
+  diagnostico character varying(500) DEFAULT 'sin diagnostico'::character varying,
+  observacion character varying(500) DEFAULT 'sin observacion'::character varying,
+  status boolean DEFAULT false,
   CONSTRAINT ideq PRIMARY KEY (ideq),
-  CONSTRAINT idrep FOREIGN KEY (idrep)
+  CONSTRAINT fkrep FOREIGN KEY (fkrep)
       REFERENCES sc.representante (idrep) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -190,9 +211,9 @@ CREATE TABLE sc.fcarga
 (
   idcarg serial NOT NULL,
   fcarg character varying(255),
-  ideq integer,
+  fkeq integer,
   CONSTRAINT idcarg PRIMARY KEY (idcarg),
-  CONSTRAINT ideq FOREIGN KEY (ideq)
+  CONSTRAINT fkeq FOREIGN KEY (fkeq)
       REFERENCES sc.equipo (ideq) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -201,9 +222,9 @@ CREATE TABLE sc.fgeneral
 (
   idgen serial NOT NULL,
   fgen character varying(255),
-  ideq integer,
+  fkeq integer,
   CONSTRAINT idgen PRIMARY KEY (idgen),
-  CONSTRAINT ideq FOREIGN KEY (ideq)
+  CONSTRAINT fkeq FOREIGN KEY (fkeq)
       REFERENCES sc.equipo (ideq) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -212,9 +233,9 @@ CREATE TABLE sc.fpantalla
 (
   idpant serial NOT NULL,
   fpant character varying(255),
-  ideq integer,
+  fkeq integer,
   CONSTRAINT idpant PRIMARY KEY (idpant),
-  CONSTRAINT ideq FOREIGN KEY (ideq)
+  CONSTRAINT fkeq FOREIGN KEY (fkeq)
       REFERENCES sc.equipo (ideq) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -223,9 +244,9 @@ CREATE TABLE sc.fsoftware
 (
   idsoft serial NOT NULL,
   fsoft character varying(255),
-  ideq integer,
+  fkeq integer,
   CONSTRAINT idsoft PRIMARY KEY (idsoft),
-  CONSTRAINT ideq FOREIGN KEY (ideq)
+  CONSTRAINT fkeq FOREIGN KEY (fkeq)
       REFERENCES sc.equipo (ideq) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -234,9 +255,9 @@ CREATE TABLE sc.ftarjetamadre
 (
   idtarj serial NOT NULL,
   ftarj character varying(255),
-  ideq integer,
+  fkeq integer,
   CONSTRAINT idtarj PRIMARY KEY (idtarj),
-  CONSTRAINT ideq FOREIGN KEY (ideq)
+  CONSTRAINT fkeq FOREIGN KEY (fkeq)
       REFERENCES sc.equipo (ideq) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -245,9 +266,9 @@ CREATE TABLE sc.fteclado
 (
   idtec serial NOT NULL,
   ftec character varying(255),
-  ideq integer,
+  fkeq integer,
   CONSTRAINT idtec PRIMARY KEY (idtec),
-  CONSTRAINT ideq FOREIGN KEY (ideq)
+  CONSTRAINT fkeq FOREIGN KEY (fkeq)
       REFERENCES sc.equipo (ideq) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -257,7 +278,7 @@ CREATE TABLE sc.imagen
   idimag serial NOT NULL,
   nombimg character varying(50) DEFAULT 'vacio'::character varying,
   extension character varying(5) DEFAULT 'vacio'::character varying,
-  ruta character varying(255) DEFAULT 'vacio'::character varying,
+  ruta character varying(255) DEFAULT 'sin ruta'::character varying,
   tamanio character varying(50) DEFAULT 0,
   tipoimg character varying(7),
   fkuser integer,
@@ -276,9 +297,9 @@ CREATE TABLE sc.libros
   coleccion character varying(255),
   nivel character varying(11),
   tamanio character varying(50),
-  idfkimag integer,
+  fkimag integer,
   CONSTRAINT idlib PRIMARY KEY (idlib),
-  CONSTRAINT idfkimag FOREIGN KEY (idfkimag)
+  CONSTRAINT fkimag FOREIGN KEY (fkimag)
       REFERENCES sc.imagen (idimag) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -291,9 +312,9 @@ CREATE TABLE sc.formato
   extens character varying(5),
   ruta character varying(255),
   tamanio character varying(50),
-  status character varying(1),
-  create_at date,
-  statusacta integer,
+  status boolean DEFAULT false,
+  create_at time without time zone,
+  statusacta boolean DEFAULT false,
   fkuser integer,
   CONSTRAINT idf PRIMARY KEY (idf),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
@@ -308,8 +329,8 @@ CREATE TABLE sc.proyecto
   creador character varying(50),
   colaboracion character varying(255),
   descripcion character varying(500),
-  create_at date,
-  update_at date,
+  create_at time without time zone,
+  update_at time without time zone,
   fkuser integer,
   CONSTRAINT idpro PRIMARY KEY (idpro),
   CONSTRAINT fkuser FOREIGN KEY (fkuser)
@@ -325,9 +346,9 @@ CREATE TABLE sc.multimedia
   tipomult character varying(5),
   tamanio character varying(20),
   ruta character varying(255),
-  fkidpro integer,
+  fkpro integer,
   CONSTRAINT idmult PRIMARY KEY (idmult),
-  CONSTRAINT fkidpro FOREIGN KEY (fkidpro)
+  CONSTRAINT fkpro FOREIGN KEY (fkpro)
       REFERENCES sc.proyecto (idpro) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION
 );
@@ -338,10 +359,10 @@ CREATE TABLE sc.realaum
   nra character varying(255),
   exten character varying(5),
   ruta character varying(255),
-  fk_pro integer,
+  fkpro integer,
   fkimag integer,
   CONSTRAINT idra PRIMARY KEY (idra),
-  CONSTRAINT fk_pro FOREIGN KEY (fk_pro)
+  CONSTRAINT fkpro FOREIGN KEY (fkpro)
       REFERENCES sc.proyecto (idpro) MATCH SIMPLE
       ON UPDATE NO ACTION ON DELETE NO ACTION,
   CONSTRAINT fkimag FOREIGN KEY (fkimag)

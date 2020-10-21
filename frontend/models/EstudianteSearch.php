@@ -17,7 +17,7 @@ class EstudianteSearch extends Estudiante
     public function rules()
     {
         return [
-            [['idestu', 'idrep', 'idinst'], 'integer'],
+            [['idestu', 'fkrep', 'fkinst'], 'integer'],
             [['nombestu'], 'safe'],
         ];
     }
@@ -59,8 +59,8 @@ class EstudianteSearch extends Estudiante
         // grid filtering conditions
         $query->andFilterWhere([
             'idestu' => $this->idestu,
-            'idrep' => $this->idrep,
-            'idinst' => $this->idinst,
+            'fkrep' => $this->fkrep,
+            'fkinst' => $this->fkinst,
         ]);
 
         $query->andFilterWhere(['ilike', 'nombestu', $this->nombestu]);

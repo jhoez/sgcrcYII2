@@ -130,7 +130,7 @@ class ConteducController extends Controller
                     }
 
                     $contenido->tamanio	= $this->convert_format_bytes($contenido->files->size);
-                    $contenido->idfkimag = $img->idimag;
+                    $contenido->fkimag = $img->idimag;
 
                     if ( $contenido->files && $contenido->validate() ) {
                         if ( $contenido->save() ) {

@@ -51,12 +51,12 @@ class Formato extends \yii\db\ActiveRecord
             ],
             [['opcion'], 'required'],
             [['create_at'], 'safe'],
-            [['statusacta', 'fkuser'], 'default', 'value' => null],
-            [['statusacta', 'fkuser'], 'integer'],
+            [['fkuser'], 'default', 'value' => null],
+            [['fkuser'], 'integer'],
             [['opcion', 'nombf', 'ruta'], 'string', 'max' => 255],
             [['extens'], 'string', 'max' => 5],
             [['tamanio'], 'string', 'max' => 50],
-            [['status'], 'string', 'max' => 1],
+            [['status', 'statusacta'], 'boolean'],
             [['fkuser'], 'exist', 'skipOnError' => true, 'targetClass' => Usuario::className(), 'targetAttribute' => ['fkuser' => 'iduser']],
         ];
     }
@@ -67,11 +67,11 @@ class Formato extends \yii\db\ActiveRecord
     */
     public function uploadArchivo()
     {
-        if ($this->statusacta == '1') {
+        if ($this->statusacta == true) {
             $this->ftutor->saveAs('archivos/fd/'.$this->nombf.'.'.$this->extens);
         }
 
-        if($this->statusacta == '0'){
+        if($this->statusacta == false){
             $this->ftutor->saveAs('archivos/'.$this->nombf.'.'.$this->extens);
         }
     }

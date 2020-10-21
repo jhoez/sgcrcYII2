@@ -46,12 +46,12 @@ class Realaum extends \yii\db\ActiveRecord
                 //'maxFiles'=>4,
                 //'tooMany'=>'El maximo de archivos permitidos son {limit}',// error
             ],
-            [['idpro', 'fkimag'], 'default', 'value' => null],
-            [['idpro', 'fkimag'], 'integer'],
+            [['fkpro', 'fkimag'], 'default', 'value' => null],
+            [['fkpro', 'fkimag'], 'integer'],
             [['nra', 'ruta'], 'string', 'max' => 255],
             [['exten'], 'string', 'max' => 5],
             [['fkimag'], 'exist', 'skipOnError' => true, 'targetClass' => Imagen::className(), 'targetAttribute' => ['fkimag' => 'idimag']],
-            [['idpro'], 'exist', 'skipOnError' => true, 'targetClass' => Proyecto::className(), 'targetAttribute' => ['idpro' => 'idpro']],
+            [['fkpro'], 'exist', 'skipOnError' => true, 'targetClass' => Proyecto::className(), 'targetAttribute' => ['fkpro' => 'idpro']],
         ];
     }
 
@@ -65,7 +65,7 @@ class Realaum extends \yii\db\ActiveRecord
 			'nra' => 'Nra',
 			'exten' => 'Extension',
 			'ruta' => 'Ruta',
-			'idpro' => 'pro',
+			'fkpro' => 'pro',
 			'fkimag' => 'Fkimag',
 			'fileglb' => 'Patron de Realidad Aumentada',
         ];
@@ -86,7 +86,7 @@ class Realaum extends \yii\db\ActiveRecord
     */
     public function getRaProyecto()
     {
-        $proyecto = Proyecto::find()->where(['idpro'=>$this->idpro])->one();
+        $proyecto = Proyecto::find()->where(['idpro'=>$this->fkpro])->one();
         return $proyecto;
     }
 
@@ -106,7 +106,7 @@ class Realaum extends \yii\db\ActiveRecord
     */
     public function getidpro()
     {
-        return $this->hashOne(Proyecto::className(), ['idpro'=>'idpro']);
+        return $this->hashOne(Proyecto::className(), ['idpro'=>'fkpro']);
     }
 
     /**

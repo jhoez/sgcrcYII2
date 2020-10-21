@@ -9,7 +9,7 @@ use Yii;
  * @property int $idniv
  * @property string|null $nivel
  * @property string|null $graduado
- * @property int|null $idestu
+ * @property int|null $fkestu
  */
 class Niveleduc extends \yii\db\ActiveRecord
 {
@@ -28,11 +28,11 @@ class Niveleduc extends \yii\db\ActiveRecord
     {
         return [
             [['nivel'],'required'],
-            [['idestu'], 'default', 'value' => null],
-            [['idestu'], 'integer'],
+            [['fkestu'], 'default', 'value' => null],
+            [['fkestu'], 'integer'],
             [['nivel'], 'string', 'max' => 20],
-            [['graduado'], 'string', 'max' => 1],
-            [['idestu'], 'exist', 'skipOnError' => true, 'targetClass' => Estudiante::className(), 'targetAttribute' => ['idestu' => 'idestu']],
+            [['graduado'], 'boolean'],
+            [['fkestu'], 'exist', 'skipOnError' => true, 'targetClass' => Estudiante::className(), 'targetAttribute' => ['fkestu' => 'idestu']],
         ];
     }
 
@@ -45,7 +45,7 @@ class Niveleduc extends \yii\db\ActiveRecord
             'idniv' => 'ID',
 			'nivel' => 'Nivel educativo',
 			'graduado' => 'Graduado',
-			'idestu' => 'Idestu',
+			'fkestu' => 'Idestu',
         ];
     }
 }
