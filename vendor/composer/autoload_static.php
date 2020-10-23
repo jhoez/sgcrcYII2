@@ -44,23 +44,16 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         ),
         'm' => 
         array (
+            'moonland\\phpexcel\\' => 18,
             'mdm\\admin\\' => 10,
         ),
         'k' => 
         array (
-            'kartik\\sortable\\' => 16,
             'kartik\\social\\' => 14,
-            'kartik\\select2\\' => 15,
             'kartik\\plugins\\depdrop\\' => 23,
             'kartik\\mpdf\\' => 12,
-            'kartik\\grid\\' => 12,
-            'kartik\\form\\' => 12,
-            'kartik\\export\\' => 14,
-            'kartik\\dynagrid\\' => 16,
-            'kartik\\dialog\\' => 14,
             'kartik\\depdrop\\' => 15,
             'kartik\\date\\' => 12,
-            'kartik\\bs4dropdown\\' => 19,
             'kartik\\base\\' => 12,
         ),
         'c' => 
@@ -168,21 +161,17 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
             1 => __DIR__ . '/..' . '/phpdocumentor/reflection-docblock/src',
             2 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
         ),
+        'moonland\\phpexcel\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/moonlandsoft/yii2-phpexcel',
+        ),
         'mdm\\admin\\' => 
         array (
             0 => __DIR__ . '/..' . '/mdmsoft/yii2-admin',
         ),
-        'kartik\\sortable\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-sortable/src',
-        ),
         'kartik\\social\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-social/src',
-        ),
-        'kartik\\select2\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-select2/src',
         ),
         'kartik\\plugins\\depdrop\\' => 
         array (
@@ -192,26 +181,6 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-mpdf',
         ),
-        'kartik\\grid\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-grid/src',
-        ),
-        'kartik\\form\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-activeform/src',
-        ),
-        'kartik\\export\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-export',
-        ),
-        'kartik\\dynagrid\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-dynagrid/src',
-        ),
-        'kartik\\dialog\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-dialog/src',
-        ),
         'kartik\\depdrop\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-depdrop/src',
@@ -219,10 +188,6 @@ class ComposerStaticInit866048d2dd911009566da486074808ac
         'kartik\\date\\' => 
         array (
             0 => __DIR__ . '/..' . '/kartik-v/yii2-widget-datepicker/src',
-        ),
-        'kartik\\bs4dropdown\\' => 
-        array (
-            0 => __DIR__ . '/..' . '/kartik-v/yii2-bootstrap4-dropdown/src',
         ),
         'kartik\\base\\' => 
         array (

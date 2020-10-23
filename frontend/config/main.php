@@ -17,8 +17,40 @@ return [
     'controllerNamespace' => 'frontend\controllers',
     'modules' => [
         'admin' => [
+            'controllerMap' => [
+                'assignment' => [
+                    'class' => 'mdm\admin\controllers\AssignmentController',
+                    'userClassName' => 'frontend\models\Usuario',
+                    'idField' => 'iduser',
+                    'usernameField' => 'username',
+                    //'fullnameField' => 'profile.full_name',
+                    'extraColumns' => [
+                        [
+                            'attribute' => 'email',
+                            'label' => 'email',
+                            'value' => function($model, $key, $index, $column) {
+                                return $model->email;
+                            },
+                        ],
+                        [
+                            'attribute' => 'password',
+                            'label' => 'Contraseña',
+                            'value' => function($model, $key, $index, $column) {
+                                return $model->password;
+                            },
+                        ],
+                    ],
+                    'searchClass' => 'frontend\models\UsuarioSearch'
+                ],
+            ],
             'class' => 'mdm\admin\Module',
             'layout' => 'left-menu', // por defaults es null, cuando no deseas usar el menú Otros valores opcionales son 'right-menu' and 'top-menu'
+            'menus' => [
+                'assignment' => [
+                    'label' => 'Otorgar permiso'// change label
+                ],
+                //'route' => null, // disable menu
+            ],
             'mainLayout' => '@app/views/layouts/main.php',// utiliza el menu del framework
         ]
     ],
@@ -74,6 +106,7 @@ return [
             'prodig/index',
             'prodig/descva',
             'rea/index',
+            'admin/*'
             //'some-controller/some-action',
             // The actions listed here will be allowed to everyone including guests.
             // So, 'admin/*' should not appear here in the production, of course.
