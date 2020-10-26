@@ -10,7 +10,7 @@ use yii\web\IdentityInterface;
 /**
  * This is the model class for table "sc.usuario".
  *
- * @property int $id
+ * @property int $iduser
  * @property string $username
  * @property string $auth_key
  * @property string $password
@@ -44,13 +44,12 @@ class Usuario extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username','password', 'email'], 'required'],
-            [['created_at', 'updated_at'], 'default', 'value' => null],
-            [['status', 'role'], 'default', 'value' => null],
+            [['username','password', 'email', 'cedula', 'cbit'], 'required'],
+            [['created_at', 'updated_at'], 'safe'],
             [['status', 'role'], 'integer'],
-            [['iduser','status', 'created_at', 'updated_at'], 'integer'],
             [['cedula'], 'string', 'max' => 30],
-            //['status', 'default', 'value' => self::STATUS_INACTIVE],
+            ['status', 'default', 'value' => self::STATUS_ACTIVE],
+            [['role'], 'default', 'value' => 0],
             //['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             [['username', 'password', 'password_reset_token', 'email', 'verification_token', 'cbit'], 'string', 'max' => 255],
             //[['auth_key'], 'string', 'max' => 32],

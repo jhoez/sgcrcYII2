@@ -36,6 +36,10 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
+            
+            [['cedula','cbit'], 'required'],
+            [['cedula'], 'string', 'max' => 30],
+            [['cbit'], 'string', 'max' => 255],
         ];
     }
 
@@ -52,16 +56,15 @@ class SignupForm extends Model
 
         $user = new Usuario;
         $user->username = $this->username;
-        $user->email = $this->email;
+        $user->generateAuthKey();
         $user->password=$this->password;
+        $user->generatePasswordResetToken();
+        $user->email = $this->email;        
+        $user->created_at=date( "Y-m-d",time() );//strftime("%Y-%m-%d %I:%M:%S")
+        $user->updated_at=date( "Y-m-d",time() );//strftime("%Y-%m-%d %I:%M:%S")
+        $user->generateEmailVerificationToken();
         $user->cedula=$this->cedula;
         $user->cbit=$this->cbit;
-        $user->generateAuthKey();
-        $user->generatePasswordResetToken();
-        $user->status=1;
-        $user->created_at=date( "Y",time() );
-        $user->updated_at=date( "Y",time() );
-        $user->generateEmailVerificationToken();
 
         /*
         // se asigna por defecto el role tutor al usuario creado.

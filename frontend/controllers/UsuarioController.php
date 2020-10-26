@@ -72,8 +72,8 @@ class UsuarioController extends Controller
                 $model->generateAuthKey();
                 $model->generatePasswordResetToken();
                 $model->status=1;
-                $model->created_at=date( "Y-m-d",time() );
-                $model->updated_at=date( "Y-m-d",time() );
+                $model->created_at=date( "Y-m-d h:i:s",time() );
+                $model->updated_at=date( "Y-m-d h:i:s",time() );
                 //$model->role=0;
                 $model->generateEmailVerificationToken();
 

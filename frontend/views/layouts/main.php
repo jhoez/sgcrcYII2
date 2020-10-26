@@ -44,14 +44,13 @@ AppAsset::register($this);
     ]);
     if (Yii::$app->user->isGuest) {
         $menuItems = [
-            ['label' => 'Inicio', 'url' => ['/site/index']],
             ['label' => 'Contenido Educativo', 'url' => ['/conteduc/index']],
             ['label' => 'Proyectos Digitales', 'url' => ['/prodig/index']],
             ['label' => 'Realidad Aumentada', 'url' => ['/rea/index']],
-            ['label' => 'Acerca de', 'url' => ['/site/about']],
-            ['label' => 'Contactanos', 'url' => ['/site/contact']],
+            //['label' => 'Acerca de', 'url' => ['/site/about']],
+            //['label' => 'Contactanos', 'url' => ['/site/contact']],
             ['label' => 'Iniciar Session', 'url' => ['/site/login']],
-            ['label' => 'Crear Cuenta', 'url' => ['/site/signup']],
+            //['label' => 'Crear Cuenta', 'url' => ['/site/signup']],
         ];
     } else {
         $menuItems = [
@@ -66,7 +65,7 @@ AppAsset::register($this);
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
             . Html::submitButton(
-                'Salir (' . Yii::$app->user->identity->username . ')',
+                'Cerrar Session (' . Yii::$app->user->identity->username . ')',
                 ['class' => 'btn btn-link logout']
             )
             . Html::endForm()
@@ -95,10 +94,9 @@ AppAsset::register($this);
     <!-- Grid row -->
     <div class="row">
       <!-- Grid column -->
-      <div class="col-md-3 col-lg-6 col-xl-3">
+      <div class="col-md-6 col-xl-6">
         <!-- Content -->
         <h6 class="text-uppercase">Dirección</h6>
-        <hr>
         <p>
             Esq. de Salas a Caja de Agua, Edif.
             Sede del Ministerio del Poder Popular para la Educación (MPPE),
@@ -108,10 +106,9 @@ AppAsset::register($this);
 
       </div>
       <!-- Grid column -->
-      <div class="col-md-2 col-lg-2 col-xl-2">
+      <div class="col-md-3 col-xl-6">
         <!-- Links -->
         <h6 class="text-uppercase font-weight-bold">Acerca de Fundabit</h6>
-        <hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
         <p>
           <?=Html::a('Misión y Vision',['site/mv'], ['class'=>'dark-grey-text'] ); ?>
         </p>
@@ -124,14 +121,12 @@ AppAsset::register($this);
 
       </div>
       <!-- Grid column -->
-      <div class="col-md-4 col-lg-4 col-xl-4 mx-auto mb-md-0 mb-4">
+      <div class="col-md-3 col-xl-6">
         <!-- Links -->
-        <h6 class="text-uppercase font-weight-bold">Contact</h6>
-        <hr class="teal accent-3 mb-4 mt-0 d-inline-block mx-auto" style="width: 60px;">
-        <p><i class="fas fa-home mr-3"></i> New York, NY 10012, US</p>
-        <p><i class="fas fa-envelope mr-3"></i> info@example.com</p>
-        <p><i class="fas fa-phone mr-3"></i> + 01 234 567 88</p>
-        <p><i class="fas fa-print mr-3"></i> + 01 234 567 89</p>
+        <h6 class="text-uppercase font-weight-bold">Coordinación Zonal Distrito Capital</h6>
+        <p><i class=""></i> correo</p>
+        <p><i class=""></i> numero</p>
+        <p><i class=""></i> numero</p>
       </div>
       <!-- Grid column -->
     </div>
@@ -140,7 +135,7 @@ AppAsset::register($this);
   <!-- Footer Links -->
 
   <!-- Copyright -->
-  <div class="footer-copyright text-center text-black-50 py-3">
+  <div class="footer-copyright text-center">
     <p>© 2020 Copyright: Fundabit.</p>
   </div>
   <!-- Copyright -->
