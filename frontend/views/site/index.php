@@ -62,12 +62,12 @@ $this->title = 'SGCRC';
             </div>
 
             <h3 class="">
-                Fundación Bolivariana de Informática y Telemática, 
-                ente adscrito al MPPE Impulsamos las políticas del 
+                Fundación Bolivariana de Informática y Telemática,
+                ente adscrito al MPPE Impulsamos las políticas del
                 Sistema Educativo Nacional a través del uso de las TIC.
             </h3>
             <div class="col s12 l4">
-                <a class="twitter-timeline" href="https://twitter.com/FundabitOficial" data-widget-id="302069386464870402">Tweets por @FundabitOficial</a>
+                <a class="twitter-timeline" href="https://twitter.com/_Fundabit" data-widget-id="302069386464870402">Tweets por @FundabitOficial</a>
             </div>
         </div>
     </div>

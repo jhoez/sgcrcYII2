@@ -47,10 +47,10 @@ class CanaimitaController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','update','delete','marcar'],
+                'only' => ['index','create','update','delete','marcar', 'marcarstatus'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','update','delete','marcar'],
+                        'actions' => ['index','create','update','delete','marcar','marcarstatus'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -74,8 +74,11 @@ class CanaimitaController extends Controller
         $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
         $fsearchModel = new FormatoSearch;
         $fdataProvider = $fsearchModel->search(Yii::$app->request->queryParams);
-        // colocar un if para el tutor solamente
-        //$fdataProvider->query->where(['status'=>false])->all();
+
+        if ( Yii::$app->user->can('tutor') ) {// los tutores solo veran los formatos mas no las actas
+            $fdataProvider->query->where(['status'=>false])->all();
+		}
+
         $csearchModel = new EquipoSearch;
         $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);
 
@@ -683,9 +686,9 @@ class CanaimitaController extends Controller
         $conteo = $clase::find()->where("$index = :f_$index", [":f_$index" => $falla])->count();
 		if ($conteo > 0) {
 			foreach ($modelo as $valor) {
-				$ideq[] = $valor->ideq;
+				$fkeq[] = $valor->fkeq;
 			}
-			return Equipo::find()->where(['in','ideq',$ideq])->all();
+			return Equipo::find()->where(['in','ideq',$fkeq])->all();
 		}else {
 			return false;
 		}
@@ -699,14 +702,38 @@ class CanaimitaController extends Controller
     */
     public function actionMarcar($id)
     {
-        $equipo = $this->findModel($id);
-        $equipo->fentrega = date( "Y-m-d h:i:s",time() );
-        $equipo->status = true;
-        if ($equipo->save()) {
+        $canaimita = $this->findModel($id);
+        $canaimita->fentrega = date( "Y-m-d h:i:s",time() );
+        $canaimita->status = true;
+        if ($canaimita->save()) {
             return $this->redirect(['index']);
         }else {
-            return $this->redirect(['notfound']);
+            $msj = 'No se pudo marcar el horario...';
+            return $this->redirect(['/site/notfound','msj'=>$msj]);
         }
     }
+
+    /**
+	*	@method updatestatus
+	*	se actualiza el campo @var status de 'por ver' a 'visto'
+	*/
+	public function actionMarcarstatus(){
+		$purifier = new HtmlPurifier;
+		$param = $purifier->process(Yii::$app->request->get('id'));
+
+		if ( !empty($param) ) {
+            $archivos = Formato::findOne($param);// obtiene el registro cuya clave primaria es $param
+            $archivos->status = true;
+            if( $archivos->save(false) ) {
+                return $this->redirect(['index']);
+            }else {
+                $msj = "Ocurrio un error al marcar como visto el Archivo...";
+                return $this->render('/site/notfound',['msj'=>$msj]);
+                //throw new NotFoundHttpException("Ocurrio un error con la data...");
+            }
+		}else {
+			return $this->redirect(['/canaimita/index']);
+		}
+	}
 
 }

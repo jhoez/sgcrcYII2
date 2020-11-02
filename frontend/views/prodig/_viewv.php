@@ -29,7 +29,7 @@ use buttflattery\videowall\Videowall;
 								'data'=>[
 									'method'=>'post'
 								],
-								'target'=>'_blank'
+								//'target'=>'_blank'
 							]
 						)?>
 					</p>

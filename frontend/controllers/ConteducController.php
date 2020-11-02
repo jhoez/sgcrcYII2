@@ -39,9 +39,24 @@ class ConteducController extends Controller
     public function actionVerlib()
     {
         $purifier = new HtmlPurifier;
-        $get = $purifier->process( Yii::$app->request->get('param') );
+        $get = (integer)$purifier->process( Yii::$app->request->get('id') || Yii::$app->request->get('param') );
         $contenido = Libros::findOne($get);
         return $this->redirect(Yii::$app->request->baseUrl.'/'.$contenido->ruta.$contenido->nomblib.'.'.$contenido->extension);
+    }
+
+    /**
+     * permite descargar un libro
+     * @param integer $param
+     */
+    public function actionDesclib()
+    {
+        $purifier = new HtmlPurifier;
+        $get = $purifier->process( Yii::$app->request->get('param') );
+        $contenido = Libros::findOne($get);
+        if (!$this->descargar($contenido->ruta, $contenido->nomblib.'.'.$contenido->extension ,['pdf'])) {
+            $msj = "No existe el Libro!!";
+            return $this->render('/site/notfound',['msj'=>$msj]);
+        }
     }
 
     /**
@@ -160,16 +175,81 @@ class ConteducController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $contenido = Libros::findOne($param);
+        $img = Imagen::findOne($contenido->fkimag);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->idlib]);
-        }
+        if (
+            $contenido->load(Yii::$app->request->post()) &&
+            $img->load(Yii::$app->request->post())
+        ) {
+            $transaction = $contenido->db->beginTransaction();
+            try {
+                $contenido->files = UploadedFile::getInstance($contenido,'files');
+                $img->imagen = UploadedFile::getInstance($img,'imagen');
+                // eliminarArchivo DEVUELVE true O false SI ELIMINA O NO LA PORTADA Y EL LIBRO
+                $librof = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$contenido->ruta, $contenido->nomblib.'.'.$contenido->extension);
+                $imagenf = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$img->ruta, $img->nombimg.'.'.$img->extension);
+
+                if ($librof && $imagenf) {
+                    $img->nombimg	= $img->imagen->baseName;
+                    $img->extension = $img->imagen->extension;
+                    $img->ruta		= "coleccionLibros/cimg/";
+                    $img->tamanio	= $this->convert_format_bytes($img->imagen->size);
+                    $img->fkuser	= Yii::$app->user->getId();
+
+                    if ( $img->imagen && $img->validate() ) {
+                        if ( $img->save() ) {
+                            $contenido->nomblib	= $contenido->files->baseName;
+                            $contenido->extension	= $contenido->files->extension;
+
+                            $coleccion	= $contenido->coleccion;
+                            $niv		= $contenido->nivel;
+                            if ($coleccion == 'coleccionBicentenaria') {
+                                $contenido->ruta = "coleccionLibros/$coleccion/$niv/";
+                            }elseif( $coleccion == ('coleccionMaestros' || 'lectura') ){
+                                $contenido->ruta = "coleccionLibros/$coleccion/";
+                            }
+
+                            if ($niv == ('inicial' || 'primaria' || 'media')) {
+                                $contenido->nivel	= $niv;
+                            }else if($coleccion == 'coleccionMaestros'){
+                                $contenido->nivel	=  'maestro';
+                            }else if($coleccion == 'lectura') {
+                                $contenido->nivel = 'lectura';
+                            }
+
+                            $contenido->tamanio	= $this->convert_format_bytes($contenido->files->size);
+                            $contenido->fkimag = $img->idimag;
+
+                            if ( $contenido->files && $contenido->validate() ) {
+                                if ( $contenido->save() ) {
+                                    $img->uploadImg();//Guardamos el fichero
+                                    $contenido->uploadArchivo();//Guardamos el fichero
+                                    //Yii::$app->session->setFlash('libroC',"El Libro '$contenido->nomblib' a sido Registrado");
+                                }
+                            }
+                        }// save IMG
+                    }// validate
+                    $transaction->commit();
+                    return $this->redirect(['view', 'id' => $contenido->idlib]);
+                }else {
+                    $msj = 'No se pudo actualizar el libro!!';
+                    return $this->redirect(['/site/notfound','msj'=>$msj]);
+                }
+
+            } catch (ErrorException $e) {
+                echo "<pre>";var_dump($e);die;
+                $transaction->rollBack();
+            }
+        }// carga post
 
         return $this->render('update', [
-            'model' => $model,
+            'contenido' => $contenido,
+            'img'=>$img
         ]);
     }
 
@@ -180,11 +260,26 @@ class ConteducController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->findModel($id)->delete();
+        $libros		= $this->findModel($id);
+		$imag		= Imagen::find()->where(['idimag'=>$libros->fkimag])->one();
 
-        return $this->redirect(['index']);
+		$rutalibro	= Yii::$app->basePath.'/web/'.$libros->ruta;
+		$filelib	= $libros->nomblib.$libros->extension;
+		$rutaimagen	= Yii::$app->basePath.'/web/'.$imag->ruta;
+		$fileimg	= $imag->nombimg.$imag->extension;
+
+		$librof		= $this->eliminarArchivo($rutalibro, $filelib);
+		$imagenf	= $this->eliminarArchivo($rutaimagen, $fileimg);
+		if ($librof && $imagenf) {
+			$libros->delete();
+			$imag->delete();
+            return $this->redirect(['index']);
+		}else {
+            $msj = 'No se logro eliminar el libro!!';
+            return $this->redirect(['/site/notfound','msj'=>$msj]);
+        }
     }
 
     /**

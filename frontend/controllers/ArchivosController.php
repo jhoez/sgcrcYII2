@@ -57,7 +57,7 @@ class ArchivosController extends Controller
             $archivos = Formato::findOne($param);// obtiene el registro cuya clave primaria es $param
             $archivos->status = true;
             if( $archivos->save(false) ) {
-                return $this->redirect(['view','archivos'=>$archivos]);
+                return $this->redirect(['index']);
             }else {
                 $msj = "Ocurrio un error al marcar como visto el Archivo...";
                 return $this->render('/site/notfound',['msj'=>$msj]);
@@ -98,6 +98,10 @@ class ArchivosController extends Controller
         $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
         $searchModel = new FormatoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        if ( Yii::$app->user->can('tutor') ) {// los tutores solo veran los formatos mas no las actas
+            $dataProvider->query->where(['statusacta'=>false])->all();
+		}
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -180,7 +184,7 @@ class ArchivosController extends Controller
             $archivos->ftutor = UploadedFile::getInstance($archivos,'ftutor');
 
 			if ( $archivos->ftutor != NULL ) {
-				$filef = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$archivos->ruta,$archivos->nombf.'.'.$achivos->extens);
+				$filef = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$archivos->ruta,$archivos->nombf.'.'.$archivos->extens);
 
 				if ($filef) {
 					$archivos->nombf   = $archivos->ftutor->baseName;
@@ -195,12 +199,11 @@ class ArchivosController extends Controller
 
 					if( $archivos->save() ){
 						$archivos->uploadArchivo();
-						Yii::app()->user->setFlash('formatoC','El formato fue Actualizado.');
+						Yii::$app->session->setFlash('formatoC','El formato fue Actualizado.');
 						return $this->redirect(['view', 'id' => $archivos->idf]);
 					}else {//Crear mensaje flash
-						Yii::app()->user->setFlash('error','El formato no fue Actualizado');
-						return $this->redirect($this->createUrl('site/notfound') );
-						//$this->refresh();
+                        $msj = 'El formato no fue Actualizado';
+						return $this->redirect(['site/notfound','msj'=>$msj]);
 					}
 				}
 			}

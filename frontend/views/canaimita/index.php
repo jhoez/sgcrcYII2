@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
         <?= Html::a('Subir archivo',['/archivos/create'],['class'=>'btn btn-primary']);?>
         <?= Html::a('Asistencia',['/horario/index'],['class'=>'btn btn-primary']);?>
+        <?= Html::a('Subir img Carousel', ['/portadas/create'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
@@ -34,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="table-responsive">
         <h3 class="text-center">Registros de Canaimitas</h3>
+        <hr>
         <?= GridView::widget([
             'id'=>'cgrid',
             'dataProvider' => $cdataProvider,
@@ -102,7 +104,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
-                    'label'=>'Estado de Entraga',
+                    'label'=>'Status del Equipo',
                     'attribute'=>'eqstatus',
                     'filter'=>[
                         'operativo'=>'Operativo',
@@ -120,25 +122,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     }
                 ],
                 [
-                    'label'=>'Estade de Entraga',
+                    'label'=>'Estado de Entraga',
                     'attribute'=>'status',
                     'filter'=>[
                         '1'=>'Entregado',
                         '0'=>'No entregado',
                     ],
                     'value'=> function($data){
-                        return $data->status == 1 ? 'Entregado' : 'No entregado';
+                        return $data->status == true ? 'Entregado' : 'No entregado';
                     }
                 ],
                 [
                     'class' => 'yii\grid\ActionColumn',
-                    'header'=>'Action',
-                    'headerOptions'=>['width'=>'60'],
-                    'template'=>'{marcar}{view}{update}',
-                    //'template'=>'{marcar}{view}{update}{delete}',
+                    'header'=>'Acción',
+                    'headerOptions'=>['width'=>'70'],
+                    'template'=>'{marcar}{view}{update}{delete}',
                     'buttons'=> [
                         'marcar' => function($url,$model){
-                            if ($model->status == 0) {
+                            if ($model->status == false) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-ok-circle"></span>',
                                     $url
@@ -153,17 +154,23 @@ $this->params['breadcrumbs'][] = $this->title;
                             );
                         },
                         'update' => function($url,$model){
-                            return Html::a(
-                                '<span class="glyphicon glyphicon-pencil"></span>',
-                                $url
-                            );
+                            if ( \Yii::$app->user->can('superadmin') ) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-pencil"></span>',
+                                    $url
+                                );
+                            }else {
+                            }
                         },
-                        /*'delete' => function($url,$model){
-                            return Html::a(
-                                '<span class="glyphicon glyphicon-remove"></span>',
-                                $url
-                            );
-                        },*/
+                        'delete' => function($url,$model){
+                            if ( \Yii::$app->user->can('superadmin') ) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-remove"></span>',
+                                    $url
+                                );
+                            }else {
+                            }
+                        },
                     ],
                 ],
             ],
@@ -186,7 +193,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         //'enableAjaxValidation' => true,
                     ]);?>
 
-                    <h3 class="text-center">Actas archivos</h3>
+                    <h3 class="text-center">Actas descargables</h3>
+                    <hr>
                     <div class="form-group">
                         <?= Html::label('Actas', 'idf', ['class' => ''])?>
                         <div class="">
@@ -209,6 +217,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
         <div class="table-responsive">
             <h3 class="text-center">Registros de Archivos</h3>
+            <hr>
             <?= GridView::widget([
                 'id'=>'fgrid',
                 'dataProvider' => $fdataProvider,
@@ -271,55 +280,56 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label'=>'Status',
                         'attribute'=>'status',
                         'value'=>function($data){
-                            return $data->status == '1' ? 'Visto' : 'Por ver';
+                            return $data->status == true ? 'Visto' : 'Por ver';
                         },
                         'filter'=>[
-                        '0'=>'Por ver',
-                        '1'=>'Visto'
-                    ]
-                ],
-                [
-                    'class' => 'yii\grid\ActionColumn',
-                    'header'=>'Action',
-                    'headerOptions'=>['width'=>'60'],
-                    'template'=>'{marcar}{view}{update}{delete}{descargarfa}',
-                    'buttons'=> [
-                        'view' => function($url,$model){
-                            return Html::a(
-                            '<span class="glyphicon glyphicon-eye-open"></span>',
-                            Url::to(["archivos/view", "id" => implode((array)$model->idf)])
-                            );
-                        },
-                        'update' => function($url,$model){
-                            return Html::a(
-                            '<span class="glyphicon glyphicon-pencil"></span>',
-                            Url::to(["archivos/update", "id" => implode((array)$model->idf)])
-                            );
-                        },
-                        'delete' => function($url,$model){
-                            return Html::a(
-                            '<span class="glyphicon glyphicon-remove"></span>',
-                            Url::to(["archivos/delete", "id" => implode((array)$model->idf)])
-                            );
-                        },
-                        'descargarfa' => function($url,$model){
-                            return Html::a(
-                            '<span class="glyphicon glyphicon-download"></span>',
-                            Url::to(["archivos/descargarfa", "id" => implode((array)$model->idf)])
-                            );
-                        },
-                        'marcar' => function($url,$model){
-                            if ($model->status == '0') {
+                            '1'=>'Visto',
+                            '0'=>'Por ver'
+                        ],
+                        'visible'=>Yii::$app->user->can('administrador')
+                    ],
+                    [
+                        'class' => 'yii\grid\ActionColumn',
+                        'header'=>'Acción',
+                        'headerOptions'=>['width'=>'70'],
+                        'template'=>'{marcar}{view}{update}{delete}{descargarfa}',
+                        'buttons'=> [
+                            'marcar' => function($url,$model){
+                                if ($model->status == false) {
+                                    return Html::a(
+                                        '<span class="glyphicon glyphicon-ok-circle"></span>',
+                                        Url::to(['/canaimita/marcarstatus', 'id' => implode((array)$model->idf)])
+                                    );
+                                } else {
+                                }
+                            },
+                            'view' => function($url,$model){
                                 return Html::a(
-                                '<span class="glyphicon glyphicon-ok-circle"></span>',
-                                Url::to(["archivos/updatestatus", "id" => implode((array)$model->idf)])
+                                '<span class="glyphicon glyphicon-eye-open"></span>',
+                                Url::to(['/archivos/view', 'id' => implode((array)$model->idf)])
                                 );
-                            } else {
-                            }
-                        },
+                            },
+                            'update' => function($url,$model){
+                                return Html::a(
+                                '<span class="glyphicon glyphicon-pencil"></span>',
+                                Url::to(['/archivos/update', 'id' => implode((array)$model->idf)])
+                                );
+                            },
+                            'delete' => function($url,$model){
+                                return Html::a(
+                                '<span class="glyphicon glyphicon-remove"></span>',
+                                Url::to(['/archivos/delete', 'id' => implode((array)$model->idf)])
+                                );
+                            },
+                            'descargarfa' => function($url,$model){
+                                return Html::a(
+                                '<span class="glyphicon glyphicon-download"></span>',
+                                Url::to(['/archivos/descargarfa', 'id' => implode((array)$model->idf)])
+                                );
+                            },
+                        ],
                     ],
                 ],
-            ],
-        ]); ?>
+            ]); ?>
+        </div>
     </div>
-</div>

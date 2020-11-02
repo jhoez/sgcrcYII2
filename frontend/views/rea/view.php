@@ -33,7 +33,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'nra',
             'exten',
             'ruta',
-            'idpro',
+            'fkpro',
             'fkimag',
         ],
     ]) ?>

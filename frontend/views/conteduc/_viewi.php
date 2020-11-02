@@ -19,7 +19,7 @@ use yii\helpers\Html;
 								<?= Html::a(
 									'Ver libro',
 									[
-										'/conteduc/verlib',
+										'/conteduc/desclib',
 										'param'=>$value->idlib
 									],
 									[
@@ -27,7 +27,7 @@ use yii\helpers\Html;
 										'data'=>[
 											'method'=>'post'
 										],
-										'target'=>'_blank'
+										//'target'=>'_blank'
 									]
 								)?>
 							</p>

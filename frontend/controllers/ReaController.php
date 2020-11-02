@@ -34,7 +34,7 @@ class ReaController extends Controller
     }
 
     /**
-     * permite descargar visualizar un libro
+     * permite visualizar
      * @param integer $param
      */
     public function actionRa()
@@ -139,7 +139,7 @@ class ReaController extends Controller
     						$realidadaumentada->nra		= $realidadaumentada->fileglb->baseName;
     						$realidadaumentada->exten	= $realidadaumentada->fileglb->extension;
     						$realidadaumentada->ruta	= 'proyectos/ra/';
-    						$realidadaumentada->idpro	= $proyecto->idpro;
+    						$realidadaumentada->fkpro	= $proyecto->idpro;
     						$realidadaumentada->fkimag	= $imag->idimag;
     						if ( $realidadaumentada->save(false) ) {
                                 //echo "<pre>";var_dump($realidadaumentada->save(false));die;

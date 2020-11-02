@@ -38,15 +38,24 @@ class ProdigController extends Controller
      * permite descargar visualizar un libro
      * @param integer $param
      */
+    public function actionVerva()
+    {
+        $purifier = new HtmlPurifier;
+        $get = (integer)$purifier->process( Yii::$app->request->get('id') );
+        $multimedia = Multimedia::find()->where(['idmult'=>$get])->one();
+        return $this->redirect(Yii::$app->request->baseUrl.'/'.$multimedia->ruta.$multimedia->nombmult.'.'.$multimedia->extension);
+    }
+
+    /**
+     * permite descargar un archivo multimedia
+     * @param integer $param
+     */
     public function actionDescva()
     {
         $purifier = new HtmlPurifier;
-        $get = (integer)$purifier->process( Yii::$app->request->get('param') );
-        $prodig = Multimedia::find()->where(['idmult'=>$get])->one();
-        if( $prodig !== null )
-        {
-            return $this->redirect(Yii::$app->request->baseUrl.'/'.$prodig->ruta.$prodig->nombmult.'.'.$prodig->extension);
-        }else {
+        $valor = (integer)$purifier->process( Yii::$app->request->get('param') );
+        $multimedia = Multimedia::find()->where(['idmult'=>$valor])->one();
+        if (!$this->descargar($multimedia->ruta, $multimedia->nombmult.'.'.$multimedia->extension ,['mp4','mp3'])) {
             $msj = "No existe el Archivo multimedia!!";
             return $this->render('/site/notfound',['msj'=>$msj]);
         }
@@ -167,16 +176,72 @@ class ProdigController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+		$multimedia = $this->findModel($param);
+        $proyecto = Proyecto::findOne($multimedia->fkpro);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->idmult]);
-        }
+        if (
+            $proyecto->load(Yii::$app->request->post()) &&
+            $multimedia->load(Yii::$app->request->post())
+        ) {
+            if (
+                $proyecto->validate() &&
+                $multimedia->validate()
+            ) {
+                $transaction = $proyecto->db->beginTransaction();
+                try{
+    				$multimedia->mva = UploadedFile::getInstance($multimedia,'mva');// archivo multimedia
+
+                    $multi = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$multimedia->ruta, $multimedia->nombmult.'.'.$multimedia->extension);
+
+                    if ($multi) {
+                        $proyecto->update_at	= date( "Y-m-d h:i:s",time() );
+        				$proyecto->fkuser		= Yii::$app->user->getId();
+
+        				if($proyecto->save()){
+        					$multimedia->nombmult	= $multimedia->mva->baseName;
+        					$multimedia->extension	= $multimedia->mva->extension;
+        					$multimedia->tamanio	= $this->convert_format_bytes( $multimedia->mva->size );
+        					if ($multimedia->extension == 'mp4') {
+        						$multimedia->tipomult	= 'video';
+        						$multimedia->ruta		= 'proyectos/video/';
+        					}elseif ($multimedia->extension == 'mp3') {
+        						$multimedia->tipomult	= 'audio';
+        						$multimedia->ruta		= 'proyectos/audio/';
+        					}
+        					$multimedia->fkpro = $proyecto->idpro;
+
+        					if (
+        						$multimedia->extension == 'mp4' ||
+        						$multimedia->extension == 'mp3'
+        					) {
+        						if ($multimedia->save()){
+        							$multimedia->uploadMultimedia();
+        							Yii::$app->session->setFlash('multimediaC',"El Proyecto '$proyecto->nombpro' a sido Registrado");
+        						}
+        					}
+        				}
+                        $transaction->commit();
+                        return $this->render('view',['multimedia'=>$multimedia]);
+                    }else {
+                        $msj = 'No se pudo actualizar el proyecto!!';
+                        return $this->redirect(['/site/notfound','msj'=>$msj]);
+                    }
+    			} catch(ErrorException $e){
+    				$transaction->rollBack();
+                    //echo "<pre>".$e;die;
+    				Yii::$app->session->setFlash('error','El proyecto Digital no fue Registrado');
+    				return $this->redirect( Url::toRoute(['site/notfound']) );// redirecciona a una vista cuando no sea exitoso el registro
+    			}
+            }// validate
+        }// post
 
         return $this->render('update', [
-            'model' => $model,
+            'proyecto'	=> $proyecto,
+			'multimedia'=> $multimedia
         ]);
     }
 
@@ -189,9 +254,20 @@ class ProdigController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $multimedia		= $this->findModel($id);
+		$proyecto		= Proyecto::findOne($multimedia->fkpro);
+		$rutamultimedia	= Yii::$app->basePath.'/web/'.$multimedia->ruta;
+		$filemult		= $multimedia->nombmult.'.'.$multimedia->extension;
+		$multf = $this->eliminarArchivo($rutamultimedia,$filemult);
+		if ($multf) {
+			$multimedia->delete();
+			$proyecto->delete();
+            return $this->redirect(['index']);
+		}else {
+            $msj = 'No se pudo eliminar el Proyecto';
+            return $this->redirect(['/site/notfound','msj'=>$msj]);
+        }
 
-        return $this->redirect(['index']);
     }
 
     /**

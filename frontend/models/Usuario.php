@@ -22,7 +22,6 @@ use yii\web\IdentityInterface;
  * @property string|null $verification_token
  * @property string|null $cedula
  * @property string|null $cbit
- * @property int|null $role
  */
 class Usuario extends ActiveRecord implements IdentityInterface
 {
@@ -46,10 +45,9 @@ class Usuario extends ActiveRecord implements IdentityInterface
         return [
             [['username','password', 'email', 'cedula', 'cbit'], 'required'],
             [['created_at', 'updated_at'], 'safe'],
-            [['status', 'role'], 'integer'],
+            [['status'], 'integer'],
             [['cedula'], 'string', 'max' => 30],
             ['status', 'default', 'value' => self::STATUS_ACTIVE],
-            [['role'], 'default', 'value' => 0],
             //['status', 'in', 'range' => [self::STATUS_ACTIVE, self::STATUS_INACTIVE, self::STATUS_DELETED]],
             [['username', 'password', 'password_reset_token', 'email', 'verification_token', 'cbit'], 'string', 'max' => 255],
             //[['auth_key'], 'string', 'max' => 32],
@@ -74,13 +72,12 @@ class Usuario extends ActiveRecord implements IdentityInterface
             'verification_token' => 'Verification Token',
             'cedula' => 'Cedula',
             'cbit' => 'Cbit',
-            'role' => 'Role',
         ];
     }
 
     public static function isUserAdmin($id)
     {
-        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 1])){
+        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE])){
             return true;
         } else {
             return false;
@@ -89,7 +86,7 @@ class Usuario extends ActiveRecord implements IdentityInterface
 
     public static function isUserTutor($id)
     {
-        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE, 'role' => 2])){
+        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE])){
             return true;
         } else {
             return false;

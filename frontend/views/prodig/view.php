@@ -29,13 +29,56 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= DetailView::widget([
         'model' => $multimedia,
         'attributes' => [
-            'idmult',
-            'nombmult',
-            'extension',
-            'tipomult',
-            'tamanio',
-            'ruta',
-            'fkidpro',
+            [
+                'attribute'=>'idpro',
+                'value'=>function($data){
+                    return $data->getMultproyecto()->idpro;
+                },
+            ],
+            [
+                'label'=>'Nombre del Proyecto',
+                'attribute'=>'nombpro',
+                'value'=>function($data){
+                    return $data->getMultproyecto()->nombpro;
+                },
+            ],
+            [
+                'attribute'=>'creador',
+                'value'=>function($data){
+                    return $data->getMultproyecto()->creador;
+                },
+            ],
+            [
+                'attribute'=>'colaboracion',
+                'value'=>function($data){
+                    return $data->getMultproyecto()->colaboracion;
+                },
+            ],
+            [
+                'attribute'=>'descripcion',
+                'value'=>function($data){
+                    return $data->getMultproyecto()->descripcion;
+                },
+            ],
+            [
+                'label'=>'Archivo Multimedia',
+                'attribute'=>'nombmult',
+                'value'=>function($data){
+                    return $data->nombmult;
+                },
+            ],
+            [
+                'attribute'=>'tipomult',
+                'value'=>function($data){
+                    return $data->tipomult;
+                },
+            ],
+            [
+                'attribute'=>'tamanio',
+                'value'=>function($data){
+                    return $data->tamanio;
+                },
+            ],
         ],
     ]) ?>
 

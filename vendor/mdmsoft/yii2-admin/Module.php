@@ -174,9 +174,9 @@ class Module extends \yii\base\Module
         if (parent::beforeAction($action)) {
             /* @var $action \yii\base\Action */
             $view = $action->controller->getView();
-
+            $view->params['breadcrumbs'][] = ['label' => 'Administrar Usuarios', 'url' => ['/usuario/index']];// agregue
             $view->params['breadcrumbs'][] = [
-                'label' => ($this->defaultUrlLabel ?: Yii::t('rbac-admin', 'Admin')),
+                'label' => ($this->defaultUrlLabel ?: Yii::t('rbac-admin', 'Administrar Permisos')),
                 'url' => ['/' . ($this->defaultUrl ?: $this->uniqueId)],
             ];
             return true;

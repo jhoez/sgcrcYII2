@@ -81,7 +81,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     },
                     'ra' => function($url){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-remove"></span>',
+                            '<span class="glyphicon glyphicon-eye-close"></span>',
                             $url,
                             ['target'=>'_blank']
                         );

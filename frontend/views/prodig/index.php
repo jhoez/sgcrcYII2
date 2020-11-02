@@ -16,7 +16,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Subir Multimedia', ['create'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Subir img Carousel', ['/portadas/create'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

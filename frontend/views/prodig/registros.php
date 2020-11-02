@@ -24,15 +24,43 @@ $this->params['breadcrumbs'][] = $this->title;
         'filterModel' => $searchModel,
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
-            'idmult',
             'nombmult',
-            'extension',
+            //'extension',
             'tipomult',
             'tamanio',
-            //'ruta',
-            //'fkidpro',
-
-            ['class' => 'yii\grid\ActionColumn'],
+            [
+                'class' => 'yii\grid\ActionColumn',
+                'header'=>'Action',
+                'headerOptions'=>['width'=>'70'],
+                'template'=>'{view}{update}{delete}{verva}',
+                'buttons'=> [
+                    'view' => function($url){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-eye-open"></span>',
+                            $url
+                        );
+                    },
+                    'update' => function($url){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-pencil"></span>',
+                            $url
+                        );
+                    },
+                    'delete' => function($url,$model){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-remove"></span>',
+                            $url
+                        );
+                    },
+                    'verva' => function($url,$model,$index){//function($url,$model,$index)
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-download"></span>',
+                            $url,//['verva','id'=>$model->idmult],
+                            ['target'=>'_blank']
+                        );
+                    },
+                ],
+            ],
         ],
     ]); ?>
 </div>

@@ -48,20 +48,29 @@ $this->params['breadcrumbs'][] = $this->title;
                 'value'=>function($data){
                     return $data->coleccion;
                 },
+                'filter'=> Html::activeDropDownList(
+                    $searchModel,'coleccion',
+                    [
+                        'coleccionBicentenaria'		=>	'Coleccion Bicentenaria',
+                        'coleccionMaestros'			=>	'Coleccion Maestro',
+                        'lectura'					=>	'Lectura Sugerida'
+                    ],
+                    ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
+                )
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
                 'header'=>'Action',
                 'headerOptions'=>['width'=>'60'],
-                'template'=>'{view}{update}{delete}',
+                'template'=>'{view}{update}{delete}{verlib}',
                 'buttons'=> [
-                    'view' => function($url,$model){
+                    'view' => function($url){
                         return Html::a(
                             '<span class="glyphicon glyphicon-eye-open"></span>',
                             $url
                         );
                     },
-                    'update' => function($url,$model){
+                    'update' => function($url){
                         return Html::a(
                             '<span class="glyphicon glyphicon-pencil"></span>',
                             $url
@@ -71,6 +80,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         return Html::a(
                             '<span class="glyphicon glyphicon-remove"></span>',
                             $url
+                        );
+                    },
+                    'verlib' => function($url,$model,$index){
+                        return Html::a(
+                            '<span class="glyphicon glyphicon-download"></span>',
+                            $url,
+                            ['target'=>'_blank']
                         );
                     },
                 ],

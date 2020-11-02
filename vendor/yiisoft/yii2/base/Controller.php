@@ -607,7 +607,7 @@ class Controller extends Component implements ViewContextInterface
 		{
 			if(file_exists($ruta.$archivo))
 			{
-				$result = @unlink($ruta.$archivo);
+				$result = unlink($ruta.$archivo);
 			}else {
                 return false;
 			}

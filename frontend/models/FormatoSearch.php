@@ -41,7 +41,7 @@ class FormatoSearch extends Formato
      */
     public function search($params)
     {
-        $query = Formato::find()->where(['statusacta'=>'0']);
+        $query = Formato::find();
 
         // add conditions that should always apply here
 

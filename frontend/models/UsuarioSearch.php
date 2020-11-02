@@ -17,7 +17,7 @@ class UsuarioSearch extends Usuario
     public function rules()
     {
         return [
-            [['iduser', 'status', 'role'], 'integer'],
+            [['iduser', 'status'], 'integer'],
             [
                 [
                     'username',
@@ -76,7 +76,6 @@ class UsuarioSearch extends Usuario
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'role' => $this->role,
         ]);
 
         $query->andFilterWhere(['ilike', 'username', $this->username])

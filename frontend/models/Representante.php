@@ -76,7 +76,7 @@ class Representante extends \yii\db\ActiveRecord
 
     public function getRepEstudiante()
     {
-        $estudiante = Estudiante::find()->where(['idrep'=>$this->idrep])->one();
+        $estudiante = Estudiante::find()->where(['fkrep'=>$this->idrep])->one();
         return $estudiante;
     }
 }

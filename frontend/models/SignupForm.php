@@ -36,7 +36,7 @@ class SignupForm extends Model
 
             ['password', 'required'],
             ['password', 'string', 'min' => 6],
-            
+
             [['cedula','cbit'], 'required'],
             [['cedula'], 'string', 'max' => 30],
             [['cbit'], 'string', 'max' => 255],
@@ -59,9 +59,9 @@ class SignupForm extends Model
         $user->generateAuthKey();
         $user->password=$this->password;
         $user->generatePasswordResetToken();
-        $user->email = $this->email;        
-        $user->created_at=date( "Y-m-d",time() );//strftime("%Y-%m-%d %I:%M:%S")
-        $user->updated_at=date( "Y-m-d",time() );//strftime("%Y-%m-%d %I:%M:%S")
+        $user->email = $this->email;
+        $user->created_at=date( "Y-m-d h:i:s",time() );//strftime("%Y-%m-%d %I:%M:%S")
+        $user->updated_at=date( "Y-m-d h:i:s",time() );//strftime("%Y-%m-%d %I:%M:%S")
         $user->generateEmailVerificationToken();
         $user->cedula=$this->cedula;
         $user->cbit=$this->cbit;

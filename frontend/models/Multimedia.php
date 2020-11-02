@@ -39,8 +39,8 @@ class Multimedia extends \yii\db\ActiveRecord
                 'uploadRequired'=>'No has seleccionado ningun Archivo multimedia',// error
                 'maxSize'=>1024*1024*100,//100MB
                 'tooBig'=>'El tamaño maximo permitido es de 100MB',// error
-                'minSize'=>1024*1024*5,//5MB
-                'tooSmall'=>'El tamaño minimo permitido son 5MB',// error
+                'minSize'=>1024*1024*1,//1MB
+                'tooSmall'=>'El tamaño minimo permitido son 1MB',// error
                 'extensions'=>'mp4,mp3',
                 //"mimeTypes" => "video/mp4,audio/mpeg3,audio/x-mpeg-3",
                 'wrongExtension'=>'El archivo no contiene una extension permitida',
@@ -82,5 +82,15 @@ class Multimedia extends \yii\db\ActiveRecord
         if ( $this->tipomult == ('video' || 'audio') ) {
             $this->mva->saveAs($this->ruta.$this->mva->baseName.'.'.$this->mva->extension);
         }
+    }
+
+    /**
+    *
+    *
+    */
+    public function getMultproyecto()
+    {
+        $proyecto = Proyecto::find()->where(['idpro'=>$this->fkpro])->one();
+        return $proyecto;
     }
 }

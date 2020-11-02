@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Libros */
 
-$this->title = 'Actualizar Libro: ' . $model->nomblib;
+$this->title = 'Actualizar Libro: ' . $contenido->nomblib;
 $this->params['breadcrumbs'][] = ['label' => 'Contenido Educativo', 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->tittle;
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="contenido-update">
 
@@ -17,7 +17,8 @@ $this->params['breadcrumbs'][] = $this->tittle;
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'contenido' => $contenido,
+        'img'=>$img
     ]) ?>
 
 </div>

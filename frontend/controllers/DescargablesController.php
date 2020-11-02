@@ -46,6 +46,27 @@ class DescargablesController extends Controller
     }
 
     /**
+    *   @method Descargarf
+    *   Descarga el formato del Campo Select
+    *   Descarga el formato del boton Download de GridView
+    */
+    public function actionDescargarf()
+    {
+        if ( Yii::$app->request->isPost || Yii::$app->request->isGet ) {
+            $purifier = new HtmlPurifier;
+            $peticion = !empty(Yii::$app->request->post('FormatoSearch')) ?
+                    Yii::$app->request->post('FormatoSearch')['idf'] :
+                    Yii::$app->request->get('id');
+            $valor = $purifier->process($peticion);
+            $formato = Formato::find()->where(['idf'=>$valor])->one();
+            if (!$this->descargar($formato->ruta, $formato->nombf.'.'.$formato->extens ,['ods','xls','odt','docx'])) {
+                Yii::$app->session->setFlash('errormsj', "el archivo no se pudo descargar");
+                $this->refresh();
+            }
+        }
+    }
+
+    /**
 	*	@method updatestatus
 	*	se actualiza el campo @var status de formato a visto
 	*/
@@ -94,27 +115,6 @@ class DescargablesController extends Controller
         return $this->render('view', [
             'model' => $this->findModel($id),
         ]);
-    }
-
-    /**
-    *   @method Descargarf
-    *   Descarga el formato del Campo Select
-    *   Descarga el formato del boton Download de GridView
-    */
-    public function actionDescargarf()
-    {
-        if ( Yii::$app->request->isPost || Yii::$app->request->isGet ) {
-            $purifier = new HtmlPurifier;
-            $peticion = !empty(Yii::$app->request->post('FormatoSearch')) ?
-                    Yii::$app->request->post('FormatoSearch')['idf'] :
-                    Yii::$app->request->get('id');
-            $valor = $purifier->process($peticion);
-            $formato = Formato::find()->where(['idf'=>$valor])->one();
-            if (!$this->descargar($formato->ruta, $formato->nombf.'.'.$formato->extens ,['ods','xls','odt','docx'])) {
-                Yii::$app->session->setFlash('errormsj', "el archivo no se pudo descargar");
-                $this->refresh();
-            }
-        }
     }
 
     /**
