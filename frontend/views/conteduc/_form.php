@@ -6,7 +6,9 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Libros */
 /* @var $form yii\widgets\ActiveForm */
+
 ?>
+
 <div class="row clearfix">
     <div class="col-md-offset-3 col-md-6">
         <div class="contenido-form">
@@ -69,7 +71,13 @@ use yii\widgets\ActiveForm;
                     </div>
                 <?php } ?>
                 <div class="">
-                    <?= $form->field($img, 'imagen')->fileInput(); ?>
+                    <?= Html::label('Imagen a subir', '', ['class' => ''])?>
+                    <div class="">
+                        <?=Html::activeInput('file',$img,'imagen',['id'=>'input-file','name'=>'file-input']) ?>
+                    </div>
+                </div>
+                <div id="divimg" style="display:none">
+                    <img id="imgSalida" width="200" height="200">
                 </div>
             </div>
             <!-- ARCHIVO PDF -->
@@ -119,4 +127,28 @@ use yii\widgets\ActiveForm;
 			document.getElementById('selectlist').style.display = 'none';
 		}
 	});
+
+    // Cargar la imagen
+    // Obtener referencia al input y a la imagen
+    const $divimg = document.getElementById('divimg');
+    const $imgselec = document.querySelector("#input-file");
+    const $viewimagen = document.querySelector("#imgSalida");
+
+    // Escuchar cuando cambie
+    $imgselec.addEventListener('change', () => {
+        $divimg.style.display= 'block';
+        // Los archivos seleccionados, pueden ser muchos o uno
+        const archivos = $imgselec.files;
+        // Si no hay archivos salimos de la función y quitamos la imagen
+        if (!archivos || !archivos.length) {
+            $viewimagen.src = "";
+            return;
+        }
+        // Ahora tomamos el primer archivo, el cual vamos a previsualizar
+        const primerArchivo = archivos[0];
+        // Lo convertimos a un objeto de tipo objectURL
+        const objectURL = URL.createObjectURL(primerArchivo);
+        // Y a la fuente de la imagen le ponemos el objectURL
+        $viewimagen.src = objectURL;
+    });
 </script>
