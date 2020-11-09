@@ -15,28 +15,20 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="contenido-view">
 
     <p>
-        <?= Html::a('Contenido registrado', ['registros'], ['class' => 'btn btn-primary']) ?>
-        <!--<?//= Html::a('Update', ['update', 'id' => $model->idlib], ['class' => 'btn btn-primary']) ?>
-        <?/*= Html::a('Delete', ['delete', 'id' => $model->idlib], [
-        'class' => 'btn btn-danger',
-        'data' => [
-        'confirm' => 'Are you sure you want to delete this item?',
-        'method' => 'post',
-    ],
-    ]) */?>-->
+        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
-    <h1 class="text-center">Libro subido: <?= Html::encode($model->nomblib) ?></h1>
+    <h1 class="text-center">Libro subido: <?= Html::encode($model->nomblib.'.'.$model->extension) ?></h1>
 
 
     <?= DetailView::widget([
         'model' => $model,
         'attributes' => [
             [
-                'label'=>'ID',
-                'attribute'=>'idlib',
+                'label'=>'Imagen',
                 'value'=>function($data){
-                    return $data->idlib;
-                }
+                    return Html::img('@web/'.$data->getimagen()->ruta.$data->getimagen()->nombimg.'.'.$data->getimagen()->extension,['width'=>'100px']);
+                },
+                'format'=>'raw'
             ],
             [
                 'label'=>'Libro',
@@ -52,13 +44,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $data->extension;
                 }
             ],
-            [
+            /*[
                 'label'=>'Ruta',
                 'attribute'=>'ruta',
                 'value'=>function($data){
                     return $data->ruta;
                 }
-            ],
+            ],*/
             [
                 'label'=>'Colección',
                 'attribute'=>'coleccion',

@@ -14,27 +14,13 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="prodig-view">
 
     <p>
-        <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
-        <!--<?//= Html::a('Update', ['update', 'id' => $multimedia->idmult], ['class' => 'btn btn-primary']) ?>
-        <?/*= Html::a('Delete', ['delete', 'id' => $multimedia->idmult], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ])*/ ?>-->
+        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= DetailView::widget([
         'model' => $multimedia,
         'attributes' => [
-            [
-                'attribute'=>'idpro',
-                'value'=>function($data){
-                    return $data->getMultproyecto()->idpro;
-                },
-            ],
             [
                 'label'=>'Nombre del Proyecto',
                 'attribute'=>'nombpro',

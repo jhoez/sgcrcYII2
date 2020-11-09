@@ -8,8 +8,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="rea-index">
 
     <p>
-        <?= Html::a('Subir Realidad Aumentada', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registros de RA', ['regrea'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['regrea'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

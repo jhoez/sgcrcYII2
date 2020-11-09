@@ -5,14 +5,15 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Usuario */
 
-$this->title = 'Update Usuario: ' . $model->iduser;
+$this->title = 'Actualizar';
 $this->params['breadcrumbs'][] = ['label' => 'Usuarios', 'url' => ['index']];
-$this->params['breadcrumbs'][] = ['label' => $model->iduser, 'url' => ['view', 'id' => $model->iduser]];
-$this->params['breadcrumbs'][] = 'Update';
+$this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="usuario-update">
-
-    <h1><?= Html::encode($this->title) ?></h1>
+<div class="us-update">
+    <p>
+        <?= Html::a('Usuarios registrados', ['index'], ['class' => 'btn btn-primary']) ?>
+    </p>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,

@@ -25,10 +25,10 @@ class HorarioController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','update','delete','reporteasistencia'],
+                'only' => ['index','create','view','update','delete','reporteasistencia'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','update','delete','reporteasistencia'],
+                        'actions' => ['index','create','view','update','delete','reporteasistencia'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -37,7 +37,7 @@ class HorarioController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
             ],
         ];
@@ -51,6 +51,7 @@ class HorarioController extends Controller
     {
         $searchModel = new AsistenciaSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider->query->where(['fkuser'=>Yii::$app->user->getId()]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -80,36 +81,37 @@ class HorarioController extends Controller
     {
         $horario = new Asistencia;
         $purifier = new HtmlPurifier;
-        $horaE  = '05:30:00';
-        $lhoraE = '05:31:00';
-        $horaS  = '05:31:30';
-        $lhoraS = '05:35:00';
+        $horaE  = '11:20:00';
+        $lhoraE = '11:40:00';
+        $horaS  = '11:42:00';
+        $lhoraS = '11:50:00';
 
         if ( $horario->load(Yii::$app->request->post()) ) {
             if ( $horario->validate() ) {
-                $paramget = isset($_GET['ms']) ? $purifier->process($_GET['ms']) : null;
+                $paramget = isset($_GET['uma']) ? $purifier->process($_GET['uma']) : null;
+                // si @var paramget es null marcara solo la entrada
                 if ($paramget == null) {
                     $horario->fkuser = Yii::$app->user->getId();
-                    $horario->fecha = date( "Y-m-d h:i:s",time() );
-
+                    $horario->fecha = date( "Y-m-d",time() );
+                    $horario->horain = date( "h:i:s",time() );
                     if ( $horario->save() ) {
                         return $this->redirect(['view', 'id' => $horario->idasis]);
                     }
                 }else {
-                    $fecha	= date( "Y-m-d h:i:s",time() );
-                    $horario = Asistencia::find()
-                                ->where(['fecha'=>$fecha])
-                                ->andWhere(['fkuser'=>Yii::$app->user->getId()])
-                                ->one();
-                    if ( $horario !== null ) {
-                        $horario->horaout = $horario->horaout;
-                        $horario->observacion = $horario->observacion;
-                        if ( $horario->save() ) {
-                            //$horario = $horario;
+                    //consulta si el usuario marco la entrada, entonces se marcara la salida
+                    $fecha	= date( "Y-m-d",time() );
+                    $asist = Asistencia::find()->where(['fecha'=>$fecha])->andWhere(['fkuser'=>Yii::$app->user->getId()])->one();
+                    if ( $asist !== null) {
+                        $asist->horaout = date( "h:i:s",time() );
+                        $asist->observacion = $horario->observacion;
+                        if ( $asist->save() ) {
+                            $horario = $asist;
                             return $this->redirect(['view', 'id' => $horario->idasis]);
                         }
-                    }else {
+                    }else {//else marcara solo la salida sin una entrada marcada
                         $horario->fkuser = Yii::$app->user->getId();
+                        $horario->fecha = date( "Y-m-d",time() );
+                        $horario->horaout = date( "h:i:s",time() );
                         if ( $horario->save() ) {
                             return $this->redirect(['view', 'id' => $horario->idasis]);
                         }
@@ -138,9 +140,9 @@ class HorarioController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        /*if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->idasis]);
-        }
+        }*/
 
         return $this->render('update', [
             'model' => $model,
@@ -154,9 +156,11 @@ class HorarioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->findModel($id)->delete();
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $this->findModel($param)->delete();
 
         return $this->redirect(['index']);
     }
@@ -194,91 +198,112 @@ class HorarioController extends Controller
         // MEDIDAS DE HOJA A4 WIDTH='992PX' HEIGHT='1403PX'
 		if ( $horario->load(Yii::$app->request->post()) )
         {
-            try {
-    			if ( !empty($horario->mes)  ) {
-                    $mes = $horario->mes;
-                    $anio = date('Y');
-                    $fechainicio = "$anio-$mes-01";
+            if ( !empty($horario->mes)  ) {
+                $mes = $horario->mes;
+                $anio = date('Y');
+                $fechainicio = "$anio-$mes-01";
 
-                    if ($mes == 12) {
-                        $anionuevo = $anio + 1;
-                        $fechafinal = "$anioNuevo-01-01";
-                    }else {
-                        $mesnuevo = $mes + 1;
-                        $mesnuevo = '0'.$mesnuevo;
-                        $fechafinal = "$anio-$mesnuevo-01";
-                    }
-    				$asistencia = Asistencia::find()->where(['>=','fecha',$fechainicio])->andWhere(['<','fecha',$fechafinal])->all();
-                    $conteo = Asistencia::find()->where(['>=','fecha',$fechainicio])->andWhere(['<','fecha',$fechafinal])->count();
-    			}
-                if( !empty($horario->fechain) && !empty($horario->fechaout) ){
-    				$finicio = $horario->fechain;
-    				$ffin = $horario->fechaout;
-                    $asistencia = Asistencia::find()->where(['>=','fecha',$finicio])->andWhere(['<=','fecha',$ffin])->all();
-                    $conteo = Asistencia::find()->where(['>=','fecha',$finicio])->andWhere(['<=','fecha',$ffin])->count();
-    			}
-    			if ( $conteo > 0 ) {
-    				$registros	= 6; // maximo de registros a mostrar en el PDF
-    				$incre		= 0;
-    				$control 	= 0;
-    				$contador	= (integer)$conteo; // variable de incremento
-
-                    //API MPDF
-                    $pdf = Yii::$app->pdf;
-                    $mpdf = $pdf->api;
-                    $pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
-
-                    foreach ($asistencia as $key => $value):
-                        if ($incre == $registros) {
-                            if ( !empty($mes) ) {
-                                $vista = $this->renderPartial('_reporteAsistencia',[
-                                    'horario'=>$asist,
-                                    'mes'=>$mes
-                                ]);
-                                $mpdf = $this->cargarVista($vista,$pdfFilename);
-                                //$mpdf->WriteHTML($vista); //hacemos un render partial a una vista preparada, en este caso es la vista ReportesPDF
-                            }else {
-                                $vista = $this->renderPartial('_reporteAsistencia',[
-                                    'horario'=>$asist,
-                                    'finicio'=>$finicio,
-                                    'ffin'=>$ffin
-                                ]);
-                                $mpdf = $this->cargarVista($vista,$pdfFilename);
-                                //$mpdf->WriteHTML($vista);
-                            }
-                            unset($asist); // VACIA $eq PARA VOLVER A INICIALIZARLA
-                            $incre = 0; // SE INICIALIZA A SU VALOR POR DEFECTO PARA LUEGO IMPRIMIR OTROS 6 REGISTROS EN EL PDF
-                        }
-                        $asist[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
-                        $incre++;
-                        $control++; // INCREMENTA HASTA QUE SEA IGUAL AL NUMERO DE REGISTROS EN LA BASE DE DATOS
-                        // IMPRIME EL RESTO DE LOS REGISTROS
-                        if ($control == $contador) {
-                            if ( !empty($mes) ) {
-                                $vista = $this->renderPartial('_reporteAsistencia',[
-                                    'horario'=>$asist,
-                                    'mes'=>$mes
-                                ]);
-                                $mpdf = $this->cargarVista($vista,$pdfFilename);
-                                //$mpdf->WriteHTML($vista); //hacemos un render partial a una vista preparada, en este caso es la vista ReportesPDF
-                            }else {
-                                $vista = $this->renderPartial('_reporteAsistencia',[
-                                    'horario'=>$asist,
-                                    'finicio'=>$finicio,
-                                    'ffin'=>$ffin
-                                ]);
-                                $mpdf = $this->cargarVista($vista,$pdfFilename);
-                                //$mpdf->WriteHTML($vista);
-                            }
-                            unset($asist);
-                        }
-                    endforeach;
-                    return $mpdf->render();
-                    //$mpdf->Output( $pdfFilename, 'D' );
-    			}
-            } catch ( ErrorException $e ) {
-                Yii::warning('Ocurrio un error!!!');
+                if ($mes == 12) {
+                    $anionuevo = $anio + 1;
+                    $fechafinal = "$anioNuevo-01-01";
+                }else {
+                    $mesnuevo = $mes + 1;
+                    $mesnuevo = $mesnuevo;
+                    $fechafinal = "$anio-$mesnuevo-01";
+                }
+                $asistencia = Asistencia::find()
+                            ->where(['>=','fecha',$fechainicio])
+                            ->andWhere(['<','fecha',$fechafinal])
+                            ->andWhere(['fkuser'=>Yii::$app->user->getId()])->all();
+                $conteo = Asistencia::find()
+                        ->where(['>=','fecha',$fechainicio])
+                        ->andWhere(['<','fecha',$fechafinal])
+                        ->andWhere(['fkuser'=>Yii::$app->user->getId()])->count();
             }
+            if( !empty($horario->fechain) && !empty($horario->fechaout) ){
+                $finicio = $horario->fechain;
+                $ffin = $horario->fechaout;
+                $asistencia = Asistencia::find()
+                            ->where(['>=','fecha',$finicio])
+                            ->andWhere(['<=','fecha',$ffin])->all();
+                $conteo = Asistencia::find()
+                        ->where(['>=','fecha',$finicio])
+                        ->andWhere(['<=','fecha',$ffin])->count();
+            }
+            if ( $conteo > 0 ) {
+                $registros	= 6; // maximo de registros a mostrar en el PDF
+                $incre		= 0;
+                $control 	= 0;
+                $contador	= (integer)$conteo; // variable de incremento
+
+                //API MPDF
+                $pdf = Yii::$app->pdf;
+                $API = $pdf->api;
+                $API->SetDisplayMode('fullpage');
+                $API->marginHeader=0;
+                $API->marginFooter=0;
+                $API->setAutoTopMargin='pad';
+                $API->setAutoBottomMargin='true';
+                
+                $header = "<img style='vertical-align: top;' src=".Yii::$app->basePath.'/web/img/printpdf/bannerfundabit.jpg'.">";
+                $footer = "<img src=".Yii::$app->basePath.'/web/img/printpdf/cintillomppe.jpg'.">";
+                
+                $API->SetHTMLHeader( $header,1 );
+                $API->SetFooter('{PAGENO}');
+                $API->SetHTMLFooter( $footer,1 );
+                $API->WriteHTML(file_get_contents(Yii::$app->basePath.'/web/css/csspdf.css'),1);
+                $pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
+
+                foreach ($asistencia as $key => $value):
+                    if ($incre == $registros) {
+                        if ( !empty($mes) ) {
+                            $vista = $this->renderPartial('_reporteAsistencia',[
+                                'horario'=>$asist,
+                                'mes'=>$mes
+                            ]);
+                            //$API = $this->cargarVista($vista,$pdfFilename);
+                            $API->WriteHTML($vista); //hacemos un render partial a una vista preparada, en este caso es la vista ReportesPDF
+                        }else {
+                            $vista = $this->renderPartial('_reporteAsistencia',[
+                                'horario'=>$asist,
+                                'finicio'=>$finicio,
+                                'ffin'=>$ffin
+                            ]);
+                            //$API = $this->cargarVista($vista,$pdfFilename);
+                            $API->WriteHTML($vista);
+                        }
+                        $API->AddPage('P');
+                        unset($asist); // VACIA $eq PARA VOLVER A INICIALIZARLA
+                        $incre = 0; // SE INICIALIZA A SU VALOR POR DEFECTO PARA LUEGO IMPRIMIR OTROS 6 REGISTROS EN EL PDF
+                    }
+                    $asist[$key] = $value;// ARREGLO AUXILIAR DEL OBJETO Equipo CON SU CLAVE => VALOR
+                    $incre++;
+                    $control++; // INCREMENTA HASTA QUE SEA IGUAL AL NUMERO DE REGISTROS EN LA BASE DE DATOS
+                    // IMPRIME EL RESTO DE LOS REGISTROS
+                    if ($control == $contador) {
+                        if ( !empty($mes) ) {
+                            $vista = $this->renderPartial('_reporteAsistencia',[
+                                'horario'=>$asist,
+                                'mes'=>$mes
+                            ]);
+                            //$API = $this->cargarVista($vista,$pdfFilename);
+                            $API->WriteHTML($vista); //hacemos un render partial a una vista preparada, en este caso es la vista ReportesPDF
+                        }else {
+                            $vista = $this->renderPartial('_reporteAsistencia',[
+                                'horario'=>$asist,
+                                'finicio'=>$finicio,
+                                'ffin'=>$ffin
+                            ]);
+                            //$API = $this->cargarVista($vista,$pdfFilename);
+                            $API->WriteHTML($vista);
+                        }
+                        unset($asist);
+                    }
+                endforeach;
+                //return $API->render();
+                $API->Output( $pdfFilename, 'D' );
+                exit;
+            }//end if conteo
 		}
 
         return $this->render('reportepdf',[
@@ -290,7 +315,7 @@ class HorarioController extends Controller
     *   @method cargarVista
     *
     */
-    public function cargarVista($vista,$pdfFilename)
+    protected function cargarVista($vista,$pdfFilename)
     {
         return new Pdf([
             'mode' => Pdf::MODE_UTF8,// set to use core fonts only

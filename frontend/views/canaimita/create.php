@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="canaimita-create">
 
     <p>
-        <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>

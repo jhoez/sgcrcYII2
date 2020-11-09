@@ -27,21 +27,21 @@ class ArchivosController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','update','delete','updatestatus','descargarfa'],
+                'only' => ['index','create','update','view','delete','updatestatus','descargarfa'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','update','delete','updatestatus','descargarfa'],
+                        'actions' => ['index','create','update','view','delete','updatestatus','descargarfa'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
                 ],
             ],
-            /*'verbs' => [
+            'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
-            ],*/
+            ],
         ];
     }
 
@@ -61,7 +61,6 @@ class ArchivosController extends Controller
             }else {
                 $msj = "Ocurrio un error al marcar como visto el Archivo...";
                 return $this->render('/site/notfound',['msj'=>$msj]);
-                //throw new NotFoundHttpException("Ocurrio un error con la data...");
             }
 		}else {
 			return $this->redirect(['/canaimita/index']);
@@ -77,14 +76,14 @@ class ArchivosController extends Controller
     {
         if ( Yii::$app->request->isPost || Yii::$app->request->isGet ) {
             $purifier = new HtmlPurifier;
-            $peticion = !empty(Yii::$app->request->post('FormatoSearch')) ?
+            $param = !empty(Yii::$app->request->post('FormatoSearch')) ?
                     Yii::$app->request->post('FormatoSearch')['idf'] :
                     Yii::$app->request->get('id');
-            $valor = $purifier->process($peticion);
+            $valor = $purifier->process($param);
             $archivos = Formato::find()->where(['idf'=>$valor])->one();
             if (!$this->descargar($archivos->ruta, $archivos->nombf.'.'.$archivos->extens ,['ods','xls','odt','docx'])) {
-                Yii::$app->session->setFlash('errormsj', "el archivo no se pudo descargar");
-                $this->refresh();
+                $msj = 'El archivo no se pudo descargar o no existe!!';
+                $this->redirect(['/site/notfound','msj'=>$msj]);
             }
         }
     }
@@ -95,7 +94,9 @@ class ArchivosController extends Controller
      */
     public function actionIndex()
     {
+        // arreglo de actas descargables
         $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
+
         $searchModel = new FormatoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
@@ -116,12 +117,13 @@ class ArchivosController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
         $purifier = new HtmlPurifier;
-		$param = $purifier->process(Yii::$app->request->get('id'));
-        return $this->render('view', [
-            'archivos' => $this->findModel($param),
+		$param = (int)$purifier->process(Yii::$app->request->get('id'));
+        $archivos = $this->findModel($param);
+        return $this->render('view',[
+            'archivos' => $archivos,
         ]);
     }
 
@@ -223,13 +225,10 @@ class ArchivosController extends Controller
      */
 	public function actionDelete()
 	{
-        //echo "<pre>";var_dump('POST:',$_POST,'GET:',$_GET);die;
         $purifier = new HtmlPurifier;
 		$param = $purifier->process(Yii::$app->request->get('id'));
 		$archivos = $this->findModel($param);
-		$ruta = Yii::$app->basePath.'/web/'.$archivos->ruta;
-		$file = $archivos->nombf.'.'.$archivos->extens;
-		$result = $this->eliminarArchivo($ruta,$file);
+		$result = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$archivos->ruta, $archivos->nombf.'.'.$archivos->extens);
 		if ($result) {
 			$archivos->delete();
             return $this->redirect(Yii::$app->urlManager->createUrl('archivos/index'));

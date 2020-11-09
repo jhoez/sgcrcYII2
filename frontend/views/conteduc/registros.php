@@ -21,8 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
-    <h3 class="text-center">Registros</h3>
-
     <?= GridView::widget([
         'dataProvider' => $dataProvider,
         'filterModel' => $searchModel,
@@ -66,25 +64,25 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons'=> [
                     'view' => function($url){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-eye-open"></span>',
+                            Html::img('@web/fonts/view.svg'),
                             $url
                         );
                     },
                     'update' => function($url){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-pencil"></span>',
+                            Html::img('@web/fonts/pencil.svg'),
                             $url
                         );
                     },
                     'delete' => function($url,$model){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-remove"></span>',
+                            Html::img('@web/fonts/cross.svg'),
                             $url
                         );
                     },
                     'verlib' => function($url,$model,$index){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-download"></span>',
+                            Html::img('@web/fonts/file1.svg'),
                             $url,
                             ['target'=>'_blank']
                         );

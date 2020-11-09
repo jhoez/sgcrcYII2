@@ -12,12 +12,13 @@ $hora	= date("h:i:s",time());
 <div class="row clearfix">
     <div class="col-md-offset-3 col-md-6">
         <div class="asistencia-form">
-            <h1 class="text-center">Marque su asistencia</h1>
             <?php
             $form = ActiveForm::begin();
             if ($hora >= $horaE && $hora <= $lhoraE) {
+                echo '<h3 class="text-center">Marque su entrada</h3>';
                 echo Html::activeHiddenInput($horario,'horain',['value'=>$hora]);
             } elseif($hora >= $horaS && $hora <= $lhoraS) {
+                echo '<h3 class="text-center">Marque su salida</h3>';
                 echo Html::activeHiddenInput($horario,'horaout',['value'=>$hora]);
             }
             ?>
@@ -30,7 +31,7 @@ $hora	= date("h:i:s",time());
                 <?php if ( $hora >= $horaE && $hora <= $lhoraE ): ?>
                     <?= Html::submitButton('Registrar Entrada', ['class' => 'btn btn-success']) ?>
                 <?php elseif($hora >= $horaS && $hora <= $lhoraS): ?>
-                    <?= Html::a('Registrar Salida', ['create','ms'=>'hs'], [
+                    <?= Html::a('Registrar Salida', ['create','uma'=>'hs'], [
                         'class' => 'btn btn-success',
                         'data' => [
                             'method' => 'post',

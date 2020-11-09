@@ -12,9 +12,9 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="prodig-create">
     <p>
         <?= Html::a('Proyectos Digitales', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
-    
+
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [

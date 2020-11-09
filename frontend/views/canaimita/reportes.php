@@ -11,9 +11,7 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
     <p>
-        <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registrar Canaimita',['/canaimita/create'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Subir archivos',['/archivos/create'],['class'=>'btn btn-primary']);?>
+        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
@@ -80,103 +78,66 @@ $this->params['breadcrumbs'][] = $this->title;
             <hr>
             <!-- FALLA DE SOFTWARE -->
             <div class="form-group">
-                <?= Html::label('Falla de Software', 'fsoft', ['class' => ''])?>
+                <?= Html::label('Falla de Software', '', ['class' => ''])?>
                 <div class="">
                     <?= Html::activeDropDownList(
                         $fsoftware,'fsoft',
-                        [
-                            'Actualizacion'     => 'Actualizacion',
-                            'Posee windows'     => 'Posee windows',
-                            'No carga el S.O'   => 'No carga el S.O',
-                            'Revisar disco'     => 'Revisar disco',
-                            'Grub rescue'       => 'Grub rescue',
-                        ],
+                        ArrayHelper::map($arrayfsoft, 'nombcata', 'nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE PANTALLA -->
             <div class="form-group">
-                <?= Html::label('Falla de Pantalla', 'fpant', ['class' => ''])?>
+                <?= Html::label('Falla de Pantalla', '', ['class' => ''])?>
                 <div class="">
                     <?= Html::activeDropDownList(
                         $fpantalla,'fpant',
-                        [
-                            'Pantalla partida'                      => 'Pantalla partida',
-                            'Pixelada'                              => 'Pixelada',
-                            'Pantalla despegada'                    => 'Pantalla despegada',
-                            'Pantalla de cristal líquido dañada'    => 'Pantalla de cristal líquido dañada',
-                            'Flex dañado'                           => 'Flex dañado'
-                        ],
+                        ArrayHelper::map($arrayfpant, 'nombcata', 'nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE TARJETAMADRE -->
             <div class="form-group">
-                <?= Html::label('Falla de Tarjeta madre', 'ftarj', ['class' => ''])?>
+                <?= Html::label('Falla de Tarjeta madre', '', ['class' => ''])?>
                 <div class="">
                     <?= Html::activeDropDownList(
                         $ftarjetamadre,'ftarj',
-                        [
-                            'Procesador dañado'         => 'Procesador dañado',
-                            'Tarj de video dañada'      => 'Tarj de video dañada',
-                            'Tarj de red dañada'        => 'Tarj de red dañada',
-                            'Tarj de sonido dañada'     => 'Tarj de sonido dañada',
-                            'Pila de bios'              => 'Pila de bios',
-                            'Configuracion del bios'    => 'Configuracion del bios',
-                            'Bios bloqueada'            => 'Bios bloqueada',
-                            'Corto circuito'            => 'Corto circuito',
-                        ],
+                        ArrayHelper::map($arrayftarj, 'nombcata', 'nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE TECLADO -->
             <div class="form-group">
-                <?= Html::label('Falla de Teclado', 'ftec', ['class' => ''])?>
+                <?= Html::label('Falla de Teclado', '', ['class' => ''])?>
                 <div class="">
                     <?= Html::activeDropDownList(
                         $fteclado,'ftec',
-                        [
-                            'Teclado dañado'    => 'Teclado dañado',
-                            'Faltan teclas'     => 'Faltan teclas',
-                            'No marcan teclas'  => 'No marcan teclas'
-                        ],
+                        ArrayHelper::map($arrayftec, 'nombcata', 'nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE CARGA -->
             <div class="form-group">
-                <?= Html::label('Falla de Carga', 'fcarg', ['class' => ''])?>
+                <?= Html::label('Falla de Carga', '', ['class' => ''])?>
                 <div class="">
                     <?= Html::activeDropDownList(
                         $fcarga,'fcarg',
-                        [
-                            'Pin de carga'      => 'Pin de carga',
-                            'Bateria dañada'    => 'Bateria dañada',
-                            'Cargador dañado'   => 'Cargador dañado'
-                        ],
+                        ArrayHelper::map($arrayfcar, 'nombcata', 'nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA GENERAL -->
             <div class="form-group">
-                <?= Html::label('Falla General', 'fgen', ['class' => ''])?>
+                <?= Html::label('Falla General', '', ['class' => ''])?>
                 <div class="">
                     <?= Html::activeDropDownList(
                         $fgeneral,'fgen',
-                        [
-                            'Mouse dañado'              => 'Mouse dañado',
-                            'Disco duro dañado'         => 'Disco duro dañado',
-                            'Momoria ram dañada'        => 'Momoria ram dañada',
-                            'Fan cooler dañado'         => 'Fan cooler dañado',
-                            'Boton encendido dañado'    => 'Boton encendido dañado',
-                            'Camara dañada'             => 'Camara dañada',
-                            'Equipo inoperativo'        => 'Equipo inoperativo'
-                        ],
+                        ArrayHelper::map($arrayfgen, 'nombcata', 'nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>

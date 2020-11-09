@@ -61,12 +61,10 @@
     }
 </style>
 -->
-<page backtop="0" backbottom="0" backleft="0" backright="0">
-    <bookmark title="Reporte asistencia" level="0" ></bookmark>
-    <page_header background="#199">
-        <img id="imgheader" src="<?= Yii::$app->request->baseUrl."/img/printpdf/bannerfundabit.jpg" ?>" alt="">
-    </page_header>
-
+<!--<header>
+    <img id="imgheader" src=" ?= Yii::$app->request->baseUrl.'/img/printpdf/bannerfundabit.jpg' ?" alt="">
+</header>-->
+<body>
     <div class="fecha text-right">
         <p class="col-md-12"><b>Reporte Fecha: </b><?=date("d/m/Y");?></p>
     </div>
@@ -104,8 +102,8 @@
         </table>
     </div>
 
-    <page_footer>
-        <img id="imgfooter" src="<?= Yii::$app->request->baseUrl."/img/printpdf/cintillomppe.jpg" ?>" alt="">
-    </page_footer>
-</page>
+    <!--<footer class="footer">
+        <img src="?= Yii::$app->request->baseUrl."/img/printpdf/cintillomppe.jpg" ?">
+    </footer>-->
+</body>
 <?php endif;?>

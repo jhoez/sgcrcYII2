@@ -18,7 +18,7 @@ use yii\helpers\Html;
 					</h1>
 					<p>
 						<?= Html::a(
-							'Ver/Descargar',
+							'Descargar',
 							[
 								'/prodig/descva',
 								'param'=>$value->idmult

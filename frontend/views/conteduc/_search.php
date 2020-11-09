@@ -15,24 +15,10 @@ use yii\widgets\ActiveForm;
         'method' => 'get',
     ]); ?>
 
-    <?= $form->field($model, 'idlib') ?>
-
     <?= $form->field($model, 'nomblib') ?>
 
-    <?= $form->field($model, 'extension') ?>
-
-    <?= $form->field($model, 'ruta') ?>
-
-    <?= $form->field($model, 'coleccion') ?>
-
-    <?php // echo $form->field($model, 'nivel') ?>
-
-    <?php // echo $form->field($model, 'tamanio') ?>
-
-    <?php // echo $form->field($model, 'idfkimag') ?>
-
     <div class="form-group">
-        <?= Html::submitButton('Search', ['class' => 'btn btn-primary']) ?>
+        <?= Html::submitButton('Buscar', ['class' => 'btn btn-primary']) ?>
         <?= Html::resetButton('Reset', ['class' => 'btn btn-outline-secondary']) ?>
     </div>
 

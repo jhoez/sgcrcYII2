@@ -6,12 +6,20 @@ use yii\widgets\ActiveForm;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Formato */
 /* @var $form yii\widgets\ActiveForm */
-$elementos = array(
-    'estadistica'	=>	'Estadistica',
-    'planificacion'	=>	'Actividades Planificadas',
-    'inventario'	=>	'Inventario Tecnologico',
-    'acta'			=>	'Acta'
-);
+if (Yii::$app->user->can('administrador')) {
+    $elementos = [
+        'estadistica'	=>	'Estadistica',
+        'planificacion'	=>	'Actividades Planificadas',
+        'inventario'	=>	'Inventario Tecnologico',
+        'acta'			=>	'Acta'
+    ];
+} else {
+    $elementos = [
+        'estadistica'	=>	'Estadistica',
+        'planificacion'	=>	'Actividades Planificadas',
+        'inventario'	=>	'Inventario Tecnologico'
+    ];
+}
 
 ?>
 

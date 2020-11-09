@@ -47,13 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
                 'buttons'=> [
                     'view' => function($url){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-eye-open"></span>',
+                            Html::img('@web/fonts/view.svg'),
                             $url
                         );
                     },
                     'delete' => function($url){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-remove"></span>',
+                            Html::img('@web/fonts/cross.svg'),
                             $url
                         );
                     },

@@ -14,8 +14,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="prodig-index">
 
     <p>
-        <?= Html::a('Subir Multimedia', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

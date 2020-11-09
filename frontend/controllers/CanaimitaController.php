@@ -23,6 +23,7 @@ use frontend\models\Ftarjetamadre;
 use frontend\models\Fteclado;
 use frontend\models\Fcarga;
 use frontend\models\Fgeneral;
+use frontend\models\Catalogo;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
@@ -47,10 +48,10 @@ class CanaimitaController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','update','delete','marcar', 'marcarstatus'],
+                'only' => ['index','view','create','update','delete','marcar', 'marcarstatus','reportespdf','reportesfallas'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','update','delete','marcar','marcarstatus'],
+                        'actions' => ['index','view','create','update','delete','marcar','marcarstatus','reportespdf','reportesfallas'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -59,7 +60,7 @@ class CanaimitaController extends Controller
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
             ],
         ];
@@ -74,13 +75,13 @@ class CanaimitaController extends Controller
         $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
         $fsearchModel = new FormatoSearch;
         $fdataProvider = $fsearchModel->search(Yii::$app->request->queryParams);
+        $csearchModel = new EquipoSearch;
+        //$cdataProvider = $csearchModel->search(Yii::$app->request->post());//busca datos enviados por $_POST
+        $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);////busca datos enviados por $_GET
 
         if ( Yii::$app->user->can('tutor') ) {// los tutores solo veran los formatos mas no las actas
             $fdataProvider->query->where(['status'=>false])->all();
-		}
-
-        $csearchModel = new EquipoSearch;
-        $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);
+        }
 
         return $this->render('index', [
             'fsearchModel' => $fsearchModel,
@@ -312,7 +313,25 @@ class CanaimitaController extends Controller
             $fcarga->load(Yii::$app->request->post()) &&
             $fgeneral->load(Yii::$app->request->post())
         ) {
-            return $this->redirect(['view', 'id' => $equipo->ideq]);
+            if (
+                $estado->validate() &&
+                $municipio->validate() &&
+                $parroquia->validate() &&
+                $sedeciat->validate() &&
+                $insteduc->validate() &&
+                $representante->validate() &&
+                $estudiante->validate() &&
+                $niveleduc->validate() &&
+                $equipo->validate() &&
+                $fsoftware->validate() &&
+                $fpantalla->validate() &&
+                $ftarjetamadre->validate() &&
+                $fteclado->validate() &&
+                $fcarga->validate() &&
+                $fgeneral->validate()
+            ) {
+                return $this->redirect(['view', 'id' => $equipo->ideq]);
+            }
         }
 
         return $this->render('update', [
@@ -378,7 +397,7 @@ class CanaimitaController extends Controller
 		$param = $purifier->process(Yii::$app->request->get('id'));
         $municipio = Municipio::find()->where(['idesta'=>$param])->all();
 
-        if ($municipio != null) {
+        if ($municipio !== null) {
             echo '<option value="">---- Seleccione ----</option>';
             foreach ($municipio as $value) {
                 echo "<option value=". $value->idmunc . ">". $value->municipio. "</option>";
@@ -398,7 +417,7 @@ class CanaimitaController extends Controller
 		$param = $purifier->process(Yii::$app->request->get('id'));
         $parroquia = Parroquia::find()->where(['idmunc'=>$param])->all();
 
-        if ($parroquia != null) {
+        if ($parroquia !== null) {
             echo '<option value="">---- Seleccione ----</option>';
             foreach ($parroquia as $value) {
                 echo "<option value=". $value->idpar . ">". $value->parroquia. "</option>";
@@ -414,12 +433,11 @@ class CanaimitaController extends Controller
     */
     public function actionReportespdf()
     {
-        $mpdf = null;
-        $conteo = null;
-        $finicio = null;
-        $ffin = null;
-        $mes = null;
-        $equipo = null;
+        $conteo         =   null;
+        $finicio        =   null;
+        $ffin           =   null;
+        $mes            =   null;
+        $equipo         =   null;
         $canaimita      =   new     Equipo;
         $fsoftware      =   new     Fsoftware;
         $fpantalla      =   new     Fpantalla;
@@ -427,6 +445,12 @@ class CanaimitaController extends Controller
         $fteclado       =   new     Fteclado;
         $fcarga         =   new     Fcarga;
         $fgeneral       =   new     Fgeneral;
+        $arrayfsoft     =   Catalogo::find()->where(['idpadre'=>1])->all();
+        $arrayfpant     =   Catalogo::find()->where(['idpadre'=>2])->all();
+        $arrayftarj     =   Catalogo::find()->where(['idpadre'=>3])->all();
+        $arrayftec      =   Catalogo::find()->where(['idpadre'=>4])->all();
+        $arrayfcar      =   Catalogo::find()->where(['idpadre'=>5])->all();
+        $arrayfgen      =   Catalogo::find()->where(['idpadre'=>6])->all();
 
         // MEDIDAS DE HOJA A4 WIDTH='992PX' HEIGHT='1403PX'
         if ( $canaimita->load(Yii::$app->request->post()) )
@@ -514,7 +538,7 @@ class CanaimitaController extends Controller
                             unset($caneq); // VACIA $caneq PARA VOLVER A INICIALIZARLA
 						}
 					endforeach;
-                    //echo "<pre>";var_dump($mpdf);die;
+
                     $API->Output($pdfFilename,'D');
                     //return $mpdf->render();
                     if ( !empty($canaimita->mes) ) {
@@ -538,6 +562,12 @@ class CanaimitaController extends Controller
             'fteclado'		=>	$fteclado,
             'fcarga'		=>	$fcarga,
             'fgeneral'		=>	$fgeneral,
+            'arrayfsoft'    =>  $arrayfsoft,
+            'arrayfpant'    =>  $arrayfpant,
+            'arrayftarj'    =>  $arrayftarj,
+            'arrayftec'     =>  $arrayftec,
+            'arrayfcar'     =>  $arrayfcar,
+            'arrayfgen'     =>  $arrayfgen,
         ]);
     }
 
@@ -545,7 +575,7 @@ class CanaimitaController extends Controller
     *   @method reporteasistencia
     *
     */
-    public function cargarVista($vista,$pdfFilename)
+    protected function cargarVista($vista,$pdfFilename)
     {
         return new Pdf([
             'mode' => Pdf::MODE_UTF8,// set to use core fonts only
@@ -579,7 +609,7 @@ class CanaimitaController extends Controller
     {
         $falla          =   '';
         $conteo         =   0;
-        $equipo = null;
+        $equipo         =   null;
         $canaimita      =   new     Equipo;
         $fsoftware      =   new     Fsoftware;
         $fpantalla      =   new     Fpantalla;
@@ -593,27 +623,27 @@ class CanaimitaController extends Controller
                 $falla = $fsoftware->fsoft;
                 $equipo = $this->construirConsultar(new Fsoftware,'fsoft',$fsoftware->fsoft);
                 $conteo = Fsoftware::find()->where(['fsoft'=>$fsoftware->fsoft])->count();
-            }else
+            }
             if( $fpantalla->load(Yii::$app->request->post()) ){
                 $falla = $fpantalla->fpant;
                 $equipo = $this->construirConsultar(new Fpantalla,'fpant',$fpantalla->fpant);
                 $conteo = Fpantalla::find()->where(['fpant'=>$fpantalla->fpant])->count();
-            }else
+            }
             if( $ftarjetamadre->load(Yii::$app->request->post()) ){
                 $falla = $ftarjetamadre->ftarj;
                 $equipo = $this->construirConsultar(new Ftarjetamadre,'ftarj',$ftarjetamadre->ftarj);
                 $conteo = Ftarjetamadre::find()->where(['ftarj'=>$ftarjetamadre->ftarj])->count();
-            }else
+            }
             if( $fteclado->load(Yii::$app->request->post()) ){
                 $falla = $fteclado->ftec;
                 $equipo = $this->construirConsultar(new Fteclado,'ftec',$fteclado->ftec);
                 $conteo = Fteclado::find()->where(['ftec'=>$fteclado->ftec])->count();
-            }else
+            }
             if( $fcarga->load(Yii::$app->request->post()) ){
                 $falla = $fcarga->fcarg;
                 $equipo = $this->construirConsultar(new Fcarga,'fcarg',$fcarga->fcarg);
                 $conteo = Fcarga::find()->where(['fcarg'=>$fcarga->fcarg])->count();
-            }else
+            }
             if( $fgeneral->load(Yii::$app->request->post()) ){
                 $falla = $fgeneral->fgen;
                 $equipo = $this->construirConsultar(new Fgeneral,'fgen',$fgeneral->fgen);
@@ -630,7 +660,7 @@ class CanaimitaController extends Controller
                 // API MPDF
                 $pdf = Yii::$app->pdf;
                 $mpdf = $pdf->api;
-                //$mpdf->WriteHTML(file_get_contents(Yii::$app->request->baseUrl.'/css/csspdf.css'),1);
+                //$mpdf->WriteHTML(file_get_contents(Yii::$app->basePath.'web/css/csspdf.css'),1);
 
                 foreach ($equipo as $key => $value) {
                     if ($incre == $registros) {

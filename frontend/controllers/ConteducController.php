@@ -10,6 +10,7 @@ use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\helpers\HtmlPurifier;
 
 /**
@@ -23,6 +24,17 @@ class ConteducController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index','create','update','view','delete','verlib','desclib','registros'],
+                'rules' => [
+                    [
+                        'actions' => ['index','create','update','view','delete','verlib','desclib','registros'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

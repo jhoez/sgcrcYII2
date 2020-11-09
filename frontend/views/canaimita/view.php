@@ -15,15 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="equipo-view">
 
     <p>
-        <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
-        <!--<?//= Html::a('Actualizar registro', ['update', 'id' => $canaimita->ideq], ['class' => 'btn btn-primary']) ?>
-        <?/*= Html::a('Eliminar registro', ['delete', 'id' => $canaimita->ideq], [
-            'class' => 'btn btn-danger',
-            'data' => [
-                'confirm' => 'Are you sure you want to delete this item?',
-                'method' => 'post',
-            ],
-        ])*/?>-->
+        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center">Version del Equipo: <?= Html::encode($canaimita->eqversion) ?></h1>
 

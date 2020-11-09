@@ -16,6 +16,21 @@ use kartik\date\DatePicker;
 
 $this->title = 'Canaimitas';
 $this->params['breadcrumbs'][] = $this->title;
+
+if (Yii::$app->user->can('administrador')) {
+    $elementos = [
+        'estadistica'	=>	'Estadistica',
+        'planificacion'	=>	'Actividades Planificadas',
+        'inventario'	=>	'Inventario Tecnologico',
+        'acta'			=>	'Acta'
+    ];
+} else {
+    $elementos = [
+        'estadistica'	=>	'Estadistica',
+        'planificacion'	=>	'Actividades Planificadas',
+        'inventario'	=>	'Inventario Tecnologico'
+    ];
+}
 ?>
 
 <div class="canaimita-index">
@@ -23,18 +38,14 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Registrar Canaimita', ['create'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Subir archivo',['/archivos/create'],['class'=>'btn btn-primary']);?>
+        <?= Html::a('Archivos',['/archivos/index'],['class'=>'btn btn-primary']);?>
         <?= Html::a('Asistencia',['/horario/index'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Subir img Carousel', ['/portadas/create'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Carousel', ['/carousel/index'], ['class' => 'btn btn-primary']) ?>
     </p>
-    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
-
-    <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
-
-    <br>
+    <?php // $this->render('_search', ['model' => $csearchModel]); ?>
 
     <div class="table-responsive">
-        <h3 class="text-center">Registros de Canaimitas</h3>
+        <h3 class="text-center">Canaimitas registradas</h3>
         <hr>
         <?= GridView::widget([
             'id'=>'cgrid',
@@ -63,7 +74,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'filter'=> DatePicker::widget([
                         'model' => $csearchModel,
                         'attribute' => 'frecepcion',
-                        'type' => DatePicker::TYPE_INPUT,
+                        'type' => DatePicker::TYPE_BUTTON,//'type' => DatePicker::TYPE_INPUT,
                         'options' => ['placeholder' => '0000-00-00'],
                         'pluginOptions' => [
                             'autoclose'=>true,
@@ -90,15 +101,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label'=>'Versión del Equipo',
                     'attribute'=>'eqversion',
-                    'filter'=>[
-                        'V1'        => 'V1',
-                        'V2'        => 'V2',
-                        'V3'        => 'V3',
-                        'V4'        => 'V4',
-                        'V5'        => 'V5',
-                        'V6'        => 'V6',
-                        'Tablet'    => 'Tablet',
-                    ],
+                    'filter'=> Html::activeDropDownList(
+                        $csearchModel,'eqversion',
+                        [
+                            'V1'        => 'V1',
+                            'V2'        => 'V2',
+                            'V3'        => 'V3',
+                            'V4'        => 'V4',
+                            'V5'        => 'V5',
+                            'V6'        => 'V6',
+                            'Tablet'    => 'Tablet',
+                        ],
+                        ['prompt' => '','class' => 'form-control imput-md']
+                    ),
                     'value'=> function($data){
                         return $data->eqversion;
                     }
@@ -106,10 +121,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label'=>'Status del Equipo',
                     'attribute'=>'eqstatus',
-                    'filter'=>[
-                        'operativo'=>'Operativo',
-                        'inoperativo'=>'Inoperativo',
-                    ],
+                    'filter'=> Html::activeDropDownList(
+                        $csearchModel,'eqstatus',
+                        [
+                            'operativo'=>'Operativo',
+                            'inoperativo'=>'Inoperativo',
+                        ],
+                        ['prompt' => '','class' => 'form-control imput-md']
+                    ),
                     'value'=> function($data){
                         return $data->eqstatus;
                     }
@@ -124,10 +143,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 [
                     'label'=>'Estado de Entraga',
                     'attribute'=>'status',
-                    'filter'=>[
-                        '1'=>'Entregado',
-                        '0'=>'No entregado',
-                    ],
+                    'filter'=> Html::activeDropDownList(
+                        $csearchModel,'status',
+                        [
+                            '1'=>'Entregado',
+                            '0'=>'No entregado',
+                        ],
+                        ['prompt' => '','class' => 'form-control imput-md']
+                    ),
                     'value'=> function($data){
                         return $data->status == true ? 'Entregado' : 'No entregado';
                     }
@@ -139,36 +162,33 @@ $this->params['breadcrumbs'][] = $this->title;
                     'template'=>'{marcar}{view}{update}{delete}',
                     'buttons'=> [
                         'marcar' => function($url,$model){
-                            if ($model->status == false) {
+                            if ( \Yii::$app->user->can('administrador') && $model->status == false) {
                                 return Html::a(
-                                    '<span class="glyphicon glyphicon-ok-circle"></span>',
+                                    Html::img('@web/fonts/checked.svg'),
                                     $url
                                 );
-                            } else {
                             }
                         },
                         'view' => function($url,$model){
                             return Html::a(
-                                '<span class="glyphicon glyphicon-eye-open"></span>',
+                                Html::img('@web/fonts/view.svg'),
                                 $url
                             );
                         },
                         'update' => function($url,$model){
                             if ( \Yii::$app->user->can('superadmin') ) {
                                 return Html::a(
-                                    '<span class="glyphicon glyphicon-pencil"></span>',
+                                    Html::img('@web/fonts/pencil.svg'),
                                     $url
                                 );
-                            }else {
                             }
                         },
                         'delete' => function($url,$model){
                             if ( \Yii::$app->user->can('superadmin') ) {
                                 return Html::a(
-                                    '<span class="glyphicon glyphicon-remove"></span>',
+                                    Html::img('@web/fonts/cross.svg'),
                                     $url
                                 );
-                            }else {
                             }
                         },
                     ],
@@ -196,8 +216,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h3 class="text-center">Actas descargables</h3>
                     <hr>
                     <div class="form-group">
-                        <?= Html::label('Actas', 'idf', ['class' => ''])?>
                         <div class="">
+                            <?= Html::label('Actas', 'formatosearch-idf', ['class' => ''])?>
                             <?= Html::activeDropDownList(
                                 $fsearchModel,'idf',
                                 ArrayHelper::map($actasArray, 'idf', 'nombf'),
@@ -216,7 +236,7 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
 
         <div class="table-responsive">
-            <h3 class="text-center">Registros de Archivos</h3>
+            <h3 class="text-center">Archivos registrados</h3>
             <hr>
             <?= GridView::widget([
                 'id'=>'fgrid',
@@ -224,13 +244,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $fsearchModel,
                 'columns' => [
                     ['class' => 'yii\grid\SerialColumn'],
-                    [
-                        'label'=>'ID',
-                        'attribute'=>'idf',
-                        'value'=>function($data){
-                            return $data->idf;
-                        }
-                    ],
                     [
                         'label'=>'F subido',
                         'attribute'=>'create_at',
@@ -240,7 +253,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter'=> DatePicker::widget([
                             'model' => $fsearchModel,
                             'attribute' => 'create_at',
-                            'type' => DatePicker::TYPE_INPUT,
+                            'type' => DatePicker::TYPE_BUTTON,
                             'options' => ['placeholder' => '0000-00-00'],
                             'pluginOptions' => [
                                 'autoclose'=>true,
@@ -249,14 +262,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         ])
                     ],
                     [
-                        'label'=>'Opcion',
+                        'label'=>'Tipo',
                         'attribute'=>'opcion',
+                        'filter'=>$elementos,
                         'value'=>function($data){
                             return $data->opcion;
                         }
                     ],
                     [
-                        'label'=>'Por ver/visto',
+                        'label'=>'Archivo',
                         'attribute'=>'nombf',
                         'value'=>function($data){
                             return $data->nombf;
@@ -265,27 +279,43 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'label'=>'Extensión',
                         'attribute'=>'extens',
+                        'filter'=> Html::activeDropDownList(
+                            $fsearchModel,'extens',
+                            [
+                                'ods'=>'ods',
+                                'xls'=>'xls',
+                                'odt'=>'odt',
+                                'docx'=>'docx',
+                                'doc'=>'doc'
+                            ],
+                            ['prompt' => '','class' => 'form-control imput-md']
+                        ),
                         'value'=>function($data){
                             return $data->extens;
                         }
                     ],
-                    [
+                    /*[
                         'label'=>'Tamaño File',
                         'attribute'=>'tamanio',
+                        'filter'=>false,
                         'value'=>function($data){
                             return $data->tamanio;
                         }
-                    ],
+                    ],*/
                     [
-                        'label'=>'Status',
+                        'label'=>'Por ver/Visto',
                         'attribute'=>'status',
+                        'filter'=> Html::activeDropDownList(
+                            $fsearchModel,'status',
+                            [
+                                '1'=>'Visto',
+                                '0'=>'Por ver'
+                            ],
+                            ['prompt' => '','class' => 'form-control imput-md']
+                        ),
                         'value'=>function($data){
                             return $data->status == true ? 'Visto' : 'Por ver';
                         },
-                        'filter'=>[
-                            '1'=>'Visto',
-                            '0'=>'Por ver'
-                        ],
                         'visible'=>Yii::$app->user->can('administrador')
                     ],
                     [
@@ -295,37 +325,42 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template'=>'{marcar}{view}{update}{delete}{descargarfa}',
                         'buttons'=> [
                             'marcar' => function($url,$model){
-                                if ($model->status == false) {
+                                if (Yii::$app->user->can('administrador') && $model->status == false) {
                                     return Html::a(
-                                        '<span class="glyphicon glyphicon-ok-circle"></span>',
-                                        Url::to(['/canaimita/marcarstatus', 'id' => implode((array)$model->idf)])
+                                        Html::img('@web/fonts/checked.svg'),
+                                        Url::to(['/canaimita/marcarstatus', 'id' => $model->idf])
                                     );
-                                } else {
                                 }
                             },
                             'view' => function($url,$model){
                                 return Html::a(
-                                '<span class="glyphicon glyphicon-eye-open"></span>',
-                                Url::to(['/archivos/view', 'id' => implode((array)$model->idf)])
+                                    Html::img('@web/fonts/view.svg'),
+                                    Url::to(['/archivos/view', 'id' => $model->idf])
                                 );
                             },
                             'update' => function($url,$model){
-                                return Html::a(
-                                '<span class="glyphicon glyphicon-pencil"></span>',
-                                Url::to(['/archivos/update', 'id' => implode((array)$model->idf)])
-                                );
+                                if (Yii::$app->user->can('administrador')) {
+                                    return Html::a(
+                                        Html::img('@web/fonts/pencil.svg'),
+                                        Url::to(['/archivos/update', 'id' => $model->idf])
+                                    );
+                                }
                             },
                             'delete' => function($url,$model){
-                                return Html::a(
-                                '<span class="glyphicon glyphicon-remove"></span>',
-                                Url::to(['/archivos/delete', 'id' => implode((array)$model->idf)])
-                                );
+                                if (Yii::$app->user->can('administrador')) {
+                                    return Html::a(
+                                        Html::img('@web/fonts/cross.svg'),
+                                        Url::to(['/archivos/delete', 'id' => $model->idf])
+                                    );
+                                }
                             },
                             'descargarfa' => function($url,$model){
-                                return Html::a(
-                                '<span class="glyphicon glyphicon-download"></span>',
-                                Url::to(['/archivos/descargarfa', 'id' => implode((array)$model->idf)])
-                                );
+                                if (Yii::$app->user->can('administrador')) {
+                                    return Html::a(
+                                        Html::img('@web/fonts/download.svg'),
+                                        Url::to(['/archivos/descargarfa', 'id' => $model->idf])
+                                    );
+                                }
                             },
                         ],
                     ],

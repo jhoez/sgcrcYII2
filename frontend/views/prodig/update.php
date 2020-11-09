@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="prodig-update">
 
     <p>
-        <?= Html::a('Proyectos registrados', ['registros'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

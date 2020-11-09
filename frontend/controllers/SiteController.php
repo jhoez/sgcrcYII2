@@ -15,6 +15,8 @@ use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
 use frontend\models\Usuario;
+use frontend\models\Imagen;
+use frontend\models\ImagenSearch;
 
 /**
  * Site controller
@@ -29,7 +31,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'user', 'admin'],
+                'only' => ['logout', 'notfound'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -100,7 +102,12 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        return $this->render('index');
+        $carousel = Imagen::find()->where(['tipoimg'=>'noticia'])->all();
+        $contador = Imagen::find()->where(['tipoimg'=>'noticia'])->count();
+        return $this->render('index',[
+            'carousel'=>$carousel,
+            'contador'=>$contador
+        ]);
     }
 
     /**
@@ -111,7 +118,7 @@ class SiteController extends Controller
     public function actionLogin()
     {
         $this->layout = 'login';
-        $model = new LoginForm();
+        $model = new LoginForm;
 
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
@@ -123,17 +130,17 @@ class SiteController extends Controller
             if ( $model->validate() ){
                 $login = Usuario::find()->where(['username'=>$model->username,'password'=>$model->password])->one();
                 if (!empty($login)){
-                    if ( $model->login($login) )// logeo el usuario
+                    if ( $model->login($login,60) )// logeo el usuario
                     {
-                        if (Yii::$app->user->can('permisoSuperadmin')) {
+                        if (Yii::$app->user->can('superadmin')) {
                             yii::$app->session->setFlash('success',"Bienvenido SuperAdmin: $login->username");
                             return $this->redirect(["usuario/index"]);
                         }
-                        if (Yii::$app->user->can('permisoAdministrador')) {
-                            yii::$app->session->setFlash('success',"Bienvenido administrador: $login->username");
+                        if (Yii::$app->user->can('administrador')) {
+                            yii::$app->session->setFlash('success',"Bienvenido Administrador: $login->username");
                             return $this->redirect(["canaimita/index"]);
                         }
-                        if (Yii::$app->user->can('permisoTutor')) {
+                        if (Yii::$app->user->can('tutor')) {
                             yii::$app->session->setFlash('success',"Bienvenido Tutor: $login->username");
                             return $this->redirect(["site/index"]);
                         }
@@ -202,7 +209,7 @@ class SiteController extends Controller
     public function actionSignup()
     {
         $model = new SignupForm;
-        
+
         if ($model->load(Yii::$app->request->post()) && $model->signup()) {
             Yii::$app->session->setFlash('success', 'Gracias por registrarte. Por favor chequeé su inbox para verificación de email.');
             return $this->goHome();

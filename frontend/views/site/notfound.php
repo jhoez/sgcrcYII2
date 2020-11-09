@@ -5,16 +5,3 @@
 		</h1>
 	</div>
 </div>
-<script type="text/javascript">
-	<?php if(Yii::$app->session->hasFlash('error')){ ?>
-		window.addEventListener('load', function(){
-			Swal.fire({
-				icon: 'error',
-				title: "<?php echo Yii::$app->session->hasFlash('error')?>",
-                //text: "<?//php echo Yii::$app->session->hasFlash('error')?>",
-				showConfirmButton: false,
-				timer: 3500 // es ms (mili-segundos)
-			});
-		});
-	<?php } ?>
-</script>

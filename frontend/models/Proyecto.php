@@ -58,4 +58,10 @@ class Proyecto extends \yii\db\ActiveRecord
 			'fkuser' => 'Usuario'
         ];
     }
+
+    public function getUsuario()
+    {
+        $usuario = Usuario::find()->where(['iduser'=>$this->fkuser])->one();
+        return $usuario;
+    }
 }

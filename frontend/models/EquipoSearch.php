@@ -45,6 +45,7 @@ class EquipoSearch extends Equipo
      */
     public function search($params)
     {
+        
         $query = Equipo::find()->joinWith(['fkrep']);
 
         // add conditions that should always apply here

@@ -16,26 +16,18 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Archivos registrados', ['index'], ['class' => 'btn btn-primary']) ?>
-        <!--<?//= Html::a('Update', ['update', 'id' => $archivos->idf], ['class' => 'btn btn-primary']) ?>
-        <?/*= Html::a('Delete', ['delete', 'id' => $archivos->idf], [
-        'class' => 'btn btn-danger',
-        'data' => [
-        'confirm' => 'Esta usted seguro de eliminar el archivo?',
-        'method' => 'post',
-    ],
-    ]) */?>-->
-</p>
-    <h1 class="text-center"><?= Html::encode($archivos->nombf) ?></h1>
+    </p>
+    <h1 class="text-center"><?= Html::encode($archivos->nombf.'.'.$archivos->extens) ?></h1>
 
     <?= DetailView::widget([
         'model' => $archivos,
         'attributes' => [
-            [
+            /*[
                 'attribute'=>'idf',
                 'value'=>function($data){
                     return $data->idf;
                 }
-            ],
+            ],*/
             [
                 'attribute'=>'opcion',
                 'value'=>function($data){
@@ -54,12 +46,12 @@ $this->params['breadcrumbs'][] = $this->title;
                     return $data->extens;
                 }
             ],
-            [
+            /*[
                 'attribute'=>'ruta',
                 'value'=>function($data){
                     return $data->ruta;
                 }
-            ],
+            ],*/
             [
                 'attribute'=>'tamanio',
                 'value'=>function($data){

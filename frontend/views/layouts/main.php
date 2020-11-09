@@ -27,19 +27,19 @@ AppAsset::register($this);
 <body class="imgcuerpo">
 <?php $this->beginBody() ?>
 
-<!-- BANNER DE FUNDABIT
-<div class="row">
-   Html::img(Yii::$app->request->baseUrl."/img/bannerfundabit.png", ['width' =>'100%']);
-</div>
--->
 
+<!-- BANNER DE FUNDABIT -->
+<div class="">
+    <?= Html::img(Yii::$app->request->baseUrl."/img/bannerfundabit.png", ['width' =>'100%']); ?>
+</div>
 <div class="wrap">
     <?php
     NavBar::begin([
         'brandLabel' => Yii::$app->name,
         'brandUrl' => Yii::$app->homeUrl,
         'options' => [
-            'class' => 'navbar-inverse navbar-fixed-top',
+            'class' => 'navbar navbar-inverse',
+            //'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
     if (Yii::$app->user->isGuest) {
@@ -47,10 +47,8 @@ AppAsset::register($this);
             ['label' => 'Contenido Educativo', 'url' => ['/conteduc/index']],
             ['label' => 'Proyectos Digitales', 'url' => ['/prodig/index']],
             ['label' => 'Realidad Aumentada', 'url' => ['/rea/index']],
-            //['label' => 'Acerca de', 'url' => ['/site/about']],
-            //['label' => 'Contactanos', 'url' => ['/site/contact']],
             ['label' => 'Iniciar Session', 'url' => ['/site/login']],
-            //['label' => 'Crear Cuenta', 'url' => ['/site/signup']],
+            //['label' => 'Crear Cuenta', 'url' => ['/site/signup'],'visible'=>!Yii::$app->user->isGuest],
         ];
     } else {
         $menuItems = [
@@ -60,7 +58,6 @@ AppAsset::register($this);
             ['label' => 'Realidad Aumentada', 'url' => ['/rea/index']],
             ['label' => 'Tutor', 'url' => ['/canaimita/index']],
             ['label' => 'Administrar Usuarios', 'url' => ['/usuario/index']],
-            //['label' => 'Permisos', 'url' => ['/admin']],
         ];
         $menuItems[] = '<li>'
             . Html::beginForm(['/site/logout'], 'post')
@@ -73,72 +70,57 @@ AppAsset::register($this);
     }
     echo Nav::widget([
         'options' => ['class' => 'navbar-nav navbar-right'],
+        //'options' => ['class' => 'navbar-nav navbar-right'],
         'items' => $menuItems,
     ]);
     NavBar::end();
     ?>
 
-    <div class="container">
-        <?= Breadcrumbs::widget([
-            'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
-        ]) ?>
-        <?= Alert::widget() ?>
-        <?= $content ?>
+
+    <div class="wrapper">
+        <div class="container">
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <?= Breadcrumbs::widget([
+                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                ]) ?>
+                <?= Alert::widget() ?>
+            <?php endif; ?>
+            <?= $content ?>
+        </div>
     </div>
 </div>
 
-
-<footer class="footer">
-  <!-- Footer Links -->
-  <div class="container text-center">
-    <!-- Grid row -->
-    <div class="row">
-      <!-- Grid column -->
+<footer class="footer" style="background-color:#000;height:31%;color:#c6b9b9;">
+  <div class="container text-left">
       <div class="col-md-6 col-xl-6">
-        <!-- Content -->
-        <h6 class="text-uppercase">Dirección</h6>
-        <p>
-            Esq. de Salas a Caja de Agua, Edif.
-            Sede del Ministerio del Poder Popular para la Educación (MPPE),
-            Parroquia Altagracia, Dtto. Capital, Caracas- Venezuela,
-            Teléfonos: (+58-212) 506.88.15 - RIF: G-20003142-5
-        </p>
-
+          <h6 class="text-uppercase" style="color:#2855c7;">Dirección</h6>
+          <hr style="border-color:#28c74b;">
+          <p>
+              Esq. de Salas a Caja de Agua, Edif.
+              Sede del Ministerio del Poder Popular para la Educación (MPPE),
+              Parroquia Altagracia, Dtto. Capital, Caracas- Venezuela,
+              Teléfonos: (+58-212) 506.88.15 - RIF: G-20003142-5
+          </p>
       </div>
-      <!-- Grid column -->
       <div class="col-md-3 col-xl-6">
-        <!-- Links -->
-        <h6 class="text-uppercase font-weight-bold">Acerca de Fundabit</h6>
-        <p>
-          <?=Html::a('Misión y Vision',['site/mv'], ['class'=>'dark-grey-text'] ); ?>
-        </p>
-        <p>
-          <?=Html::a('Objetivos',['site/obj'], ['class'=>'dark-grey-text'] ); ?>
-        </p>
-        <p>
-          <?=Html::a('Valores',['site/v'], ['class'=>'dark-grey-text'] ); ?>
-        </p>
-
+          <h6 class="text-uppercase"  style="color:#2855c7;">Acerca de Fundabit</h6>
+          <hr style="border-color:#28c74b;">
+          <p><?=Html::a('Misión y Vision',['site/mv'], ['class'=>''] ); ?></p>
+          <p><?=Html::a('Objetivos',['site/obj'], ['class'=>''] ); ?></p>
+          <p><?=Html::a('Valores',['site/v'], ['class'=>''] ); ?></p>
       </div>
-      <!-- Grid column -->
       <div class="col-md-3 col-xl-6">
-        <!-- Links -->
-        <h6 class="text-uppercase font-weight-bold">Coordinación Zonal Distrito Capital</h6>
-        <p><i class=""></i> correo</p>
-        <p><i class=""></i> numero</p>
-        <p><i class=""></i> numero</p>
+          <h6 class="text-uppercase" style="color:#2855c7;">Coordinación Zonal Distrito Capital</h6>
+          <hr style="border-color:#28c74b;">
+          <p><i class="glyphicon glyphicon-envelope"></i> correo</p>
+          <p><i class="glyphicon glyphicon-phone-alt"></i> numero</p>
+          <p><i class="glyphicon glyphicon-phone-alt"></i> numero</p>
       </div>
-      <!-- Grid column -->
-    </div>
-    <!-- Grid row -->
   </div>
-  <!-- Footer Links -->
-
   <!-- Copyright -->
   <div class="footer-copyright text-center">
     <p>© 2020 Copyright: Fundabit.</p>
   </div>
-  <!-- Copyright -->
 </footer>
 <?php $this->endBody() ?>
 </body>

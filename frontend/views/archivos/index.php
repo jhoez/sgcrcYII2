@@ -10,11 +10,26 @@ use yii\helpers\Url;
 /* @var $searchModel frontend\models\FormatoSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Archivos registrados';
+$this->title = 'Archivos';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
 $this->params['breadcrumbs'][] = $this->title;
+
+if (Yii::$app->user->can('administrador')) {
+    $elementos = [
+        'estadistica'	=>	'Estadistica',
+        'planificacion'	=>	'Actividades Planificadas',
+        'inventario'	=>	'Inventario Tecnologico',
+        'acta'			=>	'Acta'
+    ];
+} else {
+    $elementos = [
+        'estadistica'	=>	'Estadistica',
+        'planificacion'	=>	'Actividades Planificadas',
+        'inventario'	=>	'Inventario Tecnologico'
+    ];
+}
 ?>
-<div class="archivos-index">
+<div class="ar-index">
 
     <p>
         <?= Html::a('Subir Archivo', ['create'], ['class' => 'btn btn-primary']) ?>
@@ -26,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <div class="row clearfix">
         <div class="col-md-offset-3 col-md-6">
-            <div class="archivo-form">
+            <div class="ar-form">
                 <?php $form = ActiveForm::begin([
                     'id'=>'archivo',
                     //'method' => 'post',
@@ -35,9 +50,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     //'enableAjaxValidation' => true,
                 ]);?>
 
-                <h3 class="text-center">Actas descargables</h3>
                 <div class="form-group">
-                    <?= Html::label('Actas', 'idf', ['class' => ''])?>
+                    <?= Html::label('Actas', 'formatosearch-idf', ['class' => ''])?>
                     <?php
                     if (Yii::$app->session->hasFlash('erromsj')){
                         echo Html::tag('strong','no se pudo descagar el archivo', ['class' => 'label label-success']);
@@ -68,13 +82,6 @@ $this->params['breadcrumbs'][] = $this->title;
         'columns' => [
             ['class' => 'yii\grid\SerialColumn'],
             [
-                'label'=>'ID',
-                'attribute'=>'idf',
-                'value'=>function($data){
-                    return $data->idf;
-                }
-            ],
-            [
                 'label'=>'F subido',
                 'attribute'=>'create_at',
                 'value'=>function($data){
@@ -82,14 +89,15 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
             [
-                'label'=>'Opcion',
+                'label'=>'Tipo',
                 'attribute'=>'opcion',
+                'filter'=>$elementos,
                 'value'=>function($data){
                     return $data->opcion;
                 }
             ],
             [
-                'label'=>'Por ver/visto',
+                'label'=>'Archivo',
                 'attribute'=>'nombf',
                 'value'=>function($data){
                     return $data->nombf;
@@ -98,6 +106,13 @@ $this->params['breadcrumbs'][] = $this->title;
             [
                 'label'=>'Extensión',
                 'attribute'=>'extens',
+                'filter'=>[
+                    'ods'=>'ods',
+                    'xls'=>'xls',
+                    'odt'=>'odt',
+                    'docx'=>'docx',
+                    'doc'=>'doc'
+                ],
                 'value'=>function($data){
                     return $data->extens;
                 }
@@ -122,42 +137,66 @@ $this->params['breadcrumbs'][] = $this->title;
             ],
             [
                 'class' => 'yii\grid\ActionColumn',
-                'header'=>'Action',
-                'headerOptions'=>['width'=>'60'],
+                'header'=>'Acción',
+                'headerOptions'=>['width'=>'70'],
                 'template'=>'{updatestatus}{view}{update}{delete}{descargarfa}',
                 'buttons'=> [
                     'updatestatus' => function($url,$model){
-                        if ($model->status == '0') {
+                        if (Yii::$app->user->can('administrador') && $model->status == false) {
                             return Html::a(
-                                '<span class="glyphicon glyphicon-ok-circle"></span>',
-                                Url::to(["archivos/updatestatus", "id" => implode((array)$model->idf)])
+                                Html::img('@web/fonts/checked.svg'),
+                                Url::to(['archivos/updatestatus', 'id' => $model->idf]),
+                                [
+                                    //'class' => 'btn btn-primary',
+                                ]
                             );
-                        } else {
                         }
                     },
                     'view' => function($url){
                         return Html::a(
-                            '<span class="glyphicon glyphicon-eye-open"></span>',
-                            $url
+                            Html::img('@web/fonts/view.svg'),
+                            $url,
+                            [
+                                //'class' => 'btn btn-primary',
+                            ]
                         );
                     },
                     'update' => function($url){
-                        return Html::a(
-                            '<span class="glyphicon glyphicon-pencil"></span>',
-                            $url
-                        );
+                        if (Yii::$app->user->can('administrador')) {
+                            return Html::a(
+                                Html::img('@web/fonts/pencil.svg'),
+                                $url,
+                                [
+                                    //'class' => 'btn btn-warning',
+                                ]
+                            );
+                        }
                     },
                     'delete' => function($url,$model){
-                        return Html::a(
-                            '<span class="glyphicon glyphicon-remove"></span>',
-                            $url
-                        );
+                        if (Yii::$app->user->can('administrador')) {
+                            return Html::a(
+                                Html::img('@web/fonts/cross.svg'),
+                                $url,
+                                [
+                                    //'class' => 'btn btn-danger',
+                                    'data' => [
+                                        'confirm' => 'Esta seguro de eliminar el registro?',
+                                        'method' => 'get',
+                                    ]
+                                ]
+                            );
+                        }
                     },
                     'descargarfa' => function($url,$model,$index){
-                        return Html::a(
-                            '<span class="glyphicon glyphicon-download"></span>',
-                            $url
-                        );
+                        if (Yii::$app->user->can('administrador')) {
+                            return Html::a(
+                                Html::img('@web/fonts/download.svg'),
+                                $url,
+                                [
+                                    //'class' => 'btn btn-success',
+                                ]
+                            );
+                        }
                     },
                 ],
             ],

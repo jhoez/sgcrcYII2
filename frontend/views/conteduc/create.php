@@ -13,7 +13,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Contenido Educativo', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Contenido registrado', ['registros'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

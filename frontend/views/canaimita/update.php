@@ -9,12 +9,12 @@ $this->title = 'Actualizar Canaimita';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Acualizar';
 ?>
-<div class="equipo-update">
+<div class="canaimita-update">
 
     <p>
-        <?= Html::a('Canaimitas registradas', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
-    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
+    <h1 class="text-center">Canaimita: <?= Html::encode($equipo->eqserial) ?></h1>
 
     <?= $this->render('_form', [
         'estado'		=>	$estado,
