@@ -48,10 +48,12 @@ class CanaimitaController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','view','create','update','delete','marcar', 'marcarstatus','reportespdf','reportesfallas'],
+                'only' => ['index','create','update','delete','marcar'],
+                //'only' => ['index','create','update','delete','marcar', 'marcarstatus'],
                 'rules' => [
                     [
-                        'actions' => ['index','view','create','update','delete','marcar','marcarstatus','reportespdf','reportesfallas'],
+                        'actions' => ['index','create','update','delete','marcar'],
+                        //'actions' => ['index','create','update','delete','marcar','marcarstatus'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -72,23 +74,23 @@ class CanaimitaController extends Controller
      */
     public function actionIndex()
     {
-        $actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
-        $fsearchModel = new FormatoSearch;
-        $fdataProvider = $fsearchModel->search(Yii::$app->request->queryParams);
+        //$actasArray = Formato::find()->asArray()->where(['opcion'=>'acta'])->andWhere(['statusacta'=>true])->all();
+        //$fsearchModel = new FormatoSearch;
+        //$fdataProvider = $fsearchModel->search(Yii::$app->request->queryParams);
         $csearchModel = new EquipoSearch;
         //$cdataProvider = $csearchModel->search(Yii::$app->request->post());//busca datos enviados por $_POST
         $cdataProvider = $csearchModel->search(Yii::$app->request->queryParams);////busca datos enviados por $_GET
 
-        if ( Yii::$app->user->can('tutor') ) {// los tutores solo veran los formatos mas no las actas
-            $fdataProvider->query->where(['status'=>false])->all();
-        }
+        /*if ( Yii::$app->user->can('tutor') ) {// los tutores solo veran los formatos mas no las actas
+            $fdataProvider->query->where(['status'=>false]);
+        }*/
 
         return $this->render('index', [
-            'fsearchModel' => $fsearchModel,
-            'fdataProvider' => $fdataProvider,
+            //'fsearchModel' => $fsearchModel,
+            //'fdataProvider' => $fdataProvider,
             'csearchModel' => $csearchModel,
             'cdataProvider' => $cdataProvider,
-            'actasArray'=>$actasArray
+            //'actasArray'=>$actasArray
         ]);
     }
 
@@ -98,10 +100,13 @@ class CanaimitaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
+        $purifier = new HtmlPurifier;
+        $param = (int)$purifier->process( Yii::$app->request->get('id') );
+        $canaimita = $this->findModel($param);
         return $this->render('view', [
-            'canaimita' => $this->findModel($id),
+            'canaimita' => $canaimita
         ]);
     }
 
@@ -224,24 +229,8 @@ class CanaimitaController extends Controller
                     $transaction->rollback();
                     Yii::$app->session->setFlash('warning', "La Canaimita $equipo->eqserial no pudo ser registrar");
                 }// fin try catch
-            }/*else {
-                $estado->getErrors();
-                $municipio->getErrors();
-                $parroquia->getErrors();
-                $sedeciat->getErrors();
-                $insteduc->getErrors();
-                $representante->getErrors();
-                $estudiante->getErrors();
-                $niveleduc->getErrors();
-                $equipo->getErrors();
-                $fsoftware->getErrors();
-                $fpantalla->getErrors();
-                $ftarjetamadre->getErrors();
-                $fteclado->getErrors();
-                $fcarga->getErrors();
-                $fgeneral->getErrors();
-            }*/
-        }
+            }
+        }//
 
         return $this->render('create', [
             'estado'        =>  $estado,
@@ -541,15 +530,10 @@ class CanaimitaController extends Controller
 
                     $API->Output($pdfFilename,'D');
                     //return $mpdf->render();
-                    if ( !empty($canaimita->mes) ) {
-                        Yii::$app->session->setFlash('success', "¡Se ha creado el reporte del $mes!");
-                    }else if ( !empty($canaimita->frecepcion) && !empty($canaimita->fentrega) ) {
-                        Yii::$app->session->setFlash('success', "¡Se ha creado el reporte de la Falla: $falla!");
-                    }
 				}
             } catch (ErrorException $e) {
                 Yii::warning("¡Por favor seleccione alguna opcion de los distintos reportes...!");
-                Yii::$app->session->setFlash('error', "¡Por favor!");
+                Yii::$app->session->setFlash('error', "¡Por favor seleccione alguna opcion de los distintos reportes...!");
             }
 
         }
@@ -575,7 +559,7 @@ class CanaimitaController extends Controller
     *   @method reporteasistencia
     *
     */
-    protected function cargarVista($vista,$pdfFilename)
+    public function cargarVista($vista,$pdfFilename)
     {
         return new Pdf([
             'mode' => Pdf::MODE_UTF8,// set to use core fonts only
@@ -693,7 +677,6 @@ class CanaimitaController extends Controller
         } catch (ErrorException $e) {
             Yii::warning('Ocurrio un error en donde nose');
             Yii::$app->session->setFlash('error',"Disculpe no existe la data");
-            //$this->redirect(Yii::$app->urlManager->createUrl('site/notfound') );
         }
 
         return $this->render('reportes', [
@@ -711,12 +694,12 @@ class CanaimitaController extends Controller
 	*	@method construirConsultar
 	*	construye una consulta segun la falla que sea enviada por POST
 	*/
-	protected function construirConsultar($clase,$index,$falla){
-		$modelo = $clase::find()->where("$index = :f_$index", [":f_$index" => $falla])->all();
-        $conteo = $clase::find()->where("$index = :f_$index", [":f_$index" => $falla])->count();
+	protected function construirConsultar($clase,$campo,$falla){
+		$modelo = $clase::find()->where("$campo = :f_$campo", [":f_$campo" => $falla])->all();
+        $conteo = $clase::find()->where("$campo = :f_$campo", [":f_$campo" => $falla])->count();
 		if ($conteo > 0) {
-			foreach ($modelo as $valor) {
-				$fkeq[] = $valor->fkeq;
+			foreach ($modelo as $data) {
+				$fkeq[] = $data->fkeq;
 			}
 			return Equipo::find()->where(['in','ideq',$fkeq])->all();
 		}else {
@@ -730,40 +713,22 @@ class CanaimitaController extends Controller
     *   @method actualiza el status de entrega
     *
     */
-    public function actionMarcar($id)
+    /*
+    public function actionMarcar()
     {
-        $canaimita = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+        $param = (int)$purifier->process( Yii::$app->request->get('id') );
+        $canaimita = $this->findModel($param);
         $canaimita->fentrega = date( "Y-m-d h:i:s",time() );
         $canaimita->status = true;
         if ($canaimita->save()) {
+            Yii::$app->session->setFlash('success','Canaimita marcada como entregada!!');
             return $this->redirect(['index']);
         }else {
-            $msj = 'No se pudo marcar el horario...';
-            return $this->redirect(['/site/notfound','msj'=>$msj]);
+            Yii::$app->session->setFlash('error','Ocurrio un error al marcar como entregado la Canaimita!!');
+            return $this->redirect(['index']);
         }
     }
-
-    /**
-	*	@method updatestatus
-	*	se actualiza el campo @var status de 'por ver' a 'visto'
-	*/
-	public function actionMarcarstatus(){
-		$purifier = new HtmlPurifier;
-		$param = $purifier->process(Yii::$app->request->get('id'));
-
-		if ( !empty($param) ) {
-            $archivos = Formato::findOne($param);// obtiene el registro cuya clave primaria es $param
-            $archivos->status = true;
-            if( $archivos->save(false) ) {
-                return $this->redirect(['index']);
-            }else {
-                $msj = "Ocurrio un error al marcar como visto el Archivo...";
-                return $this->render('/site/notfound',['msj'=>$msj]);
-                //throw new NotFoundHttpException("Ocurrio un error con la data...");
-            }
-		}else {
-			return $this->redirect(['/canaimita/index']);
-		}
-	}
+    */
 
 }

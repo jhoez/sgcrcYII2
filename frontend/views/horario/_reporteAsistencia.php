@@ -61,49 +61,48 @@
     }
 </style>
 -->
-<!--<header>
-    <img id="imgheader" src=" ?= Yii::$app->request->baseUrl.'/img/printpdf/bannerfundabit.jpg' ?" alt="">
-</header>-->
-<body>
-    <div class="fecha text-right">
-        <p class="col-md-12"><b>Reporte Fecha: </b><?=date("d/m/Y");?></p>
-    </div>
-    <div id="titlereport" class="text-center">
-        <?php if (isset($finicio) && isset($ffin)) {
-            echo "<h4>Reporte de Asistencia desde ".$finicio." hasta ".$ffin."</h4>";
-        }else if(!empty($mes)){
-            setlocale(LC_TIME, 'es_ES.UTF-8');
-            $fecha = DateTime::createFromFormat('!m',$mes);
-            echo "<h4>Reporte de Asistencia de ".ucwords((string)strftime("%B",(int)$fecha->getTimestamp()))."</h4>";
-        }?>
-    </div>
-    <div id="cuerpo" class="col-md-12">
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Usuario</th>
-                    <th>Fecha</th>
-                    <th>Hora de Entrada</th>
-                    <th>Hora de Salida</th>
-                    <th>Observacion</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($horario as $data) :?>
-                    <tr>
-                        <td><?=$data->getFkusuario()->username;?></td>
-                        <td><?=$data->fecha;?></td>
-                        <td><?=$data->horain;?></td>
-                        <td><?=$data->horaout;?></td>
-                        <td><?=$data->observacion;?></td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+<header>
+    <img id="imgheader" src="<?= Yii::$app->request->baseUrl."/img/printpdf/bannerfundabit.jpg" ?>" alt="">
+</header>
 
-    <!--<footer class="footer">
-        <img src="?= Yii::$app->request->baseUrl."/img/printpdf/cintillomppe.jpg" ?">
-    </footer>-->
-</body>
+<div class="fecha text-right">
+    <p class="col-md-12"><b>Reporte Fecha: </b><?=date("d/m/Y");?></p>
+</div>
+<div id="titlereport" class="text-center">
+    <?php if (isset($finicio) && isset($ffin)) {
+        echo "<h4>Reporte de Asistencia desde ".$finicio." hasta ".$ffin."</h4>";
+    }else if(!empty($mes)){
+        setlocale(LC_TIME, 'es_ES.UTF-8');
+        $fecha = DateTime::createFromFormat('!m',$mes);
+        echo "<h4>Reporte de Asistencia de ".ucwords((string)strftime("%B",(int)$fecha->getTimestamp()))."</h4>";
+    }?>
+</div>
+<div id="cuerpo" class="col-md-12">
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Usuario</th>
+                <th>Fecha</th>
+                <th>Hora de Entrada</th>
+                <th>Hora de Salida</th>
+                <th>Observacion</th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($horario as $data) :?>
+                <tr>
+                    <td><?=$data->getFkusuario()->username;?></td>
+                    <td><?=$data->fecha;?></td>
+                    <td><?=$data->horain;?></td>
+                    <td><?=$data->horaout;?></td>
+                    <td><?=$data->observacion;?></td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+
+<footer class="footer">
+    <img src="<?= Yii::$app->request->baseUrl."/img/printpdf/cintillomppe.jpg" ?>">
+</footer>
 <?php endif;?>

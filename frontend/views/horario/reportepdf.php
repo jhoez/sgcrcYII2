@@ -5,7 +5,7 @@ use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 use kartik\date\DatePicker;
 
-$this->title = 'Reportes';
+$this->title = 'Reporte de asistencia';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['canaimita/index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

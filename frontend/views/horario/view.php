@@ -8,7 +8,7 @@ use yii\widgets\DetailView;
 
 $this->title = 'Detalles';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Asistencia', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -29,7 +29,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model' => $horario,
         'attributes' => [
             'idasis',
             [

@@ -7,7 +7,7 @@ use yii\helpers\Html;
 
 $this->title = 'Registrar Asistencia';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Asistencia', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="asistencia-create">

@@ -145,30 +145,24 @@ if (Yii::$app->user->can('administrador')) {
                         if (Yii::$app->user->can('administrador') && $model->status == false) {
                             return Html::a(
                                 Html::img('@web/fonts/checked.svg'),
-                                Url::to(['archivos/updatestatus', 'id' => $model->idf]),
-                                [
-                                    //'class' => 'btn btn-primary',
-                                ]
+                                Url::to(['archivos/updatestatus', 'id' => $model->idf])//,
+                                //['class' => 'btn btn-primary',]
                             );
                         }
                     },
                     'view' => function($url){
                         return Html::a(
                             Html::img('@web/fonts/view.svg'),
-                            $url,
-                            [
-                                //'class' => 'btn btn-primary',
-                            ]
+                            $url//,
+                            //['class' => 'btn btn-primary',]
                         );
                     },
                     'update' => function($url){
                         if (Yii::$app->user->can('administrador')) {
                             return Html::a(
                                 Html::img('@web/fonts/pencil.svg'),
-                                $url,
-                                [
-                                    //'class' => 'btn btn-warning',
-                                ]
+                                $url//,
+                                //['class' => 'btn btn-warning',]
                             );
                         }
                     },
@@ -177,13 +171,7 @@ if (Yii::$app->user->can('administrador')) {
                             return Html::a(
                                 Html::img('@web/fonts/cross.svg'),
                                 $url,
-                                [
-                                    //'class' => 'btn btn-danger',
-                                    'data' => [
-                                        'confirm' => 'Esta seguro de eliminar el registro?',
-                                        'method' => 'get',
-                                    ]
-                                ]
+                                ['data' => ['confirm' => 'Esta seguro de eliminar el registro?']]
                             );
                         }
                     },
@@ -191,10 +179,8 @@ if (Yii::$app->user->can('administrador')) {
                         if (Yii::$app->user->can('administrador')) {
                             return Html::a(
                                 Html::img('@web/fonts/download.svg'),
-                                $url,
-                                [
-                                    //'class' => 'btn btn-success',
-                                ]
+                                $url//,
+                                //['class' => 'btn btn-success',]
                             );
                         }
                     },

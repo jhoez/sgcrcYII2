@@ -29,6 +29,7 @@ AppAsset::register($this);
 
 <div class="wrap">
     <div class="container">
+        <?= Alert::widget() ?>
         <?= $content ?>
     </div>
 </div>

@@ -10,7 +10,6 @@ use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use yii\helpers\HtmlPurifier;
 
 /**
@@ -24,17 +23,6 @@ class ConteducController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['index','create','update','view','delete','verlib','desclib','registros'],
-                'rules' => [
-                    [
-                        'actions' => ['index','create','update','view','delete','verlib','desclib','registros'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -53,7 +41,9 @@ class ConteducController extends Controller
         $purifier = new HtmlPurifier;
         $get = (integer)$purifier->process( Yii::$app->request->get('id') || Yii::$app->request->get('param') );
         $contenido = Libros::findOne($get);
-        return $this->redirect(Yii::$app->request->baseUrl.'/'.$contenido->ruta.$contenido->nomblib.'.'.$contenido->extension);
+        return $this->render('libro',[
+            'contenido'=>$contenido
+        ]);
     }
 
     /**
@@ -105,10 +95,13 @@ class ConteducController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $contenido = $this->findModel($param);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'contenido' => $contenido,
         ]);
     }
 
@@ -126,51 +119,60 @@ class ConteducController extends Controller
             $contenido->load(Yii::$app->request->post()) &&
             $img->load(Yii::$app->request->post())
         ) {
-            $contenido->files = UploadedFile::getInstance($contenido,'files');
-            $img->imagen = UploadedFile::getInstance($img,'imagen');
+            $transaction = $contenido->db->beginTransaction();
+            try {
+                $contenido->files = UploadedFile::getInstance($contenido,'files');
+                $img->imagen = UploadedFile::getInstance($img,'imagen');
 
-            $img->nombimg	= $img->imagen->baseName;
-            $img->extension = $img->imagen->extension;
-            $img->ruta		= "coleccionLibros/cimg/";
-            $img->tamanio	= $this->convert_format_bytes($img->imagen->size);
-            $img->fkuser	= Yii::$app->user->getId();
+                $img->nombimg	= $img->imagen->baseName;
+                $img->extension = $img->imagen->extension;
+                $img->ruta		= "coleccionLibros/cimg/";
+                $img->tamanio	= $this->convert_format_bytes($img->imagen->size);
+                $img->fkuser	= Yii::$app->user->getId();
 
-            if ( $img->imagen && $img->validate() ) {
-                if ( $img->save() ) {
-                    $contenido->nomblib	= $contenido->files->baseName;
-                    $contenido->extension	= $contenido->files->extension;
+                if ( $img->imagen && $img->validate() ) {
+                    if ( $img->save() ) {
+                        $contenido->nomblib	= $contenido->files->baseName;
+                        $contenido->extension	= $contenido->files->extension;
 
-                    $coleccion	= $contenido->coleccion;
-                    $niv		= $contenido->nivel;
-                    if ($coleccion == 'coleccionBicentenaria') {
-                        $contenido->ruta = "coleccionLibros/$coleccion/$niv/";
-                    }elseif( $coleccion == ('coleccionMaestros' || 'lectura') ){
-                        $contenido->ruta = "coleccionLibros/$coleccion/";
-                    }
-
-                    if ($niv == ('inicial' || 'primaria' || 'media')) {
-                        $contenido->nivel	= $niv;
-                    }else if($coleccion == 'coleccionMaestros'){
-                        $contenido->nivel	=  'maestro';
-                    }else if($coleccion == 'lectura') {
-                        $contenido->nivel = 'lectura';
-                    }
-
-                    $contenido->tamanio	= $this->convert_format_bytes($contenido->files->size);
-                    $contenido->fkimag = $img->idimag;
-
-                    if ( $contenido->files && $contenido->validate() ) {
-                        if ( $contenido->save() ) {
-                            $img->uploadImg();//Guardamos el fichero
-                            $contenido->uploadArchivo();//Guardamos el fichero
-                            //Yii::$app->session->setFlash('libroC',"El Libro '$contenido->nomblib' a sido Registrado");
+                        $coleccion	= $contenido->coleccion;
+                        $niv		= $contenido->nivel;
+                        if ($coleccion == 'coleccionBicentenaria') {
+                            $contenido->ruta = "coleccionLibros/$coleccion/$niv/";
+                        }elseif( $coleccion == ('coleccionMaestros' || 'lectura') ){
+                            $contenido->ruta = "coleccionLibros/$coleccion/";
                         }
-                    }
-                }// save
-            }// validate
 
-            return $this->redirect(['view', 'id' => $contenido->idlib]);
-            //return $this->render('/site/notfound',['msj'=>$msj]);
+                        if ($niv == ('inicial' || 'primaria' || 'media')) {
+                            $contenido->nivel	= $niv;
+                        }else if($coleccion == 'coleccionMaestros'){
+                            $contenido->nivel	=  'maestro';
+                        }else if($coleccion == 'lectura') {
+                            $contenido->nivel = 'lectura';
+                        }
+
+                        $contenido->tamanio	= $this->convert_format_bytes($contenido->files->size);
+                        $contenido->fkimag = $img->idimag;
+
+                        if ( $contenido->files && $contenido->validate() ) {
+                            if ( $contenido->save() ) {
+                                $img->uploadImg();//Guardamos el fichero
+                                $contenido->uploadArchivo();//Guardamos el fichero
+                                Yii::$app->session->setFlash('error','El Contenido Educativo fue Registrado!!');
+                            }else {
+                                Yii::$app->session->setFlash('error','No se logro registrar el Contenido Educativo!!');
+                                return $this->redirect(['index']);
+                            }
+                        }// validate contenido
+                    }// save img
+                }// validate img
+                $transaction->commit();
+                return $this->redirect(['view', 'id' => $contenido->idlib]);
+            } catch (\ErrorException $e) {
+                $transaction->rollBack();
+                Yii::$app->session->setFlash('error','No se pudo registrar el Contenido Educativo!!');
+                return $this->redirect(['index']);
+            }
 
         }// carga post
 
@@ -241,7 +243,7 @@ class ConteducController extends Controller
                                 if ( $contenido->save() ) {
                                     $img->uploadImg();//Guardamos el fichero
                                     $contenido->uploadArchivo();//Guardamos el fichero
-                                    //Yii::$app->session->setFlash('libroC',"El Libro '$contenido->nomblib' a sido Registrado");
+                                    Yii::$app->session->setFlash('error','El Contenido Educativo fue Actualizado!!');
                                 }
                             }
                         }// save IMG
@@ -249,13 +251,15 @@ class ConteducController extends Controller
                     $transaction->commit();
                     return $this->redirect(['view', 'id' => $contenido->idlib]);
                 }else {
-                    $msj = 'No se pudo actualizar el libro!!';
-                    return $this->redirect(['/site/notfound','msj'=>$msj]);
+                    Yii::$app->session->setFlash('error','No se pudo actualizar el Contenido Educativo!!');
+                    return $this->redirect(['index']);
                 }
 
             } catch (ErrorException $e) {
-                echo "<pre>";var_dump($e);die;
+                //echo "<pre>";var_dump($e);die;
                 $transaction->rollBack();
+                Yii::$app->session->setFlash('error','No se pudo actualizar el Contenido Educativo!!');
+                return $this->redirect(['index']);
             }
         }// carga post
 
@@ -274,23 +278,22 @@ class ConteducController extends Controller
      */
     public function actionDelete()
     {
-        $libros		= $this->findModel($id);
+        $purifier   = new HtmlPurifier;
+        $param      = $purifier->process( Yii::$app->request->get('id') );
+        $libros		= $this->findModel($param);
 		$imag		= Imagen::find()->where(['idimag'=>$libros->fkimag])->one();
 
-		$rutalibro	= Yii::$app->basePath.'/web/'.$libros->ruta;
-		$filelib	= $libros->nomblib.$libros->extension;
-		$rutaimagen	= Yii::$app->basePath.'/web/'.$imag->ruta;
-		$fileimg	= $imag->nombimg.$imag->extension;
+		$librof		= $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$libros->ruta, $libros->nomblib.'.'.$libros->extension);
+		$imagenf	= $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$imag->ruta, $imag->nombimg.'.'.$imag->extension);
 
-		$librof		= $this->eliminarArchivo($rutalibro, $filelib);
-		$imagenf	= $this->eliminarArchivo($rutaimagen, $fileimg);
-		if ($librof && $imagenf) {
+        if ($librof && $imagenf) {
 			$libros->delete();
 			$imag->delete();
+            Yii::$app->session->setFlash('succes','Se eliminado el Contenido Educativo!!');
             return $this->redirect(['index']);
 		}else {
-            $msj = 'No se logro eliminar el libro!!';
-            return $this->redirect(['/site/notfound','msj'=>$msj]);
+            Yii::$app->session->setFlash('error','No existe el Contenido Educativo a eliminar!!');
+            return $this->redirect(['index']);
         }
     }
 

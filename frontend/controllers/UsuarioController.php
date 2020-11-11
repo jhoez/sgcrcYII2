@@ -3,12 +3,13 @@
 namespace frontend\controllers;
 
 use Yii;
-use frontend\models\Usuario;
-use frontend\models\UsuarioSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 use yii\base\ErrorException;
+use yii\helpers\HtmlPurifier;
+use frontend\models\Usuario;
+use frontend\models\UsuarioSearch;
 
 /**
  * UsuarioController implements the CRUD actions for Usuario model.
@@ -51,10 +52,13 @@ class UsuarioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $usuario = $this->findModel($param);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'usuario' => $usuario,
         ]);
     }
 
@@ -64,38 +68,30 @@ class UsuarioController extends Controller
      * @return mixed
      */
     public function actionCreate() {
-        $model = new Usuario;
+        $usuario = new Usuario;
 
-        if ($model->load(Yii::$app->request->post())) {
-            $transaction = $model->db->beginTransaction();
-            try {
-                $model->generateAuthKey();
-                $model->generatePasswordResetToken();
-                $model->status=1;
-                $model->created_at=date( "Y-m-d h:i:s",time() );
-                $model->updated_at=date( "Y-m-d h:i:s",time() );
-                //$model->role=0;
-                $model->generateEmailVerificationToken();
-
-                if ($model->save()) {
-                    // se asigna por defecto el role tutor al usuario creado.
-                    $auth = Yii::$app->authManager;
-                    $tutorRole = $auth->getRole('tutor');
-                    $auth->assign($tutorRole, $model->getId());
-                } else {
-                    $msj = "El usuario no fue creado...";
-                    return $this->redirect(['/site/notfound', 'msj' => $msj]);
-                }
-                $transaction->commit();
-                return $this->redirect(['view', 'id' => $model->id]);
-            } catch (ErrorException $e) {
-                echo "<pre>".$e;die;
-                $transaction->rollback();
+        if ($usuario->load(Yii::$app->request->post())) {
+            $usuario->generateAuthKey();
+            $usuario->generatePasswordResetToken();
+            $usuario->status=1;
+            $usuario->created_at=date( "Y-m-d h:i:s",time() );
+            //$usuario->updated_at=date( "Y-m-d h:i:s",time() );
+            $usuario->generateEmailVerificationToken();
+            if ($usuario->save()) {
+                // se asigna por defecto el role tutor al usuario creado.
+                //$auth = Yii::$app->authManager;
+                //$tutorRole = $auth->getRole('tutor');
+                //$auth->assign($tutorRole, $usuario->getId());
+                Yii::$app->session->setFlash('succes','El usuario fue registrado!!');
+                return $this->redirect(['view', 'id' => $usuario->id]);
+            } else {
+                Yii::$app->session->setFlash('error','El usuario no fue registrado!!');
+                return $this->redirect(['index']);
             }
-
         }
+
         return $this->render('create', [
-            'model' => $model,
+            'usuario' => $usuario,
         ]);
     }
 
@@ -108,14 +104,16 @@ class UsuarioController extends Controller
      */
     public function actionUpdate($id)
     {
-        $model = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $usuario = $this->findModel($param);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->iduser]);
+        if ($usuario->load(Yii::$app->request->post()) && $usuario->save()) {
+            return $this->redirect(['view', 'id' => $usuario->iduser]);
         }
 
         return $this->render('update', [
-            'model' => $model,
+            'usuario' => $usuario,
         ]);
     }
 
@@ -128,9 +126,14 @@ class UsuarioController extends Controller
      */
     public function actionDelete($id)
     {
-        $this->findModel($id)->delete();
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $usuario = $this->findModel($param);
 
-        return $this->redirect(['index']);
+        if ($usuario->delete()) {
+            Yii::$app->session->setFlash('success','El usuario fue Eliminado!!');
+            return $this->redirect(['index']);
+        }
     }
 
     /**

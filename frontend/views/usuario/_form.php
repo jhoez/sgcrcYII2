@@ -14,27 +14,27 @@ use yii\widgets\ActiveForm;
             <?php $form = ActiveForm::begin(); ?>
             <div class="form-group">
                 <div class="">
-                    <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($usuario, 'username')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
             <div class="form-group">
                 <div class="">
-                    <?= $form->field($model, 'email')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($usuario, 'email')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
             <div class="form-group">
                 <div class="">
-                    <?= $form->field($model, 'cedula')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($usuario, 'cedula')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
             <div class="form-group">
                 <div class="">
-                    <?= $form->field($model, 'cbit')->textInput(['maxlength' => true]) ?>
+                    <?= $form->field($usuario, 'cbit')->textInput(['maxlength' => true]) ?>
                 </div>
             </div>
             <div class="form-group">
                 <div class="">
-                    <?= $form->field($model, 'password')->passwordInput(['maxlength' => true]) ?>
+                    <?= $form->field($usuario, 'password')->passwordInput(['maxlength' => true]) ?>
                 </div>
             </div>
 

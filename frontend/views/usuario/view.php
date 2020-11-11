@@ -16,10 +16,10 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Usuarios registrados', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
-    <h1 class="text-center">Usuario: <?= Html::encode($model->username) ?></h1>
+    <h1 class="text-center">Usuario: <?= Html::encode($usuario->username) ?></h1>
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model' => $usuario,
         'attributes' => [
             [
                 'label'=>'Usuario',

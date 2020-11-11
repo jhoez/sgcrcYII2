@@ -8,7 +8,6 @@ use frontend\models\ImagenSearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
-use yii\filters\AccessControl;
 use yii\web\UploadedFile;
 use yii\helpers\HtmlPurifier;
 
@@ -23,17 +22,6 @@ class CarouselController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'only' => ['index','create','update','view','delete'],
-                'rules' => [
-                    [
-                        'actions' => ['index','create','update','view','delete'],
-                        'allow' => true,
-                        'roles' => ['@'],
-                    ],
-                ],
-            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -49,7 +37,7 @@ class CarouselController extends Controller
      */
     public function actionIndex()
     {
-        $searchModel = new ImagenSearch();
+        $searchModel = new ImagenSearch;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
         $dataProvider->query->where(['tipoimg'=>'noticia']);
 
@@ -68,9 +56,10 @@ class CarouselController extends Controller
     public function actionView()
     {
         $purifier = new HtmlPurifier;
-		$param = $purifier->process(Yii::$app->request->get('id'));
+		$param = (int)$purifier->process(Yii::$app->request->get('id'));
+        $carousel = $this->findModel($param);
         return $this->render('view', [
-            'model' => $this->findModel($param),
+            'carousel' => $carousel,
         ]);
     }
 
@@ -150,17 +139,19 @@ class CarouselController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
         $purifier = new HtmlPurifier;
-		$param = $purifier->process(Yii::$app->request->get('id'));
+		$param = $purifier->process( Yii::$app->request->get('id') );
         $carousel = $this->findModel($param);
         $imgdelete = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$carousel->ruta,$carousel->nombimg.'.'.$carousel->extension);
         if ($imgdelete) {
+            $carousel->delete();
+            Yii::$app->session->setFlash('success','Registro e imagen eliminados con exito!!');
             return $this->redirect(['index']);
         }else {
-            $msj = 'No se pudo eliminar la imagen!!';
-            return $this->redirect(['/site/notfound','msj'=>$msj]);
+            Yii::$app->session->setFlash('error','No existe el registro e imagen a eliminar!!');
+            return $this->redirect(['index']);
         }
     }
 

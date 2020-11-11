@@ -5,9 +5,9 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Asistencia */
 
-$this->title = 'Actualizar Asistencia: ' . $model->idasis;
+$this->title = 'Actualizar Asistencia';
 $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita/index']];
-$this->params['breadcrumbs'][] = ['label' => 'Asistencias', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Asistencia', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="asistencia-update">
@@ -17,7 +17,7 @@ $this->params['breadcrumbs'][] = $this->title;
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
-        'model' => $model,
+        'horario' => $horario,
     ]) ?>
 
 </div>

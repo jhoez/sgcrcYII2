@@ -59,11 +59,11 @@ class ArchivosController extends Controller
             if( $archivos->save(false) ) {
                 return $this->redirect(['index']);
             }else {
-                $msj = "Ocurrio un error al marcar como visto el Archivo...";
-                return $this->render('/site/notfound',['msj'=>$msj]);
+                Yii::$app->session->setFlash('error','Ocurrio un error al marcar como visto el Archivo...');
+                return $this->redirect(['index']);
             }
 		}else {
-			return $this->redirect(['/canaimita/index']);
+			return $this->redirect(['index']);
 		}
 	}
 
@@ -80,10 +80,15 @@ class ArchivosController extends Controller
                     Yii::$app->request->post('FormatoSearch')['idf'] :
                     Yii::$app->request->get('id');
             $valor = $purifier->process($param);
-            $archivos = Formato::find()->where(['idf'=>$valor])->one();
-            if (!$this->descargar($archivos->ruta, $archivos->nombf.'.'.$archivos->extens ,['ods','xls','odt','docx'])) {
-                $msj = 'El archivo no se pudo descargar o no existe!!';
-                $this->redirect(['/site/notfound','msj'=>$msj]);
+            if ($valor !== "") {
+                $archivos = Formato::find()->where(['idf'=>$valor])->one();
+                if (!$this->descargar($archivos->ruta, $archivos->nombf.'.'.$archivos->extens ,['ods','xls','odt','docx'])) {
+                    Yii::$app->session->setFlash('error','El archivo no se pudo descargar o no existe!!');
+                    return $this->redirect(['/archivos/index']);
+                }
+            }else{
+                Yii::$app->session->setFlash('error','Por favor seleccione un acta a descargar!!');
+                return $this->redirect(['index']);
             }
         }
     }
@@ -99,10 +104,7 @@ class ArchivosController extends Controller
 
         $searchModel = new FormatoSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-
-        if ( Yii::$app->user->can('tutor') ) {// los tutores solo veran los formatos mas no las actas
-            $dataProvider->query->where(['statusacta'=>false])->all();
-		}
+        $dataProvider->query->where(['statusacta'=>false]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -135,7 +137,6 @@ class ArchivosController extends Controller
     public function actionCreate()
     {
         $archivos = new Formato;
-        //Yii::$app->request->isPost
 
         if ( $archivos->load(Yii::$app->request->post()) ) {
             $archivos->ftutor = UploadedFile::getInstance($archivos,'ftutor');
@@ -157,9 +158,8 @@ class ArchivosController extends Controller
                     $archivos->uploadArchivo();
                     return $this->redirect(['view', 'id' => $archivos->idf]);
                 }else {
-                    $msj = "Ocurrio un error al subir el Archivo...";
-                    return $this->render('/site/notfound',['msj'=>$msj]);
-                    //throw new NotFoundHttpException("Ocurrio un error con la data...");
+                    Yii::$app->session->setFlash('error','Ocurrio un error al subir el Archivo...');
+                    return $this->redirect(['index']);
                 }
             }
         }
@@ -179,13 +179,13 @@ class ArchivosController extends Controller
     public function actionUpdate()
     {
         $purifier = new HtmlPurifier;
-		$param = $purifier->process(Yii::$app->request->get('id'));
+		$param = (int)$purifier->process(Yii::$app->request->get('id'));
         $archivos = $this->findModel($param);
 
         if ( $archivos->load(Yii::$app->request->post()) ) {
             $archivos->ftutor = UploadedFile::getInstance($archivos,'ftutor');
 
-			if ( $archivos->ftutor != NULL ) {
+			if ( $archivos->ftutor !== NULL ) {
 				$filef = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$archivos->ruta,$archivos->nombf.'.'.$archivos->extens);
 
 				if ($filef) {
@@ -197,15 +197,14 @@ class ArchivosController extends Controller
 						$archivos->ruta		= 'archivos/';
 					}
 					$archivos->tamanio	= $this->convert_format_bytes($archivos->ftutor->size);
-					$archivos->create_at = date( "Y-m-d h:i:s",time() );
 
 					if( $archivos->save() ){
 						$archivos->uploadArchivo();
-						Yii::$app->session->setFlash('formatoC','El formato fue Actualizado.');
+						Yii::$app->session->setFlash('success','El formato fue Actualizado!!');
 						return $this->redirect(['view', 'id' => $archivos->idf]);
 					}else {//Crear mensaje flash
-                        $msj = 'El formato no fue Actualizado';
-						return $this->redirect(['site/notfound','msj'=>$msj]);
+                        Yii::$app->session->setFlash('error','El formato no fue Actualizado');
+                        return $this->redirect(['index']);
 					}
 				}
 			}
@@ -226,15 +225,15 @@ class ArchivosController extends Controller
 	public function actionDelete()
 	{
         $purifier = new HtmlPurifier;
-		$param = $purifier->process(Yii::$app->request->get('id'));
+		$param = (int)$purifier->process(Yii::$app->request->get('id'));
 		$archivos = $this->findModel($param);
 		$result = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$archivos->ruta, $archivos->nombf.'.'.$archivos->extens);
 		if ($result) {
 			$archivos->delete();
-            return $this->redirect(Yii::$app->urlManager->createUrl('archivos/index'));
+            return $this->redirect(['index']);
 		}else {
-            $msj = 'No se pudo eliminar el registro y el Archivo.';
-            return $this->redirect(['site/notfound',['msj'=>$msj]]);
+            Yii::$app->session->setFlash('error','El registro y archivo no se pudo eliminar!!');
+            return $this->redirect(['index']);
         }
 
 	}

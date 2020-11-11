@@ -25,10 +25,10 @@ class HorarioController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['index','create','view','update','delete','reporteasistencia'],
+                'only' => ['index','create','update','delete','reporteasistencia'],
                 'rules' => [
                     [
-                        'actions' => ['index','create','view','update','delete','reporteasistencia'],
+                        'actions' => ['index','create','update','delete','reporteasistencia'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
@@ -51,7 +51,6 @@ class HorarioController extends Controller
     {
         $searchModel = new AsistenciaSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
-        $dataProvider->query->where(['fkuser'=>Yii::$app->user->getId()]);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -65,10 +64,13 @@ class HorarioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $horario = $this->findModel($param);
         return $this->render('view', [
-            'model' => $this->findModel($id),
+            'horario' => $horario,
         ]);
     }
 
@@ -81,10 +83,10 @@ class HorarioController extends Controller
     {
         $horario = new Asistencia;
         $purifier = new HtmlPurifier;
-        $horaE  = '11:20:00';
-        $lhoraE = '11:40:00';
-        $horaS  = '11:42:00';
-        $lhoraS = '11:50:00';
+        $horaE  = '12:30:00';
+        $lhoraE = '12:45:00';
+        $horaS  = '12:46:00';
+        $lhoraS = '12:59:00';
 
         if ( $horario->load(Yii::$app->request->post()) ) {
             if ( $horario->validate() ) {
@@ -92,9 +94,10 @@ class HorarioController extends Controller
                 // si @var paramget es null marcara solo la entrada
                 if ($paramget == null) {
                     $horario->fkuser = Yii::$app->user->getId();
-                    $horario->fecha = date( "Y-m-d",time() );
+                    $horario->fecha = date( "Y-m-d h:i:s",time() );
                     $horario->horain = date( "h:i:s",time() );
                     if ( $horario->save() ) {
+                        Yii::$app->session->setFlash('succes','Asistencia de Entrada Marcada!!');
                         return $this->redirect(['view', 'id' => $horario->idasis]);
                     }
                 }else {
@@ -106,13 +109,15 @@ class HorarioController extends Controller
                         $asist->observacion = $horario->observacion;
                         if ( $asist->save() ) {
                             $horario = $asist;
+                            Yii::$app->session->setFlash('succes','Asistencia de Salida Marcada!!');
                             return $this->redirect(['view', 'id' => $horario->idasis]);
                         }
                     }else {//else marcara solo la salida sin una entrada marcada
                         $horario->fkuser = Yii::$app->user->getId();
-                        $horario->fecha = date( "Y-m-d",time() );
+                        $horario->fecha = date( "Y-m-d h:i:s",time() );
                         $horario->horaout = date( "h:i:s",time() );
                         if ( $horario->save() ) {
+                            Yii::$app->session->setFlash('succes','Asistencia de Salida Marcada!!');
                             return $this->redirect(['view', 'id' => $horario->idasis]);
                         }
                     }
@@ -136,16 +141,18 @@ class HorarioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $horario = $this->findModel($param);
 
         /*if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->idasis]);
         }*/
 
         return $this->render('update', [
-            'model' => $model,
+            'horario' => $horario,
         ]);
     }
 
@@ -160,7 +167,8 @@ class HorarioController extends Controller
     {
         $purifier = new HtmlPurifier;
         $param = $purifier->process( Yii::$app->request->get('id') );
-        $this->findModel($param)->delete();
+
+        //$this->findModel($param)->delete();
 
         return $this->redirect(['index']);
     }
@@ -208,27 +216,17 @@ class HorarioController extends Controller
                     $fechafinal = "$anioNuevo-01-01";
                 }else {
                     $mesnuevo = $mes + 1;
-                    $mesnuevo = $mesnuevo;
+                    $mesnuevo = '0'.$mesnuevo;
                     $fechafinal = "$anio-$mesnuevo-01";
                 }
-                $asistencia = Asistencia::find()
-                            ->where(['>=','fecha',$fechainicio])
-                            ->andWhere(['<','fecha',$fechafinal])
-                            ->andWhere(['fkuser'=>Yii::$app->user->getId()])->all();
-                $conteo = Asistencia::find()
-                        ->where(['>=','fecha',$fechainicio])
-                        ->andWhere(['<','fecha',$fechafinal])
-                        ->andWhere(['fkuser'=>Yii::$app->user->getId()])->count();
+                $asistencia = Asistencia::find()->where(['>=','fecha',$fechainicio])->andWhere(['<','fecha',$fechafinal])->all();
+                $conteo = Asistencia::find()->where(['>=','fecha',$fechainicio])->andWhere(['<','fecha',$fechafinal])->count();
             }
             if( !empty($horario->fechain) && !empty($horario->fechaout) ){
                 $finicio = $horario->fechain;
                 $ffin = $horario->fechaout;
-                $asistencia = Asistencia::find()
-                            ->where(['>=','fecha',$finicio])
-                            ->andWhere(['<=','fecha',$ffin])->all();
-                $conteo = Asistencia::find()
-                        ->where(['>=','fecha',$finicio])
-                        ->andWhere(['<=','fecha',$ffin])->count();
+                $asistencia = Asistencia::find()->where(['>=','fecha',$finicio])->andWhere(['<=','fecha',$ffin])->all();
+                $conteo = Asistencia::find()->where(['>=','fecha',$finicio])->andWhere(['<=','fecha',$ffin])->count();
             }
             if ( $conteo > 0 ) {
                 $registros	= 6; // maximo de registros a mostrar en el PDF
@@ -239,18 +237,7 @@ class HorarioController extends Controller
                 //API MPDF
                 $pdf = Yii::$app->pdf;
                 $API = $pdf->api;
-                $API->SetDisplayMode('fullpage');
-                $API->marginHeader=0;
-                $API->marginFooter=0;
-                $API->setAutoTopMargin='pad';
-                $API->setAutoBottomMargin='true';
-                
-                $header = "<img style='vertical-align: top;' src=".Yii::$app->basePath.'/web/img/printpdf/bannerfundabit.jpg'.">";
-                $footer = "<img src=".Yii::$app->basePath.'/web/img/printpdf/cintillomppe.jpg'.">";
-                
-                $API->SetHTMLHeader( $header,1 );
                 $API->SetFooter('{PAGENO}');
-                $API->SetHTMLFooter( $footer,1 );
                 $API->WriteHTML(file_get_contents(Yii::$app->basePath.'/web/css/csspdf.css'),1);
                 $pdfFilename = !empty($mes) ? 'Reporte_del_mes_'.$mes.'.pdf' : 'Reporte_de_'.$finicio.'_a_'.$ffin.'.pdf';
 
@@ -302,7 +289,6 @@ class HorarioController extends Controller
                 endforeach;
                 //return $API->render();
                 $API->Output( $pdfFilename, 'D' );
-                exit;
             }//end if conteo
 		}
 
@@ -315,7 +301,7 @@ class HorarioController extends Controller
     *   @method cargarVista
     *
     */
-    protected function cargarVista($vista,$pdfFilename)
+    public function cargarVista($vista,$pdfFilename)
     {
         return new Pdf([
             'mode' => Pdf::MODE_UTF8,// set to use core fonts only

@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model' => $carousel,
         'attributes' => [
             //'idimag',
             [
@@ -30,24 +30,28 @@ $this->params['breadcrumbs'][] = $this->title;
                 'format'=>'raw'
             ],
             [
+                'label'=>'Nombre img',
                 'attribute'=>'nombimg',
                 'value'=>function($data){
                     return $data->nombimg;
                 },
             ],
             [
+                'label'=>'Extensión',
                 'attribute'=>'extension',
                 'value'=>function($data){
                     return $data->extension;
                 },
             ],
             [
+                'label'=>'Tipo de img',
                 'attribute'=>'tipoimg',
                 'value'=>function($data){
                     return $data->tipoimg;
                 },
             ],
             [
+                'label'=>'Usuario',
                 'attribute'=>'username',
                 'value'=>function($data){
                     return $data->getusuario()->username;

@@ -9,6 +9,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
+use yii\helpers\HtmlPurifier;
 use frontend\models\LoginForm;
 use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
@@ -31,7 +32,7 @@ class SiteController extends Controller
         return [
             'access' => [
                 'class' => AccessControl::className(),
-                'only' => ['logout', 'notfound'],
+                'only' => ['logout'],
                 'rules' => [
                     [
                         'actions' => ['signup'],
@@ -39,33 +40,10 @@ class SiteController extends Controller
                         'roles' => ['?'],
                     ],
                     [
-                        'actions' => ['logout','notfound'],
+                        'actions' => ['logout'],
                         'allow' => true,
                         'roles' => ['@'],
                     ],
-                    /*
-                    [
-                        'actions' => ['logout', 'admin'],//El administrador tiene permisos sobre las siguientes acciones
-                        'allow' => true,//Esta propiedad establece que tiene permisos
-                        'roles' => ['@'],//Usuarios autenticados, el signo ? es para invitados
-                        //Este método nos permite crear un filtro sobre la identidad del usuario
-                        //y así establecer si tiene permisos o no
-                        'matchCallback' => function ($rule, $action) {
-                            return User::isUserAdmin(Yii::$app->user->identity->id);//Llamada al método que comprueba si es un administrador
-                        },
-                    ],
-                    [
-
-                       'actions' => ['logout', 'user'],//Los usuarios simples tienen permisos sobre las siguientes acciones
-                       'allow' => true,//Esta propiedad establece que tiene permisos
-                       'roles' => ['@'],//Usuarios autenticados, el signo ? es para invitados
-                       //Este método nos permite crear un filtro sobre la identidad del usuario
-                       //y así establecer si tiene permisos o no
-                       'matchCallback' => function ($rule, $action) {
-                          return User::isUserSimple(Yii::$app->user->identity->id);//Llamada al método que comprueba si es un usuario simple
-                      },
-                   ],
-                    */
                 ],
             ],
             'verbs' => [
@@ -130,7 +108,7 @@ class SiteController extends Controller
             if ( $model->validate() ){
                 $login = Usuario::find()->where(['username'=>$model->username,'password'=>$model->password])->one();
                 if (!empty($login)){
-                    if ( $model->login($login,60) )// logeo el usuario
+                    if ( $model->login($login) )// logeo el usuario
                     {
                         if (Yii::$app->user->can('superadmin')) {
                             yii::$app->session->setFlash('success',"Bienvenido SuperAdmin: $login->username");
@@ -146,7 +124,7 @@ class SiteController extends Controller
                         }
                     }
                 }else{
-                    yii::$app->session->setFlash('error','Usuario o contraseña incorrecto');
+                    yii::$app->session->setFlash('danger','Usuario o contraseña incorrecto');
                 }
             }
         }
@@ -314,14 +292,4 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
-
-    /**
-     * @method noutfound
-     *
-     *
-     */
-     public function actionNotfound()
-     {
-         return $this->render('notfound');
-     }
 }

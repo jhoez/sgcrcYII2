@@ -42,8 +42,8 @@ class ReaController extends Controller
         $this->layout = "realidadaumentada";
 
         $purifier = new HtmlPurifier;
-        $get = (int)$purifier->process( Yii::$app->request->get('param') );
-        $realidadaumentada = Realaum::findOne($get);
+        $param = (int)$purifier->process( Yii::$app->request->get('param') );
+        $realidadaumentada = Realaum::findOne($param);
 
         if( $realidadaumentada !== null )
         {
@@ -51,8 +51,8 @@ class ReaController extends Controller
                 'realidadaumentada'=>$realidadaumentada,
             ));
         }else {
-            $msj = "No existe el Archivo De realidad aumentada!!";
-            return $this->redirect(['/site/notfound','msj'=>$msj]);
+            Yii::$app->session->setFlash('error','No existe el Proyecto de Realidad Aumentada!!');
+            return $this->redirect(['index']);
         }
     }
 
@@ -92,8 +92,11 @@ class ReaController extends Controller
      */
     public function actionView($id)
     {
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process($param);
+        $realidadaumentada = $this->findModel($param);
         return $this->render('view', [
-            'realidadaumentada' => $this->findModel($id),
+            'realidadaumentada' => $realidadaumentada,
         ]);
     }
 
@@ -107,9 +110,6 @@ class ReaController extends Controller
         $proyecto			= new	Proyecto;
 		$imag				= new	Imagen;
 		$realidadaumentada	= new	Realaum;
-
-		// Uncomment the following line if AJAX validation is needed
-		// $this->performAjaxValidation($realidadaumentada);
 
 		if(
             $proyecto->load(Yii::$app->request->post()) &&
@@ -145,7 +145,7 @@ class ReaController extends Controller
                                 //echo "<pre>";var_dump($realidadaumentada->save(false));die;
     							$realidadaumentada->uploadRa();
     							$imag->uploadImg();
-    							Yii::$app->session->setFlash('raC','El proyecto de Realidad Aumentada fue Registrado');
+    							Yii::$app->session->setFlash('succes','El proyecto de Realidad Aumentada fue Registrado');
     						}
     					}
     				}
@@ -156,7 +156,7 @@ class ReaController extends Controller
     				echo $e->getMessage();die;
     				$transaction->rollBack();
     				Yii::$app->session->setFlash('error','El proyecto de Realidad Aumentada no fue Registrado');
-    				return $this->redirect( Url::toRoute(['site/notfound']) );// redirecciona a una vista cuando no sea exitoso el registro
+    				return $this->redirect(['index']);// redirecciona a una vista cuando no sea exitoso el registro
     			}
             }
 		}
@@ -175,16 +175,72 @@ class ReaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
-        $model = $this->findModel($id);
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $realidadaumentada = $this->findModel($param);
+        $proyecto = Proyecto::find()->where(['idpro'=>$realidadaumentada->fkpro])->one();
+        $imag = Imagen::find()->where(['idimag'=>$realidadaumentada->fkimag)->one();
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
-            return $this->redirect(['view', 'id' => $model->idra]);
-        }
+        if(
+            $proyecto->load(Yii::$app->request->post()) &&
+            $realidadaumentada->load(Yii::$app->request->post()) &&
+            $imag->load(Yii::$app->request->post())
+        ){
+			if (
+                $proyecto->validate() &&
+                $realidadaumentada->validate() &&
+                $imag->validate()
+            ){
+    			$transaction = $realidadaumentada->db->beginTransaction();
+                try{
+    				$realidadaumentada->fileglb = UploadedFile::getInstance($realidadaumentada,'fileglb');// archivo pdf
+    				$imag->imagen = UploadedFile::getInstance($imag,'imagen');// archivo imagen
+
+                    $delrea = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$realidadaumentada->ruta, $realidadaumentada->nra.'.'.$realidadaumentada->exten);
+                    $delimg = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$imag->ruta, $imag->nombimg.'.'.$imag->extension);
+
+                    if ($delrea && $delimg) {
+                        $proyecto->update_at	= date( "Y-m-d h:i:s",time() );
+        				$proyecto->fkuser		= Yii::$app->user->getId();
+        				if( $proyecto->save() ){
+        					$imag->nombimg		= $imag->imagen->baseName;
+        					$imag->extension	= $imag->imagen->extension;
+        					$imag->tamanio		= $this->convert_format_bytes($imag->imagen->size);
+
+        					if ($imag->save()) {
+        						$realidadaumentada->nra		= $realidadaumentada->fileglb->baseName;
+        						$realidadaumentada->exten	= $realidadaumentada->fileglb->extension;
+        						$realidadaumentada->fkpro	= $proyecto->idpro;
+        						$realidadaumentada->fkimag	= $imag->idimag;
+        						if ( $realidadaumentada->save(false) ) {
+        							$realidadaumentada->uploadRa();
+        							$imag->uploadImg();
+        							Yii::$app->session->setFlash('succes','El proyecto de Realidad Aumentada fue Actualizado');
+        						}
+        					}
+        				}
+                    }else {
+                        Yii::$app->session->setFlash('error','Los archivos de Realidad Aumentada no existen!!');
+                        return $this->redirect(['index']);
+                    }
+
+    				$transaction->commit();
+    				return $this->redirect(['view','id'=>$realidadaumentada->idra]);
+    			} catch(ErrorException $e){
+    				echo $e->getMessage();die;
+    				$transaction->rollBack();
+    				Yii::$app->session->setFlash('error','El proyecto de Realidad Aumentada no fue Actualizado');
+    				return $this->redirect(['index']);// redirecciona a una vista cuando no sea exitoso el registro
+    			}
+            }
+		}
 
         return $this->render('update', [
-            'model' => $model,
+            'proyecto'=>$proyecto,
+			'realidadaumentada'=>$realidadaumentada,
+			'imag'=>$imag
         ]);
     }
 
@@ -195,11 +251,24 @@ class ReaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $this->findModel($id)->delete();
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
 
-        return $this->redirect(['index']);
+        $realidadaumentada = $this->findModel($param);
+        $proyecto = Proyecto::find()->where(['idpro'=>$realidadaumentada->fkpro])->one();
+        $imagen = Imagen::find()->where(['idimag'=>$realidadaumentada->fkimag)->one();
+
+        if ($realidadaumentada->delete()) {
+            if ($proyecto->delete()) {
+                if ($imagen->delete()) {
+                    Yii::$app->session->setFlash('succes','El Proyecto de Realidad Aumentada fue Eliminado!!');
+                    return $this->redirect(['index']);
+                }
+            }
+        }
+
     }
 
     /**

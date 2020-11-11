@@ -9,7 +9,7 @@ use yii\bootstrap\Tabs;
 /* @var $searchModel frontend\models\LibrosSearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Contenido Educativo registrado';
+$this->title = 'Registros';
 $this->params['breadcrumbs'][] = ['label'=>'Contenido Educativo','url'=>'index'];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

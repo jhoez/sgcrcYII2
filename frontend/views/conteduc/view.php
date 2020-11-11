@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model frontend\models\Libros */
 
 $this->title = 'Detalles';
-$this->params['breadcrumbs'][] = ['label' => 'Libros', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Contenido Educativo', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 
 \yii\web\YiiAsset::register($this);
@@ -17,11 +17,11 @@ $this->params['breadcrumbs'][] = $this->title;
     <p>
         <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
     </p>
-    <h1 class="text-center">Libro subido: <?= Html::encode($model->nomblib.'.'.$model->extension) ?></h1>
+    <h1 class="text-center">Libro subido: <?= Html::encode($contenido->nomblib.'.'.$contenido->extension) ?></h1>
 
 
     <?= DetailView::widget([
-        'model' => $model,
+        'model' => $contenido,
         'attributes' => [
             [
                 'label'=>'Imagen',

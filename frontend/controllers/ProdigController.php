@@ -56,8 +56,8 @@ class ProdigController extends Controller
         $valor = (integer)$purifier->process( Yii::$app->request->get('param') );
         $multimedia = Multimedia::find()->where(['idmult'=>$valor])->one();
         if (!$this->descargar($multimedia->ruta, $multimedia->nombmult.'.'.$multimedia->extension ,['mp4','mp3'])) {
-            $msj = "No existe el Archivo multimedia!!";
-            return $this->render('/site/notfound',['msj'=>$msj]);
+            Yii::$app->session->setFlash('error','No existe el archivo Multimedia!!');
+            return $this->redirect(['index']);
         }
     }
 
@@ -97,8 +97,11 @@ class ProdigController extends Controller
      */
     public function actionView($id)
     {
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('id') );
+        $multimedia = $this->findModel($param);
         return $this->render('view', [
-            'multimedia' => $this->findModel($id),
+            'multimedia' => $multimedia,
         ]);
     }
 
@@ -147,7 +150,7 @@ class ProdigController extends Controller
     					) {
     						if ($multimedia->save()){
     							$multimedia->uploadMultimedia();
-    							Yii::$app->session->setFlash('multimediaC',"El Proyecto '$proyecto->nombpro' a sido Registrado");
+    							Yii::$app->session->setFlash('success',"El Proyecto '$proyecto->nombpro' a sido Registrado");
     						}
     					}
     				}
@@ -158,7 +161,7 @@ class ProdigController extends Controller
     				$transaction->rollBack();
                     //echo "<pre>".$e;die;
     				Yii::$app->session->setFlash('error','El proyecto Digital no fue Registrado');
-    				return $this->redirect( Url::toRoute(['site/notfound']) );// redirecciona a una vista cuando no sea exitoso el registro
+    				return $this->redirect(['index']);// redirecciona a una vista cuando no sea exitoso el registro
     			}
             }// validate
         }// post
@@ -227,14 +230,14 @@ class ProdigController extends Controller
                         $transaction->commit();
                         return $this->render('view',['multimedia'=>$multimedia]);
                     }else {
-                        $msj = 'No se pudo actualizar el proyecto!!';
-                        return $this->redirect(['/site/notfound','msj'=>$msj]);
+                        Yii::$app->session->setFlash('error','El proyecto Digital no fue Registrado!!');
+                        return $this->redirect(['index']);
                     }
     			} catch(ErrorException $e){
     				$transaction->rollBack();
                     //echo "<pre>".$e;die;
-    				Yii::$app->session->setFlash('error','El proyecto Digital no fue Registrado');
-    				return $this->redirect( Url::toRoute(['site/notfound']) );// redirecciona a una vista cuando no sea exitoso el registro
+    				Yii::$app->session->setFlash('error','El proyecto Digital no fue Registrado!!');
+    				return $this->redirect(['index']);// redirecciona a una vista cuando no sea exitoso el registro
     			}
             }// validate
         }// post
@@ -252,20 +255,21 @@ class ProdigController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
-        $multimedia		= $this->findModel($id);
+        $purifier       = new HtmlPurifier;
+        $param          = $purifier->process( Yii::$app->request->get('id') );
+        $multimedia		= $this->findModel($param);
 		$proyecto		= Proyecto::findOne($multimedia->fkpro);
-		$rutamultimedia	= Yii::$app->basePath.'/web/'.$multimedia->ruta;
-		$filemult		= $multimedia->nombmult.'.'.$multimedia->extension;
-		$multf = $this->eliminarArchivo($rutamultimedia,$filemult);
+		$multf = $this->eliminarArchivo(Yii::$app->basePath.'/web/'.$multimedia->ruta, $multimedia->nombmult.'.'.$multimedia->extension);
 		if ($multf) {
 			$multimedia->delete();
 			$proyecto->delete();
+            Yii::$app->session->setFlash('succes','Se ha eliminado el Proyecto Digital!!');
             return $this->redirect(['index']);
 		}else {
-            $msj = 'No se pudo eliminar el Proyecto';
-            return $this->redirect(['/site/notfound','msj'=>$msj]);
+            Yii::$app->session->setFlash('error','No se pudo eliminar el Proyecto Digital!!');
+            return $this->redirect(['index']);
         }
 
     }
