@@ -389,6 +389,6 @@ CREATE TABLE sc.catalogo
 (
   idcata serial NOT NULL,
   idpadre integer,
-  nombcata character varying(22),
+  nombcata character varying(40),
   CONSTRAINT idcata PRIMARY KEY (idcata)
 );
