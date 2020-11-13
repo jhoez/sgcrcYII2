@@ -88,15 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'attribute'=>'eqversion',
                     'filter'=> Html::activeDropDownList(
                         $csearchModel,'eqversion',
-                        [
-                            'V1'        => 'V1',
-                            'V2'        => 'V2',
-                            'V3'        => 'V3',
-                            'V4'        => 'V4',
-                            'V5'        => 'V5',
-                            'V6'        => 'V6',
-                            'Tablet'    => 'Tablet',
-                        ],
+                        ArrayHelper::map($arrayversequipo,'nombcata','nombcata'),
                         ['prompt' => '','class' => 'form-control imput-md']
                     ),
                     'value'=> function($data){
@@ -161,12 +153,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             );
                         },
                         'update' => function($url,$model){
-                            if ( \Yii::$app->user->can('superadmin') ) {
+                            //if ( \Yii::$app->user->can('superadmin') ) {
                                 return Html::a(
                                     Html::img('@web/fonts/pencil.svg'),
                                     $url
                                 );
-                            }
+                            //}
                         },
                         'delete' => function($url,$model){
                             if ( \Yii::$app->user->can('superadmin') ) {

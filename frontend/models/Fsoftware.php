@@ -40,7 +40,7 @@ class Fsoftware extends \yii\db\ActiveRecord
     {
         return [
             'idsoft' => 'Idsoft',
-            'fsoft' => 'Fsoft',
+            'fsoft' => 'Falla de software',
             'fkeq' => 'Ideq',
         ];
     }

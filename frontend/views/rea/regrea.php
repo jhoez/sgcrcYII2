@@ -15,7 +15,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
     <p>
         <?= Html::a('Subir proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Proyectos Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

@@ -90,10 +90,10 @@ class ReaController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
         $purifier = new HtmlPurifier;
-        $param = $purifier->process($param);
+        $param = $purifier->process(Yii::$app->request->get('id'));
         $realidadaumentada = $this->findModel($param);
         return $this->render('view', [
             'realidadaumentada' => $realidadaumentada,
@@ -181,7 +181,7 @@ class ReaController extends Controller
         $param = $purifier->process( Yii::$app->request->get('id') );
         $realidadaumentada = $this->findModel($param);
         $proyecto = Proyecto::find()->where(['idpro'=>$realidadaumentada->fkpro])->one();
-        $imag = Imagen::find()->where(['idimag'=>$realidadaumentada->fkimag)->one();
+        $imag = Imagen::find()->where(['idimag'=>$realidadaumentada->fkimag])->one();
 
         if(
             $proyecto->load(Yii::$app->request->post()) &&
@@ -258,7 +258,7 @@ class ReaController extends Controller
 
         $realidadaumentada = $this->findModel($param);
         $proyecto = Proyecto::find()->where(['idpro'=>$realidadaumentada->fkpro])->one();
-        $imagen = Imagen::find()->where(['idimag'=>$realidadaumentada->fkimag)->one();
+        $imagen = Imagen::find()->where(['idimag'=>$realidadaumentada->fkimag])->one();
 
         if ($realidadaumentada->delete()) {
             if ($proyecto->delete()) {

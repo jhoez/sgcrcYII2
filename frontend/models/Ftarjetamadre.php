@@ -40,7 +40,7 @@ class Ftarjetamadre extends \yii\db\ActiveRecord
     {
         return [
             'idtarj' => 'Idtarj',
-            'ftarj' => 'Ftarj',
+            'ftarj' => 'Falla de tarjeta madre',
             'fkeq' => 'Ideq',
         ];
     }

@@ -5,7 +5,7 @@ use yii\helpers\Html;
 /* @var $this yii\web\View */
 /* @var $model frontend\models\Multimedia */
 
-$this->title = 'Crear Proyecto Digital';
+$this->title = 'Subir Proyecto Digital';
 $this->params['breadcrumbs'][] = ['label' => 'Proyectos Digitales', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

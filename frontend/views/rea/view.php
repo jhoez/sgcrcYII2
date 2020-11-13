@@ -7,13 +7,13 @@ use yii\widgets\DetailView;
 /* @var $realidadaumentada frontend\models\Realaum */
 
 $this->title = 'Detalles';
-$this->params['breadcrumbs'][] = ['label' => 'Proyectos Realidad Aumentada', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Realidad Aumentada', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="realaum-view">
     <p>
-        <?= Html::a('Proyectos Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center"><?= Html::encode($realidadaumentada->nra.'.'.$realidadaumentada->exten) ?></h1>
 

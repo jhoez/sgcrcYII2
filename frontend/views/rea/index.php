@@ -2,7 +2,7 @@
 
 use yii\helpers\Html;
 
-$this->title = 'Proyectos Realidad Aumentada';
+$this->title = 'Realidad Aumentada';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rea-index">

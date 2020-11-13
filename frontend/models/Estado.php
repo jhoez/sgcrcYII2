@@ -36,8 +36,8 @@ class Estado extends \yii\db\ActiveRecord
     public function attributeLabels()
     {
         return [
-            'idesta' => 'Nombre Estado',
-			'nombest' => 'Nombre Estado',
+            'idesta' => 'Estado',
+			'nombest' => 'Estado',
         ];
     }
 }

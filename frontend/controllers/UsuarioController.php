@@ -102,14 +102,25 @@ class UsuarioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionUpdate($id)
+    public function actionUpdate()
     {
         $purifier = new HtmlPurifier;
         $param = $purifier->process( Yii::$app->request->get('id') );
         $usuario = $this->findModel($param);
 
-        if ($usuario->load(Yii::$app->request->post()) && $usuario->save()) {
-            return $this->redirect(['view', 'id' => $usuario->iduser]);
+        if ($usuario->load(Yii::$app->request->post())) {
+            $usuario->updated_at=date( "Y-m-d h:i:s",time() );
+            if ($usuario->save()) {
+                // se asigna por defecto el role tutor al usuario creado.
+                //$auth = Yii::$app->authManager;
+                //$tutorRole = $auth->getRole('tutor');
+                //$auth->assign($tutorRole, $usuario->getId());
+                Yii::$app->session->setFlash('succes','El usuario fue Actualizado!!');
+                return $this->redirect(['view', 'id' => $usuario->id]);
+            } else {
+                Yii::$app->session->setFlash('error','El usuario no fue Actualizado!!');
+                return $this->redirect(['index']);
+            }
         }
 
         return $this->render('update', [
@@ -124,7 +135,7 @@ class UsuarioController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionDelete($id)
+    public function actionDelete()
     {
         $purifier = new HtmlPurifier;
         $param = $purifier->process( Yii::$app->request->get('id') );

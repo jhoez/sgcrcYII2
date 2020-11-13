@@ -21,3 +21,5 @@ cargando=function(selector){
 noCargando=function(selector){
     $(selector).css('background',"");
 };
+
+

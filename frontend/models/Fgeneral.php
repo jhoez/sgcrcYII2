@@ -40,7 +40,7 @@ class Fgeneral extends \yii\db\ActiveRecord
     {
         return [
             'idgen' => 'Idgen',
-            'fgen' => 'Fgen',
+            'fgen' => 'Falla general',
             'fkeq' => 'Ideq',
         ];
     }

@@ -6,7 +6,7 @@ use yii\helpers\Html;
 /* @var $model frontend\models\Realaum */
 
 $this->title = 'Actualizar: ' . $model->nra;
-$this->params['breadcrumbs'][] = ['label' => 'Proyectos Realidad Aumentada', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Realidad Aumentada', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rea-update">

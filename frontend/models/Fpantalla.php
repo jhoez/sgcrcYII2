@@ -40,7 +40,7 @@ class Fpantalla extends \yii\db\ActiveRecord
     {
         return [
             'idpant' => 'Idpant',
-            'fpant' => 'Fpant',
+            'fpant' => 'Falla de pantalla',
             'fkeq' => 'Ideq',
         ];
     }

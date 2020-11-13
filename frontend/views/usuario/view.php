@@ -7,14 +7,14 @@ use yii\widgets\DetailView;
 /* @var $model frontend\models\Usuario */
 
 $this->title = 'Detalles';
-$this->params['breadcrumbs'][] = ['label' => 'Usuarios', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Administrar Usuarios', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="usuario-view">
 
     <p>
-        <?= Html::a('Usuarios registrados', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
     </p>
     <h1 class="text-center">Usuario: <?= Html::encode($usuario->username) ?></h1>
 

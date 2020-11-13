@@ -1,6 +1,7 @@
 <?php
 
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\helpers\ArrayHelper;
 use yii\widgets\ActiveForm;
 
@@ -11,45 +12,43 @@ use yii\widgets\ActiveForm;
             <?php $form = ActiveForm::begin([
                 'id'=>'formulario',
                 'enableClientValidation'=>true,
+                'options'=>['class' => '']
                 //'enableAjaxValidation' => true,
             ]);?>
 
             <h3 class="text-center">Dirección</h3>
             <hr>
             <div class="form-group">
-                <?= Html::label('Estados', 'idesta', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $estado,'idesta',
+                    <!-- , ['inputOptions'=>[ 'class'=>'form-control']] -->
+                    <?= $form->field($estado,'idesta')->dropDownList(
                         ArrayHelper::map($estadoArray, 'idesta', 'nombest'),
                         [
                             'prompt' => '---- Seleccione ----',
                             'class' => 'form-control imput-md',
                             'onchange'=>
-                                '$.post(
-                                    "'.Yii::$app->urlManager->createUrl('canaimita/muncall?id=').'"+$(this).val(),
-                                    function( data ) {
-                                        $( "select#municipio-idmunc" ).html( data );
-                                    }
-                                );'
+                            '$.get("'.Url::toRoute('canaimita/muncall').'",{ id: $(this).val() })
+                            .done(
+                                function( data ) {
+                                    $( "#'.Html::getInputId($municipio,'idmunc').'" ).html( data );
+                                }
+                            );'
                         ]
-                    )?>
+                    ); ?>
                 </div>
             </div>
             <div class="form-group">
-                <?= Html::label('Municipio', 'idmunc', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $municipio,'idmunc',
+                    <?= $form->field($municipio,'idmunc')->dropDownList(
                         ArrayHelper::map($municipioArray, 'idmunc', 'municipio'),
                         [
                             'prompt' => '---- Seleccione ----',
-                            'class' => 'form-control imput-md',
+                            'class' => 'form-control input-md',
                             'onchange'=>
-                                '$.post(
-                                    "'.Yii::$app->urlManager->createUrl('canaimita/parrall?id=').'"+$(this).val(),
+                                '$.get("'.Url::toRoute('canaimita/parrall').'",{ id: $(this).val() } )
+                                .done(
                                     function( data ) {
-                                        $( "select#parroquia-idpar" ).html( data );
+                                        $( "#'.Html::getInputId($parroquia,'idpar').'" ).html( data );
                                     }
                                 );'
                         ]
@@ -57,12 +56,10 @@ use yii\widgets\ActiveForm;
                 </div>
             </div>
             <div class="form-group">
-                <?= Html::label('Parroquia', 'idpar', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $parroquia,'idpar',
+                    <?= $form->field($parroquia,'idpar')->dropDownList(
                         ArrayHelper::map($parroquiaArray, 'idpar', 'parroquia'),
-                        ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
+                        ['prompt' => '---- Seleccione ----','class' => 'form-control input-md']
                     )?>
                 </div>
             </div>
@@ -117,24 +114,9 @@ use yii\widgets\ActiveForm;
             <!------------------------------------------------------------------------->
             <!-- NIVEL EDUCATIVO -->
             <div class="form-group">
-                <?= Html::label('Nivel Educativo', 'nivel', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $niveleduc,'nivel',
-                        [
-                            'primero'   =>  'primero',
-                            'segundo'   =>  'segundo',
-                            'tercero'   =>  'tercero',
-                            'cuarto'    =>  'cuarto',
-                            'quinto'    =>  'quinto',
-                            'sexto'     =>  'sexto',
-                            '1er año'   =>  '1er año',
-                            '2do año'   =>  '2do año',
-                            '3er año'   =>  '3er año',
-                            '4to año'   =>  '4to año',
-                            '5to año'   =>  '5to año',
-                            '6to año'   =>  '6to año',
-                        ],
+                    <?= $form->field($niveleduc,'nivel')->dropDownList(
+                        ArrayHelper::map($arraynivel,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
@@ -143,25 +125,21 @@ use yii\widgets\ActiveForm;
                 <?= Html::label('¿Esta Graduado?', 'graduado', ['class'=>'']) ?>
                 <div class="">
                     <?= Html::activeCheckbox($niveleduc, 'graduado', ['label'=>'¡Si! o ¡No!']) ?>
+                    <?= $form->field($niveleduc, 'graduado')->checkbox(array(
+                    'label'=>'',
+                    'labelOptions'=>array('style'=>'padding:5px;'),
+                    'disabled'=>true
+                    ))
+                    ->label('Gender'); ?>
                 </div>
             </div>
             <!------------------------------------------------------------------------->
             <!-- DATOS DEL EQUIPO -->
             <h3 class="text-center">Datos del Equipo</h3>
             <div class="form-group">
-                <?= Html::label('Version de Equipo', 'eqversion', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $equipo,'eqversion',
-                        [
-                            'V1'        => 'V1',
-                            'V2'        => 'V2',
-                            'V3'        => 'V3',
-                            'V4'        => 'V4',
-                            'V5'        => 'V5',
-                            'V6'        => 'V6',
-                            'Tablet'    => 'Tablet',
-                        ],
+                    <?= $form->field($equipo,'eqversion')->dropDownList(
+                        ArrayHelper::map($arrayversequipo,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
@@ -199,103 +177,54 @@ use yii\widgets\ActiveForm;
             <hr>
             <!-- FALLA DE SOFTWARE -->
             <div class="form-group">
-                <?= Html::label('Falla de Software', 'fsoft', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $fsoftware,'fsoft',
-                        [
-                            'Actualizacion'     => 'Actualizacion',
-                            'Posee windows'     => 'Posee windows',
-                            'No carga el S.O'   => 'No carga el S.O',
-                            'Revisar disco'     => 'Revisar disco',
-                            'Grub rescue'       => 'Grub rescue',
-                        ],
+                    <?= $form->field($fsoftware,'fsoft')->dropDownList(
+                        ArrayHelper::map($arrayfsoftware,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE PANTALLA -->
             <div class="form-group">
-                <?= Html::label('Falla de Pantalla', 'fpant', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $fpantalla,'fpant',
-                        [
-                            'Pantalla partida'                      => 'Pantalla partida',
-                            'Pixelada'                              => 'Pixelada',
-                            'Pantalla despegada'                    => 'Pantalla despegada',
-                            'Pantalla de cristal líquido dañada'    => 'Pantalla de cristal líquido dañada',
-                            'Flex dañado'                           => 'Flex dañado'
-                        ],
+                    <?= $form->field($fpantalla,'fpant')->dropDownList(
+                        ArrayHelper::map($arrayfpantalla,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE TARJETAMADRE -->
             <div class="form-group">
-                <?= Html::label('Falla de Tarjeta madre', 'ftarj', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $ftarjetamadre,'ftarj',
-                        [
-                            'Procesador dañado'         => 'Procesador dañado',
-                            'Tarj de video dañada'      => 'Tarj de video dañada',
-                            'Tarj de red dañada'        => 'Tarj de red dañada',
-                            'Tarj de sonido dañada'     => 'Tarj de sonido dañada',
-                            'Pila de bios'              => 'Pila de bios',
-                            'Configuracion del bios'    => 'Configuracion del bios',
-                            'Bios bloqueada'            => 'Bios bloqueada',
-                            'Corto circuito'            => 'Corto circuito',
-                        ],
+                    <?= $form->field($ftarjetamadre,'ftarj')->dropDownList(
+                        ArrayHelper::map($arrayftarjetamadre,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE TECLADO -->
             <div class="form-group">
-                <?= Html::label('Falla de Teclado', 'ftec', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $fteclado,'ftec',
-                        [
-                            'Teclado dañado'    => 'Teclado dañado',
-                            'Faltan teclas'     => 'Faltan teclas',
-                            'No marcan teclas'  => 'No marcan teclas'
-                        ],
+                    <?= $form->field($fteclado,'ftec')->dropDownList(
+                        ArrayHelper::map($arrayfteclado,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA DE CARGA -->
             <div class="form-group">
-                <?= Html::label('Falla de Carga', 'fcarg', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $fcarga,'fcarg',
-                        [
-                            'Pin de carga'      => 'Pin de carga',
-                            'Bateria dañada'    => 'Bateria dañada',
-                            'Cargador dañado'   => 'Cargador dañado'
-                        ],
+                    <?= $form->field($fcarga,'fcarg')->dropDownList(
+                        ArrayHelper::map($arrayfcarga,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>
             </div>
             <!-- FALLA GENERAL -->
             <div class="form-group">
-                <?= Html::label('Falla General', 'fgen', ['class' => ''])?>
                 <div class="">
-                    <?= Html::activeDropDownList(
-                        $fgeneral,'fgen',
-                        [
-                            'Mouse dañado'              => 'Mouse dañado',
-                            'Disco duro dañado'         => 'Disco duro dañado',
-                            'Momoria ram dañada'        => 'Momoria ram dañada',
-                            'Fan cooler dañado'         => 'Fan cooler dañado',
-                            'Boton encendido dañado'    => 'Boton encendido dañado',
-                            'Camara dañada'             => 'Camara dañada',
-                            'Equipo inoperativo'        => 'Equipo inoperativo'
-                        ],
+                    <?= $form->field($fgeneral,'fgen')->dropDownList(
+                        ArrayHelper::map($arrayfgeneral,'nombcata','nombcata'),
                         ['prompt' => '---- Seleccione ----','class' => 'form-control imput-md']
                     )?>
                 </div>

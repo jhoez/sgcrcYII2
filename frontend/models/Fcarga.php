@@ -40,7 +40,7 @@ class Fcarga extends \yii\db\ActiveRecord
     {
         return [
             'idcarg' => 'Idcarg',
-            'fcarg' => 'Fcarg',
+            'fcarg' => 'Falla de carga',
             'fkeq' => 'Ideq',
         ];
     }

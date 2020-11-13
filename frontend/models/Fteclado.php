@@ -40,7 +40,7 @@ class Fteclado extends \yii\db\ActiveRecord
     {
         return [
             'idtec' => 'Idtec',
-            'ftec' => 'Ftec',
+            'ftec' => 'Falla de teclado',
             'fkeq' => 'eq',
         ];
     }

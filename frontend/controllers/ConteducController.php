@@ -4,12 +4,13 @@ namespace frontend\controllers;
 
 use Yii;
 use frontend\models\Libros;
-use frontend\models\Imagen;
 use frontend\models\LibrosSearch;
+use frontend\models\Imagen;
 use yii\web\Controller;
 use yii\web\UploadedFile;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
+use yii\filters\AccessControl;
 use yii\helpers\HtmlPurifier;
 
 /**
@@ -23,10 +24,21 @@ class ConteducController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::className(),
+                'only' => ['index','create','update','view','delete','verlib','desclib','registros'],
+                'rules' => [
+                    [
+                        'actions' => ['index','create','update','view','delete','verlib','desclib','registros'],
+                        'allow' => true,
+                        'roles' => ['@'],
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
             ],
         ];
@@ -119,8 +131,10 @@ class ConteducController extends Controller
             $contenido->load(Yii::$app->request->post()) &&
             $img->load(Yii::$app->request->post())
         ) {
-            $transaction = $contenido->db->beginTransaction();
-            try {
+            if (
+                $img->validate() &&
+                $contenido->validate()
+            ) {
                 $contenido->files = UploadedFile::getInstance($contenido,'files');
                 $img->imagen = UploadedFile::getInstance($img,'imagen');
 
@@ -130,7 +144,7 @@ class ConteducController extends Controller
                 $img->tamanio	= $this->convert_format_bytes($img->imagen->size);
                 $img->fkuser	= Yii::$app->user->getId();
 
-                if ( $img->imagen && $img->validate() ) {
+                if ( $img->imagen !== null ) {
                     if ( $img->save() ) {
                         $contenido->nomblib	= $contenido->files->baseName;
                         $contenido->extension	= $contenido->files->extension;
@@ -154,26 +168,20 @@ class ConteducController extends Controller
                         $contenido->tamanio	= $this->convert_format_bytes($contenido->files->size);
                         $contenido->fkimag = $img->idimag;
 
-                        if ( $contenido->files && $contenido->validate() ) {
+                        if ( $contenido->files !== null ) {
                             if ( $contenido->save() ) {
                                 $img->uploadImg();//Guardamos el fichero
                                 $contenido->uploadArchivo();//Guardamos el fichero
-                                Yii::$app->session->setFlash('error','El Contenido Educativo fue Registrado!!');
+                                Yii::$app->session->setFlash('success','El Contenido Educativo fue Registrado!!');
+                                return $this->redirect(['view', 'id' => $contenido->idlib]);
                             }else {
                                 Yii::$app->session->setFlash('error','No se logro registrar el Contenido Educativo!!');
                                 return $this->redirect(['index']);
                             }
-                        }// validate contenido
+                        }
                     }// save img
-                }// validate img
-                $transaction->commit();
-                return $this->redirect(['view', 'id' => $contenido->idlib]);
-            } catch (\ErrorException $e) {
-                $transaction->rollBack();
-                Yii::$app->session->setFlash('error','No se pudo registrar el Contenido Educativo!!');
-                return $this->redirect(['index']);
-            }
-
+                }
+            }// validate
         }// carga post
 
         return $this->render('create', [

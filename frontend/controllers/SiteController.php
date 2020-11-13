@@ -292,4 +292,35 @@ class SiteController extends Controller
             'model' => $model
         ]);
     }
+
+    /**
+     * vista mision y visión
+     *
+     * @return mixed
+     */
+    public function actionMv()
+    {
+        return $this->render('mv');
+    }
+
+    /**
+     * objetivos
+     *
+     * @return mixed
+     */
+    public function actionObj()
+    {
+        return $this->render('obj');
+    }
+
+    /**
+     * valores
+     *
+     * @return mixed
+     */
+    public function actionV()
+    {
+        return $this->render('v');
+    }
+
 }

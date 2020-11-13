@@ -31,7 +31,7 @@ use yii\widgets\ActiveForm;
         		];
         	} ?>
 
-            <h3 class="text-center"><?= Html::encode('Formulario') ?></h3>
+            <h3 class="text-center">Formulario</h3>
 
             <div class="form-group">
                 <?= Html::label('Coleccion', 'coleccion', ['class' => ''])?>
@@ -66,15 +66,12 @@ use yii\widgets\ActiveForm;
             <!-- IMAGEN -->
             <div class="form-group">
                 <?php	if (!$img->isNewRecord) {?>
-                    <div class="row">
+                    <div class="">
                             <?php echo "Portada a ser reemplazada: " . $img->nombimg;?>
                     </div>
                 <?php } ?>
                 <div class="">
-                    <?= Html::label('Imagen a subir', '', ['class' => ''])?>
-                    <div class="">
-                        <?=Html::activeInput('file',$img,'imagen',['id'=>'input-file','name'=>'file-input']) ?>
-                    </div>
+                    <?=$form->field($img,'imagen')->fileInput() ?>
                 </div>
                 <div id="divimg" style="display:none">
                     <img id="imgSalida" width="200" height="200">
@@ -83,7 +80,7 @@ use yii\widgets\ActiveForm;
             <!-- ARCHIVO PDF -->
             <div class="form-group">
                 <?php	if (!$contenido->isNewRecord) {?>
-                    <div class="row">
+                    <div class="">
                             <?php	echo "Libro a ser reemplazado: " . $contenido->nomblib;?>
                     </div>
                 <?php } ?>

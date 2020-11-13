@@ -6,12 +6,12 @@ use yii\helpers\Html;
 /* @var $model frontend\models\Realaum */
 
 $this->title = 'Subir Proyecto';
-$this->params['breadcrumbs'][] = ['label' => 'Proyectos Realidad Aumentada', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Realidad Aumentada', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rea-create">
     <p>
-        <?= Html::a('Proyectos Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
+        <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Registros', ['regrea'], ['class' => 'btn btn-primary']) ?>
     </p>
 
