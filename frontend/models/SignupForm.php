@@ -61,7 +61,7 @@ class SignupForm extends Model
         $user->generatePasswordResetToken();
         $user->email = $this->email;
         $user->created_at=date( "Y-m-d h:i:s",time() );//strftime("%Y-%m-%d %I:%M:%S")
-        $user->updated_at=date( "Y-m-d h:i:s",time() );//strftime("%Y-%m-%d %I:%M:%S")
+        //$user->updated_at=date( "Y-m-d h:i:s",time() );//strftime("%Y-%m-%d %I:%M:%S")
         $user->generateEmailVerificationToken();
         $user->cedula=$this->cedula;
         $user->cbit=$this->cbit;

@@ -121,6 +121,7 @@ class SiteController extends Controller
                     }
                 }else{
                     yii::$app->session->setFlash('danger','Usuario o contraseña incorrecto');
+                    return $this->goBack();
                 }
             }
         }
