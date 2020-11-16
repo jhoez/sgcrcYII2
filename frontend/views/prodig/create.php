@@ -10,10 +10,12 @@ $this->params['breadcrumbs'][] = ['label' => 'Proyectos Digitales', 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="prodig-create">
-    <p>
-        <?= Html::a('Proyectos Digitales', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Proyectos Digitales', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
 
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

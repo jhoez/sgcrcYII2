@@ -11,10 +11,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Archivos', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="formato-create">
-
-    <p>
-        <?= Html::a('Archivos registrados', ['index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Archivos registrados', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [

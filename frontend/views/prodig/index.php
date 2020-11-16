@@ -12,11 +12,12 @@ $this->title = 'Proyectos Digitales';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="prodig-index">
-
-    <p>
-        <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -25,17 +26,24 @@ $this->params['breadcrumbs'][] = $this->title;
         <?=Tabs::widget([
             'items' => [
                 [
-                    'label' => 'Videos',
+                    'label' => 'Proyectos Audioviasuales',
                     'content' => $this->render('_viewv',['prodig'=>$prodig]),
                     'active' => true,
                     'headerOptions' => ['role'=>'presentation'],// tag li
-                    'options' => ['id' => 'inicial','data-toggle'=>'tab'],//tag a
+                    'options' => ['id' => 'audiovisual','data-toggle'=>'tab'],//tag a
                 ],
                 [
-                    'label' => 'Audioradial',
+                    'label' => 'Micros Audioradiales',
                     'content' => $this->render('_viewa',['prodig'=>$prodig]),
                     'headerOptions' => ['role'=>'presentation'],// tag li
-                    'options' => ['id' => 'primaria','data-toggle'=>'tab'],//tag a
+                    'options' => ['id' => 'microaudiovisual','data-toggle'=>'tab'],//tag a
+                    'itemOptions' => ['tag' => 'div'],
+                ],
+                [
+                    'label' => 'Tutoriales',
+                    'content' => $this->render('_viewt',['prodig'=>$prodig]),
+                    'headerOptions' => ['role'=>'presentation'],// tag li
+                    'options' => ['id' => 'tutoriales','data-toggle'=>'tab'],//tag a
                     'itemOptions' => ['tag' => 'div'],
                 ],
             ],

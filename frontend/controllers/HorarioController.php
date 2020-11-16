@@ -23,7 +23,7 @@ class HorarioController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
+            /*'access' => [
                 'class' => AccessControl::className(),
                 'only' => ['index','create','update','delete','reporteasistencia'],
                 'rules' => [
@@ -33,7 +33,7 @@ class HorarioController extends Controller
                         'roles' => ['@'],
                     ],
                 ],
-            ],
+            ],*/
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

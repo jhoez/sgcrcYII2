@@ -1,7 +1,16 @@
+<?php
+use yii\helpers\Html;
+?>
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-6 col-md-offset-3">
-            <h4>Valores</h4>
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <p>
+                    <?= Html::a('Misión y Visión', ['mv'], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Objetivos', ['obj'], ['class' => 'btn btn-primary']) ?>
+                </p>
+            <?php endif; ?>
+            <h4 class="text-center">Valores</h4>
             <p class="text-left">
                 <b>Excelencia:</b> Preocupación constante por la calidad del trabajo que se ejecuta, tras imprimirle eficacia al ejercicio profesional. Cumplimiento de los compromisos adquiridos con la mayor calidad, en función de la misión y teniendo como norte la visión de la institución.
                 <br><br>

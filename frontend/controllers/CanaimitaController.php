@@ -46,7 +46,7 @@ class CanaimitaController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
+            /*'access' => [
                 'class' => AccessControl::className(),
                 'only' => ['index','create','update','delete','marcar'],
                 //'only' => ['index','create','update','delete','marcar', 'marcarstatus'],
@@ -58,7 +58,7 @@ class CanaimitaController extends Controller
                         'roles' => ['@'],
                     ],
                 ],
-            ],
+            ],*/
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

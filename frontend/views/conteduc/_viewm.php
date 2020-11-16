@@ -17,17 +17,21 @@ use yii\helpers\Html;
 							</h1>
 							<p>
 								<?= Html::a(
-									'Ver libro',
+									Html::img('@web/fonts/view.svg'),
+									['/conteduc/verlib','param'=>$value->idlib],
 									[
-										'/conteduc/desclib',
-										'param'=>$value->idlib
-									],
+										'class' => 'btn btn-default',
+										'data'=>['method'=>'post'],
+										'target'=>'blank'
+									]
+
+								)?>
+								<?= Html::a(
+									Html::img('@web/fonts/download.svg'),
+									['/conteduc/desclib','param'=>$value->idlib],
 									[
-										'class' => 'btn btn-primary',
-										'data'=>[
-											'method'=>'post'
-										],
-										//'target'=>'_blank'
+										'class' => 'btn btn-default',
+										'data'=>['method'=>'post']
 									]
 								)?>
 							</p>

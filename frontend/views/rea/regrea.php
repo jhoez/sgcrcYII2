@@ -12,11 +12,12 @@ $this->title = 'Registros';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rea-regrea">
-
-    <p>
-        <?= Html::a('Subir proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
 

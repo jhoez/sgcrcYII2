@@ -30,11 +30,12 @@ if (Yii::$app->user->can('administrador')) {
 }
 ?>
 <div class="ar-index">
-
-    <p>
-        <?= Html::a('Subir Archivo', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Canaimitas registradas', ['/canaimita/index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir Archivo', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Canaimitas registradas', ['/canaimita/index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

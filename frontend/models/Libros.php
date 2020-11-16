@@ -36,8 +36,8 @@ class Libros extends \yii\db\ActiveRecord
                 ['files'],'file',
                 'skipOnEmpty'=>true,
                 'uploadRequired'=>'No has seleccionado ningun Archivo',// error
-                'maxSize'=>1024*1024*100,//10MB
-                'tooBig'=>'El tamaño maximo permitido es de 100MB',// error
+                'maxSize'=>1024*1024*300,//10MB
+                'tooBig'=>'El tamaño maximo permitido es de 300MB',// error
                 'minSize'=>4,
                 'tooSmall'=>'El tamaño minimo permitido son 4Byte',// error
                 'extensions'=>'pdf',

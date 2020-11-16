@@ -100,17 +100,17 @@ return [
     'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [//rutas de acceso al publico ejem: controller/action
-            'site/*',
-            'conteduc/*',
-            'prodig/*',
-            'rea/*',
-            'admin/*',
-            'archivos/*',
-            'portadas/*',
-            'horario/*',
-            'canaimita/*',
-            'usuario/*',
-            'carousel/*'
+            'site/index',
+            'site/obj',
+            'site/mv',
+            'site/v',
+            'conteduc/index',
+            'conteduc/desclib',
+            'prodig/index',
+            'prodig/descva',
+            'rea/index',
+            'rea/ra',
+            'rea/descra',
             //'some-controller/some-action',
             // The actions listed here will be allowed to everyone including guests.
             // So, 'admin/*' should not appear here in the production, of course.

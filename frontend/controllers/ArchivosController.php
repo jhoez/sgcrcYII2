@@ -25,7 +25,7 @@ class ArchivosController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
+            /*'access' => [
                 'class' => AccessControl::className(),
                 'only' => ['index','create','update','view','delete','updatestatus','descargarfa'],
                 'rules' => [
@@ -35,7 +35,7 @@ class ArchivosController extends Controller
                         'roles' => ['@'],
                     ],
                 ],
-            ],
+            ],*/
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [

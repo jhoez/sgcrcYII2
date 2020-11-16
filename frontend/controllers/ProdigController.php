@@ -41,9 +41,14 @@ class ProdigController extends Controller
     public function actionVerva()
     {
         $purifier = new HtmlPurifier;
-        $get = (integer)$purifier->process( Yii::$app->request->get('id') );
+        $get = (integer)$purifier->process( Yii::$app->request->get('param') );
         $multimedia = Multimedia::find()->where(['idmult'=>$get])->one();
-        return $this->redirect(Yii::$app->request->baseUrl.'/'.$multimedia->ruta.$multimedia->nombmult.'.'.$multimedia->extension);
+        if ($multimedia !== null) {
+            return $this->redirect(Yii::$app->request->baseUrl.'/'.$multimedia->ruta.$multimedia->nombmult.'.'.$multimedia->extension);
+        }else{
+            ii::$app->session->setFlash('error','No existe el archivo Multimedia!!');
+            return $this->redirect(['index']);
+        }
     }
 
     /**
@@ -95,7 +100,7 @@ class ProdigController extends Controller
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
      */
-    public function actionView($id)
+    public function actionView()
     {
         $purifier = new HtmlPurifier;
         $param = $purifier->process( Yii::$app->request->get('id') );

@@ -79,10 +79,10 @@ class UsuarioController extends Controller
             $usuario->generateEmailVerificationToken();
             if ($usuario->save()) {
                 // se asigna por defecto el role tutor al usuario creado.
-                //$auth = Yii::$app->authManager;
-                //$tutorRole = $auth->getRole('tutor');
-                //$auth->assign($tutorRole, $usuario->getId());
-                Yii::$app->session->setFlash('succes','El usuario fue registrado!!');
+                $auth = Yii::$app->authManager;
+                $tutorRole = $auth->getRole('tutor');
+                $auth->assign($tutorRole, $usuario->getId());
+                Yii::$app->session->setFlash('succes','El usuario fue registrado con Role de Tutor!!');
                 return $this->redirect(['view', 'id' => $usuario->id]);
             } else {
                 Yii::$app->session->setFlash('error','El usuario no fue registrado!!');

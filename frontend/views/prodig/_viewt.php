@@ -3,10 +3,10 @@ use yii\helpers\Html;
 use buttflattery\videowall\Videowall;
 ?>
 
-<h4 class="text-center">Proyectos Audiovisuales</h4>
+<h4 class="text-center">Tutoriales</h4>
 <div class="row clearfix">
 	<?php foreach ($prodig as $value): ?>
-		<?php if($value->tipomult == 'video'):	?>
+		<?php if($value->tipomult == 'tutorial'):	?>
 			<div class="col-md-4">
 				<div class="card text-center">
 					<div align="center" class="embed-responsive embed-responsive-16by9">
@@ -19,21 +19,9 @@ use buttflattery\videowall\Videowall;
 					</h1>
 					<p>
 						<?= Html::a(
-							Html::img('@web/fonts/mp4.svg'),
-							['/prodig/verva','param'=>$value->idmult],
-							[
-								'class' => 'btn btn-default',
-								'data'=>['method'=>'post'],
-								'target'=>'blank'
-							]
-						)?>
-						<?= Html::a(
 							Html::img('@web/fonts/download.svg'),
 							['/prodig/descva','param'=>$value->idmult],
-							[
-								'class' => 'btn btn-default',
-								'data'=>['method'=>'post']
-							]
+							['class' => 'btn btn-default']
 						)?>
 					</p>
 				</div>

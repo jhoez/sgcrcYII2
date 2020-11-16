@@ -11,7 +11,12 @@ $this->title = 'Reset password';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-reset-password">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Inicio', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
+    <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <p>Please choose your new password:</p>
 

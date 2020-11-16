@@ -13,10 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="archivo-view">
-
-    <p>
-        <?= Html::a('Archivos registrados', ['index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Archivos registrados', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($archivos->nombf.'.'.$archivos->extens) ?></h1>
 
     <?= DetailView::widget([

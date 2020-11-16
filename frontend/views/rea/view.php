@@ -12,9 +12,11 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="realaum-view">
-    <p>
-        <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($realidadaumentada->nra.'.'.$realidadaumentada->exten) ?></h1>
 
     <?= DetailView::widget([

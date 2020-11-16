@@ -12,11 +12,12 @@ $this->title = 'Contenido Educativo';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="contenido-index">
-
-    <p>
-        <?= Html::a('Subir libro', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir libro', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -50,6 +51,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     'content' => $this->render('_viewma',['contenido'=>$contenido]),
                     'headerOptions' => ['role'=>'presentation'],// tag li
                     'options' => ['id' => 'maestro','data-toggle'=>'tab'],//tag a
+                    'itemOptions' => ['tag' => 'div'],
+                ],
+                [
+                    'label' => 'Indigena',
+                    'content' => $this->render('_viewin',['contenido'=>$contenido]),
+                    'headerOptions' => ['role'=>'presentation'],// tag li
+                    'options' => ['id' => 'indigena','data-toggle'=>'tab'],//tag a
                     'itemOptions' => ['tag' => 'div'],
                 ],
                 [

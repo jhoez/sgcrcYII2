@@ -13,10 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="contenido-view">
-
-    <p>
-        <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registros', ['registros'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center">Libro subido: <?= Html::encode($contenido->nomblib.'.'.$contenido->extension) ?></h1>
 
 

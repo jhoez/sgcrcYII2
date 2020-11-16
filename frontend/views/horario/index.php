@@ -12,11 +12,12 @@ $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['/canaimita
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="asistencia-index">
-
-    <p>
-        <?= Html::a('Marcar Asistencia', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Reporte de Asistencia', ['reporteasistencia'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Marcar Asistencia', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Reporte de Asistencia', ['reporteasistencia'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

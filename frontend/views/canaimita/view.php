@@ -13,10 +13,11 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="equipo-view">
-
-    <p>
-        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center">Version del Equipo: <?= Html::encode($canaimita->eqversion) ?></h1>
 
     <?= DetailView::widget([

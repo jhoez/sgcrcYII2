@@ -1,8 +1,17 @@
+<?php
+use yii\helpers\Html;
+?>
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-6 col-md-offset-3">
-            <h4>Mision y Vision</h4>
-            <p>
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <p>
+                    <?= Html::a('Objetivos', ['obj'], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Valores', ['v'], ['class' => 'btn btn-primary']) ?>
+                </p>
+            <?php endif; ?>
+            <h4 class="text-center">Mision y Vision</h4>
+            <p class="text-left">
                 La Fundación Bolivariana de Informática y Telemática (Fundabit)
                 es un organismo adscrito al Ministerio del Poder Popular para la Educación (MPPE),
                 constituido mediante el Decreto Nº 1.193, el 6 de febrero de 2001,

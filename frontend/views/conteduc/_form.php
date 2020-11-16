@@ -41,7 +41,8 @@ use yii\widgets\ActiveForm;
                         [
                             'coleccionBicentenaria'		=>	'Coleccion Bicentenaria',
         	                'coleccionMaestros'			=>	'Coleccion Maestro',
-        	                'lectura'					=>	'Lectura Sugerida'
+        	                'lectura'					=>	'Lectura Sugerida',
+                            'indigena'					=>	'Cultura Indigena'
                         ],
                         $select
                     )?>

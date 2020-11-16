@@ -2,7 +2,7 @@
 use yii\helpers\Html;
 ?>
 
-<h4 class="text-center">Audioradiales</h4>
+<h4 class="text-center">Micros Audioradiales</h4>
 <div class="row clearfix">
 	<?php foreach ($prodig as $value): ?>
 		<?php if($value->tipomult == 'audio'):	?>
@@ -18,17 +18,11 @@ use yii\helpers\Html;
 					</h1>
 					<p>
 						<?= Html::a(
-							'Descargar',
+							Html::img('@web/fonts/download.svg'),
+							['/prodig/descva','param'=>$value->idmult],
 							[
-								'/prodig/descva',
-								'param'=>$value->idmult
-							],
-							[
-								'class' => 'btn btn-primary',
-								'data'=>[
-									'method'=>'post'
-								],
-								//'target'=>'_blank'
+								'class' => 'btn btn-default',
+								'data'=>['method'=>'post']
 							]
 						)?>
 					</p>

@@ -66,15 +66,16 @@ class SignupForm extends Model
         $user->cedula=$this->cedula;
         $user->cbit=$this->cbit;
 
-        /*
         // se asigna por defecto el role tutor al usuario creado.
         $auth = Yii::$app->authManager;
         $tutorRole = $auth->getRole('tutor');
         $auth->assign($tutorRole, $user->getId());
-        */
-        return $user->save();
+        if ($user->save()) {
+            return true;
+        }else {
+            return false;
+        }
         //return $user->save() && $this->sendEmail($user);
-
     }
 
     /**

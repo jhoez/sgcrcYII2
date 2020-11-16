@@ -1,7 +1,16 @@
+<?php
+use yii\helpers\Html;
+?>
 <div class="container">
     <div class="row clearfix">
         <div class="col-md-6 col-md-offset-3">
-            <h4>Objetivos</h4>
+            <?php if (!Yii::$app->user->isGuest): ?>
+                <p>
+                    <?= Html::a('Misión y Visión', ['mv'], ['class' => 'btn btn-primary']) ?>
+                    <?= Html::a('Valores', ['v'], ['class' => 'btn btn-primary']) ?>
+                </p>
+            <?php endif; ?>
+            <h4 class="text-center">Objetivos</h4>
             <p class="text-left">
                 Apoyar al Ministerio del Poder Popular para la Educación en la aplicación y divulgación de las Tecnologías de la Información y la Comunicación (TIC).
                 <br><br>

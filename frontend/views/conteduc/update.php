@@ -10,10 +10,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Contenido Educativo', 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="contenido-update">
-
-    <p>
-        <?= Html::a('Subir libro', ['create'], ['class' => 'btn btn-success']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir libro', ['create'], ['class' => 'btn btn-success']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [

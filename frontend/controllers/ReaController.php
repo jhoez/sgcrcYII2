@@ -34,6 +34,20 @@ class ReaController extends Controller
     }
 
     /**
+    *   @method Descarga el patron de realidad aumentada
+    */
+    public function actionDescra()
+    {
+        $purifier = new HtmlPurifier;
+        $param = $purifier->process( Yii::$app->request->get('param') );
+        $rea = Realaum::findOne($param);
+        if (!$this->descargar($rea->ruta, $rea->nra.'.'.$rea->exten ,['glb'])) {
+            Yii::$app->session->setFlash('error','No existe el patron de Realidad Aumentada!!');
+            return $this->redirect(['index']);
+        }
+    }
+
+    /**
      * permite visualizar
      * @param integer $param
      */

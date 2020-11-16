@@ -10,10 +10,11 @@ $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = 'Acualizar';
 ?>
 <div class="canaimita-update">
-
-    <p>
-        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center">Canaimita: <?= Html::encode($equipo->eqserial) ?></h1>
 
     <?= $this->render('_form', [

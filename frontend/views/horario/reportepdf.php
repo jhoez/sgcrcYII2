@@ -11,10 +11,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="reportes">
-    <p>
-        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Marcar asistencia',['create'],['class'=>'btn btn-primary']);?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Marcar asistencia',['create'],['class'=>'btn btn-primary']);?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <div class="row clearfix">

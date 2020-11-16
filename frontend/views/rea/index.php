@@ -6,15 +6,13 @@ $this->title = 'Realidad Aumentada';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rea-index">
-
-    <p>
-        <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registros', ['regrea'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Registros', ['regrea'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
-
-</div>
-
 
 <div class="row clearfix">
     <?php foreach ($realidadaumentada as $value): ?>
@@ -29,21 +27,19 @@ $this->params['breadcrumbs'][] = $this->title;
                 </h1>
                 <p>
                     <?= Html::a(
-                        'Ver libro',
-                        [
-                            '/rea/ra',
-                            'param'=>$value->idra
-                        ],
-                        [
-                            'class' => 'btn btn-primary',
-                            /*'data'=>[
-                                'method'=>'post'
-                            ],*/
-                            'target'=>'_blank'
-                        ]
+                        Html::img('@web/fonts/ra3.svg'),
+                        ['/rea/ra','param'=>$value->idra],
+                        ['class' => 'btn btn-default','target'=>'_blank']
+                    )?>
+                    <?= Html::a(
+                        Html::img('@web/fonts/download.svg'),
+                        ['/rea/descra','param'=>$value->idra],
+                        ['class' => 'btn btn-default']
                     )?>
                 </p>
             </div>
         </div>
     <?php endforeach; ?>
+</div>
+
 </div>

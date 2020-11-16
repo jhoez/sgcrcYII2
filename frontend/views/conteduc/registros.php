@@ -15,10 +15,12 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="contenido-registros">
-    <p>
-        <?= Html::a('Contenido Educativo', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Subir Libro', ['create'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Contenido Educativo', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Subir Libro', ['create'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= GridView::widget([

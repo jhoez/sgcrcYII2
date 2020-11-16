@@ -24,7 +24,7 @@ class ConteducController extends Controller
     public function behaviors()
     {
         return [
-            'access' => [
+            /*'access' => [
                 'class' => AccessControl::className(),
                 'only' => ['index','create','update','view','delete','verlib','desclib','registros'],
                 'rules' => [
@@ -34,7 +34,7 @@ class ConteducController extends Controller
                         'roles' => ['@'],
                     ],
                 ],
-            ],
+            ],*/
             'verbs' => [
                 'class' => VerbFilter::className(),
                 'actions' => [
@@ -45,22 +45,27 @@ class ConteducController extends Controller
     }
 
     /**
-     * permite descargar visualizar un libro
-     * @param integer $param
+     * permite visualizar un libro
+     *
      */
     public function actionVerlib()
     {
         $purifier = new HtmlPurifier;
         $get = (integer)$purifier->process( Yii::$app->request->get('id') || Yii::$app->request->get('param') );
         $contenido = Libros::findOne($get);
-        return $this->render('libro',[
-            'contenido'=>$contenido
-        ]);
+        if ($contenido !== null) {
+            return $this->render('libro',[
+                'contenido'=>$contenido
+            ]);
+        }else{
+            Yii::$app->session->setFlash('error',"No existe el Libro!!");
+            return $this->redirect(['index']);
+        }
     }
 
     /**
      * permite descargar un libro
-     * @param integer $param
+     *
      */
     public function actionDesclib()
     {
@@ -68,8 +73,8 @@ class ConteducController extends Controller
         $get = $purifier->process( Yii::$app->request->get('param') );
         $contenido = Libros::findOne($get);
         if (!$this->descargar($contenido->ruta, $contenido->nomblib.'.'.$contenido->extension ,['pdf'])) {
-            $msj = "No existe el Libro!!";
-            return $this->render('/site/notfound',['msj'=>$msj]);
+            Yii::$app->session->setFlash('error',"No existe el Libro!!");
+            return $this->redirect(['index']);
         }
     }
 
@@ -112,9 +117,14 @@ class ConteducController extends Controller
         $purifier = new HtmlPurifier;
         $param = $purifier->process( Yii::$app->request->get('id') );
         $contenido = $this->findModel($param);
-        return $this->render('view', [
-            'contenido' => $contenido,
-        ]);
+        if ($contenido !== null) {
+            return $this->render('view', [
+                'contenido' => $contenido,
+            ]);
+        }else{
+            Yii::$app->session->setFlash('error',"No existe el Libro!!");
+            return $this->redirect(['index']);
+        }
     }
 
     /**

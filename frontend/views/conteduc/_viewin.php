@@ -2,10 +2,10 @@
 use yii\helpers\Html;
 ?>
 
-<h4 class="text-center">Coleccion Bicentenaria Inicial</h4>
+<h4 class="text-center">Cultura Indigena</h4>
 <div class="row clearfix">
 	<?php foreach ($contenido as $value) { ?>
-			<?php if($value->nivel == 'inicial'){	?>
+			<?php if($value->coleccion == 'indigena'){	?>
 					<div class="col-md-2">
 						<div class="card text-center">
 							<?= Html::img(

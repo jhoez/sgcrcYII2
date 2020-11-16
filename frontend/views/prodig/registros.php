@@ -11,11 +11,12 @@ $this->title = 'Registros Multimedia';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="prodig-registros">
-
-    <p>
-        <?= Html::a('Proyectos digitales', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Proyectos digitales', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Subir Proyecto', ['create'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
 <div class="table-responsive">

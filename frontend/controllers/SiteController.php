@@ -96,30 +96,26 @@ class SiteController extends Controller
     public function actionLogin()
     {
         $this->layout = 'login';
-        $model = new LoginForm;
+        $loginform = new LoginForm;
 
         if (!Yii::$app->user->isGuest) {
             return $this->goHome();
         }
 
         // captura de datos enviados por el metodo POST
-        if ( $model->load(Yii::$app->request->post()) )
+        if ( $loginform->load(Yii::$app->request->post()) )
         {
-            if ( $model->validate() ){
-                $login = Usuario::find()->where(['username'=>$model->username,'password'=>$model->password])->one();
-                if (!empty($login)){
-                    if ( $model->login($login) )// logeo el usuario
+            if ( $loginform->validate() ){
+                $usuario = Usuario::find()->where(['username'=>$loginform->username,'password'=>$loginform->password])->one();
+                if ( !empty($usuario) ){
+                    if ( $loginform->login() )// logeo el usuario
                     {
-                        if (Yii::$app->user->can('superadmin')) {
-                            yii::$app->session->setFlash('success',"Bienvenido SuperAdmin: $login->username");
-                            return $this->redirect(["usuario/index"]);
-                        }
                         if (Yii::$app->user->can('administrador')) {
-                            yii::$app->session->setFlash('success',"Bienvenido Administrador: $login->username");
+                            yii::$app->session->setFlash('success',"Bienvenido Administrador: $loginform->username");
                             return $this->redirect(["canaimita/index"]);
                         }
                         if (Yii::$app->user->can('tutor')) {
-                            yii::$app->session->setFlash('success',"Bienvenido Tutor: $login->username");
+                            yii::$app->session->setFlash('success',"Bienvenido Tutor: $loginform->username");
                             return $this->redirect(["site/index"]);
                         }
                     }
@@ -130,7 +126,7 @@ class SiteController extends Controller
         }
 
         return $this->render('login', [
-            'model' => $model,
+            'loginform' => $loginform,
         ]);
     }
 

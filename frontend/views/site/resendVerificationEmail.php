@@ -10,7 +10,12 @@ $this->title = 'Resend verification email';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="site-resend-verification-email">
-    <h1><?= Html::encode($this->title) ?></h1>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Inicio', ['index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
+    <h1 class='text-center'><?= Html::encode($this->title) ?></h1>
 
     <p>Please fill out your email. A verification email will be sent there.</p>
 

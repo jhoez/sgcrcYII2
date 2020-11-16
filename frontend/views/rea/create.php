@@ -10,10 +10,12 @@ $this->params['breadcrumbs'][] = ['label' => 'Realidad Aumentada', 'url' => ['in
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="rea-create">
-    <p>
-        <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Registros', ['regrea'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Realidad Aumentada', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Registros', ['regrea'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
 
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 

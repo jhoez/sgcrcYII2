@@ -75,24 +75,6 @@ class Usuario extends ActiveRecord implements IdentityInterface
         ];
     }
 
-    public static function isUserAdmin($id)
-    {
-        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE])){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    public static function isUserTutor($id)
-    {
-        if (Usuario::findOne(['iduser' => $id, 'status' => self::STATUS_ACTIVE])){
-            return true;
-        } else {
-            return false;
-        }
-    }
-
     /**
      * {@inheritdoc}
      */

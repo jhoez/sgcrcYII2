@@ -11,10 +11,11 @@ $this->title = 'Carousel';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="img-index">
-
-    <p>
-        <?= Html::a('Subir Img Carousel', ['create'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Subir Img Carousel', ['create'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode('Registros') ?></h1>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>

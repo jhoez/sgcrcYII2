@@ -19,14 +19,15 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="canaimita-index">
-
-    <p>
-        <?= Html::a('Registrar Canaimita', ['create'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Archivos',['/archivos/index'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Asistencia',['/horario/index'],['class'=>'btn btn-primary']);?>
-        <?= Html::a('Carousel', ['/carousel/index'], ['class' => 'btn btn-primary']) ?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registrar Canaimita', ['create'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
+            <?= Html::a('Archivos',['/archivos/index'],['class'=>'btn btn-primary']);?>
+            <?= Html::a('Asistencia',['/horario/index'],['class'=>'btn btn-primary']);?>
+            <?= Html::a('Carousel', ['/carousel/index'], ['class' => 'btn btn-primary']) ?>
+        </p>
+    <?php endif; ?>
     <?php // $this->render('_search', ['model' => $csearchModel]); ?>
 
     <div class="table-responsive">

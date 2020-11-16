@@ -13,18 +13,19 @@ $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
 <div class="asistencia-view">
-
-    <p>
-        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
-        <!--<?//= Html::a('Update', ['update', 'id' => $model->idasis], ['class' => 'btn btn-primary']) ?>
-        <?/*= Html::a('Delete', ['delete', 'id' => $model->idasis], [
-        'class' => 'btn btn-danger',
-        'data' => [
-        'confirm' => 'Are you sure you want to delete this item?',
-        'method' => 'post',
-    ],
-    ])*/ ?>-->
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
+            <!--<?//= Html::a('Update', ['update', 'id' => $model->idasis], ['class' => 'btn btn-primary']) ?>
+            <?/*= Html::a('Delete', ['delete', 'id' => $model->idasis], [
+            'class' => 'btn btn-danger',
+            'data' => [
+            'confirm' => 'Are you sure you want to delete this item?',
+            'method' => 'post',
+        ],
+        ])*/ ?>-->
     </p>
+    <?php endif; ?>
     <h1 class="text-center">Detalle de su asistencia</h1>
 
 

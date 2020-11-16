@@ -10,11 +10,12 @@ $this->params['breadcrumbs'][] = ['label' => 'Canaimitas', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="canaimita-create">
-
-    <p>
-        <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
-        <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
-    </p>
+    <?php if (!Yii::$app->user->isGuest): ?>
+        <p>
+            <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>
+            <?= Html::a('Crear Reportes',['reportespdf'],['class'=>'btn btn-primary']);?>
+        </p>
+    <?php endif; ?>
     <h1 class="text-center"><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
