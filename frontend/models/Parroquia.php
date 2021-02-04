@@ -26,7 +26,7 @@ class Parroquia extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['parroquia'],'required'],
+            //[['idpar'],'required'],
             [['idmunc'], 'default', 'value' => null],
             [['idmunc'], 'integer'],
             [['parroquia'], 'string', 'max' => 255],

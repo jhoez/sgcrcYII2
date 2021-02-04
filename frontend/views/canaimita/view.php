@@ -12,7 +12,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="equipo-view">
+<div class="view">
     <?php if (!Yii::$app->user->isGuest): ?>
         <p>
             <?= Html::a('Registros', ['index'], ['class' => 'btn btn-primary']) ?>

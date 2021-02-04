@@ -15,7 +15,7 @@ return [
     'bootstrap' => ['log'],
     'timeZone'=>'America/Caracas',//para definir bien la hora local
     'controllerNamespace' => 'frontend\controllers',
-    'modules' => [
+    /*'modules' => [
         'admin' => [
             'controllerMap' => [
                 'assignment' => [
@@ -53,7 +53,7 @@ return [
             ],
             'mainLayout' => '@app/views/layouts/main.php',// utiliza el menu del framework
         ]
-    ],
+    ],*/
     'components' => [
         'authManager' => [
             'class' => 'yii\rbac\DbManager', // or use 'yii\rbac\PhpManager'
@@ -97,28 +97,12 @@ return [
             // refer settings section for all configuration options
         ],
     ],
-    'as access' => [
+    /*'as access' => [
         'class' => 'mdm\admin\components\AccessControl',
         'allowActions' => [//rutas de acceso al publico ejem: controller/action
-            'site/index',
-            'site/obj',
-            'site/mv',
-            'site/v',
-            'conteduc/index',
-            'conteduc/desclib',
-            'prodig/index',
-            'prodig/descva',
-            'rea/index',
-            'rea/ra',
-            'rea/descra',
-            //'some-controller/some-action',
-            // The actions listed here will be allowed to everyone including guests.
-            // So, 'admin/*' should not appear here in the production, of course.
-            // But in the earlier stages of your development, you may probably want to
-            // add a lot of actions here until you finally completed setting up rbac,
-            // otherwise you may not even take a first step.
+            '/*',
         ]
-    ],
+    ],*/
     'params' => $params,
     'language'=>'es'
 ];

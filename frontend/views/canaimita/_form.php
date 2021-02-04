@@ -125,12 +125,6 @@ use yii\widgets\ActiveForm;
                 <?= Html::label('¿Esta Graduado?', 'graduado', ['class'=>'']) ?>
                 <div class="">
                     <?= Html::activeCheckbox($niveleduc, 'graduado', ['label'=>'¡Si! o ¡No!']) ?>
-                    <?= $form->field($niveleduc, 'graduado')->checkbox(array(
-                    'label'=>'',
-                    'labelOptions'=>array('style'=>'padding:5px;'),
-                    'disabled'=>true
-                    ))
-                    ->label('Gender'); ?>
                 </div>
             </div>
             <!------------------------------------------------------------------------->

@@ -25,7 +25,7 @@ class Estado extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['nombest'],'required'],
+            //[['idesta'],'required'],
             [['nombest'], 'string', 'max' => 30],
         ];
     }

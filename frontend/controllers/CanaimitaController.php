@@ -194,9 +194,9 @@ class CanaimitaController extends Controller
                                 if ($estudiante->save()) {
                                     $niveleduc->fkestu = $estudiante->idestu;
                                     if ($niveleduc->save()) {
-                                        $direcuser->fkesta = Estado::find()->where(['nombest'=>$estado->nombest])->one()->idesta;
-                                        $direcuser->fkmunc = Municipio::find()->where(['municipio'=>$municipio->municipio])->one()->idmunc;
-                                        $direcuser->fkpar = Parroquia::find()->where(['parroquia'=>$parroquia->parroquia])->one()->idpar;
+                                        $direcuser->fkesta = Estado::find()->where(['nombest'=>$estado->nombest])->one()['idesta'];
+                                        $direcuser->fkmunc = Municipio::find()->where(['municipio'=>$municipio->municipio])->one()['idmunc'];
+                                        $direcuser->fkpar = Parroquia::find()->where(['parroquia'=>$parroquia->parroquia])->one()['idpar'];
                                         $direcuser->fkciat = $sedeciat->idciat;
                                         $direcuser->fkinst = $insteduc->idinst;
                                         $direcuser->fkrep = $representante->idrep;
@@ -234,8 +234,8 @@ class CanaimitaController extends Controller
                     $transaction->commit();
                     return $this->redirect(['view', 'id' => $equipo->ideq]);
                 } catch (ErrorException $e) {
-                    $e->getMessage();die;
                     $transaction->rollback();
+                    echo $e->getMessage();die;
                     Yii::$app->session->setFlash('warning', "La Canaimita $equipo->eqserial no pudo ser registrar");
                 }// fin try catch
             }

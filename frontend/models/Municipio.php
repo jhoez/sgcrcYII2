@@ -26,7 +26,7 @@ class Municipio extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['municipio'],'required'],
+            //[['idmunc'],'required'],
             [['idesta'], 'default', 'value' => null],
             [['idesta'], 'integer'],
             [['municipio'], 'string', 'max' => 255],

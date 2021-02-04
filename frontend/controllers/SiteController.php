@@ -103,25 +103,32 @@ class SiteController extends Controller
         }
 
         // captura de datos enviados por el metodo POST
-        if ( $loginform->load(Yii::$app->request->post()) )
-        {
+        if ( $loginform->load(Yii::$app->request->post()) ){
             if ( $loginform->validate() ){
-                $usuario = Usuario::find()->where(['username'=>$loginform->username,'password'=>$loginform->password])->one();
-                if ( !empty($usuario) ){
+                $purifier = new HtmlPurifier;
+                $nombuser = $purifier->process($loginform->username);
+                $passworduser = $purifier->process($loginform->password);
+                $usuario = Usuario::find()->where(['username'=>$nombuser])->one();
+                if (
+                    $usuario->username === $nombuser &&
+                    $usuario->password === $passworduser &&
+                    $usuario->status === 1
+                ){
                     if ( $loginform->login() )// logeo el usuario
                     {
-                        if (Yii::$app->user->can('administrador')) {
+                        /*if (Yii::$app->user->can('administrador')) {
                             yii::$app->session->setFlash('success',"Bienvenido Administrador: $loginform->username");
                             return $this->redirect(["canaimita/index"]);
                         }
                         if (Yii::$app->user->can('tutor')) {
                             yii::$app->session->setFlash('success',"Bienvenido Tutor: $loginform->username");
                             return $this->redirect(["site/index"]);
-                        }
+                        }*/
+                        return $this->redirect(["canaimita/index"]);
                     }
                 }else{
                     yii::$app->session->setFlash('danger','Usuario o contraseña incorrecto');
-                    return $this->goBack();
+                    return $this->redirect(['/site/login']);
                 }
             }
         }

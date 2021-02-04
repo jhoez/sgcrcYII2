@@ -19,18 +19,18 @@ use yii\helpers\Html;
 			</div>
 		</div>
 
-		<div class="form-group">
+		<!--<div class="form-group">
 			<div class="col-md-12">
-				<?= $form->field($loginform, 'rememberMe')->checkbox() ?>
+				<?//= $form->field($loginform, 'rememberMe')->checkbox() ?>
 			</div>
 			<div class="col-md-12" style="color:#999;margin:1em 0">
 	            Cambiar tu contraseña
-	            <?= Html::a('Aqui', ['site/request-password-reset']) ?>.
+	            <?//= Html::a('Aqui', ['site/request-password-reset']) ?>.
 	            <br>
 	            Verifica tu correo
-	            <?= Html::a('Aqui', ['site/resend-verification-email']) ?>
+	            <?//= Html::a('Aqui', ['site/resend-verification-email'])?>
 	        </div>
-	    </div>
+	    </div>-->
 
 		<div class="form-group">
 			<div class="col-md-12">
@@ -39,4 +39,3 @@ use yii\helpers\Html;
 		</div>
 	<?php $form->end();?>
 </div>
-
